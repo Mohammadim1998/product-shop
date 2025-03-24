@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import "animate.css";
+// import "animate.css";
 // import { Swiper, SwiperSlide } from "swiper/react";
 // import SwiperCore, {
 //     Navigation,
@@ -14,7 +14,7 @@ import "animate.css";
 // import "swiper/css/pagination";
 // import "swiper/css/autoplay";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // SwiperCore.use([Autoplay]);
 
 type SliderItem = {
@@ -41,6 +41,19 @@ const SliderDetails: React.FC<SliderPropsTypes> = ({ data }) => {
         setnowSlide(newNumber);
     };
     const [slideHandler, setslideHandler] = useState(1);
+
+    // useEffect(() => {
+    //     let i = 1;
+    //     if (i > data.length - 1) {
+    //         i = 1;
+    //     }else {
+    //         i++;
+    //     }
+
+    //     setInterval(() => {
+    //         sliderChangingHandler(i)
+    //     }, 1000);
+    // }, []);
 
     return (
         <>
@@ -72,7 +85,7 @@ const SliderDetails: React.FC<SliderPropsTypes> = ({ data }) => {
                                     className="bg-white w-8 h-8 md:w-10 md:h-10 p-2 rounded border-zinc-800 border-[.2rem] cursor-pointer hover:border-zinc-500 transition-all duration-500"
                                 />
                             </div>
-                            <div className="mt-4 md:mt-0 z-20 flex justify-center items-center">
+                            <div className="mt-4 md:mt-0 z-20 flex justify-center items-center transition-all duration-700">
                                 <Image
                                     width={1280}
                                     height={250}

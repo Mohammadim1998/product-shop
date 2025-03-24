@@ -18,7 +18,7 @@ const MiddleBanners = async () => {
 
     return (
         <section className="container mx-auto w-full flex justify-center xl:justify-between items-center flex-wrap px-4 lg:px-1">
-            {!data || data.length === 0 && <div>هیچ بنری موجو نیست</div>}
+            {!data || data.length === 0 && <div></div>}
             {data?.map((banner, i) => (
                 <Link className="my-4" href={banner?.link} key={i}>
                     <Image
