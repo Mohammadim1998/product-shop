@@ -1,6 +1,7 @@
 import Categories from "@/components/categories";
 import MainSlider from "@/components/mainSlider";
 import MiddleBanners from "@/components/middle-banners";
+import NewBlog from "@/components/newBlogs";
 
 export default function Home() {
   return (
@@ -8,6 +9,7 @@ export default function Home() {
       <MainSlider />
       <MiddleBanners />
       <Categories />
+      <NewBlog />
     </div>
   );
 }
