@@ -1,4 +1,5 @@
 import Categories from "@/components/categories";
+import GraphicSlider from "@/components/graphicSlider";
 import MainSlider from "@/components/mainSlider";
 import MiddleBanners from "@/components/middle-banners";
 import NewBlog from "@/components/newBlogs";
@@ -40,13 +41,16 @@ const getData = async ():Promise<ProductsPropsTypes[]> => {
 
 export default async function Home() {
   const data = await getData();  
+  
 
   return (
     <div className="w-full flex flex-col gap-12 mt-8 md:mt-0">
       <MainSlider />
       <ProductsSlider goalData={data} title="اپلیکیشن ها" linkComp="app" />
       <MiddleBanners />
+      <ProductsSlider goalData={data} title="کتاب ها" linkComp="app" />
       <Categories />
+      <GraphicSlider goalData={data} />
       <NewBlog />
     </div>
   );
