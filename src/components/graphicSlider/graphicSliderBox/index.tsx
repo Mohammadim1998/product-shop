@@ -24,7 +24,7 @@ const GraphicSliderBox: React.FC<GraphicSliderPropsTypes> = ({ itemData }) => {
     //CONTEXT OF CART NUMBER
     const { cartNumber, setCartNumber } = useAppContext();
 
-    const spliterForFeatures = (value:string) => {
+    const spliterForFeatures = (value: string) => {
         return value.split(":");
     }
 
