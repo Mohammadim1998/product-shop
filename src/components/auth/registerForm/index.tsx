@@ -66,13 +66,13 @@ const RegisterForm = () => {
 
             const backendUrl = "https://file-server.liara.run/api/new-user";
             const response = await axios.post<ApiResponse>(backendUrl, formData);
+            console.log("response: ", response);
 
             if (response.data.auth) {
                 Cookies.set("auth_cookie", response.data.auth, { expires: 60 });
             }
 
-            toast.success(
-                response.data.msg || "ثبت نام شما با موفقیت انجام شد.",
+            toast.success("ثبت نام شما با موفقیت انجام شد.",
                 {
                     autoClose: 3000,
                     hideProgressBar: false,
@@ -127,7 +127,7 @@ const RegisterForm = () => {
                         {...register("username", {
                             required: true,
                             maxLength: 20,
-                            minLength: 6,
+                            minLength: 8,
                         })}
                     />
                     {errors.username && errors.username.type === "required" && (
@@ -140,7 +140,7 @@ const RegisterForm = () => {
                     )}
                     {errors.username && errors.username.type === "minLength" && (
                         <div className="text-rose-500">
-                            نام کاربری باید بیشتر از 6 کاراکتر باشد
+                            نام کاربری باید بیشتر از 8 کاراکتر باشد
                         </div>
                     )}
                 </div>
@@ -154,7 +154,7 @@ const RegisterForm = () => {
                         {...register("displayname", {
                             required: true,
                             maxLength: 20,
-                            minLength: 6,
+                            minLength: 8,
                         })}
                     />
                     {errors.displayname && errors.displayname.type === "required" && (
@@ -167,7 +167,7 @@ const RegisterForm = () => {
                     )}
                     {errors.displayname && errors.displayname.type === "minLength" && (
                         <div className="text-rose-500">
-                            نام نمایشی باید بیشتر از 6 کاراکتر باشد
+                            نام نمایشی باید بیشتر از 8 کاراکتر باشد
                         </div>
                     )}
                 </div>
