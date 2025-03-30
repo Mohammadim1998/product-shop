@@ -1,7 +1,16 @@
 "use client";
 import Image from "next/image";
+import { ItemsBannerPropsTypes } from ".";
 
-const Box = ({ data, setMidBanDetCtrl, setRandomNumForBannerClick }) => {
+type BoxPropsTypes = {
+    data: ItemsBannerPropsTypes;
+    setMidBanDetCtrl: (value: string) => void;
+    setRandomNumForBannerClick: (value: number) => void;
+}
+
+const Box: React.FC<BoxPropsTypes> = ({ data, setMidBanDetCtrl, setRandomNumForBannerClick }) => {
+    console.log("data: ", data);
+
     return (
         <div onClick={() => {
             setMidBanDetCtrl(data._id);

@@ -6,7 +6,7 @@ import CategoryDetails from "./CategoryDetails";
 
 const CategoryMain = () => {
    const [midBanDetCtrl, setmidBanDetCtrl] = useState<string>("");
-   const [randNumForBannerClick, setrandNumForBannerClick] = useState(1);
+   const [randNumForBannerClick, setrandNumForBannerClick] = useState<number | null>(null);
    const [det, setdet] = useState(<AllCategories setrandNumForBannerClick={setrandNumForBannerClick} setmidBanDetCtrl={setmidBanDetCtrl} />);
 
    useEffect(() => {

@@ -5,8 +5,8 @@ import NewMidBanners from "./newMidBanners";
 import MidBannersDetails from "./MidBannersDetails";
 
 const MiddleBannerMain = () => {
-    const [midBanDetCtrl, setMidBanDetCtrl] = useState("");
-    const [RandomNumForBannerClick, setRandomNumForBannerClick] = useState("");
+    const [midBanDetCtrl, setMidBanDetCtrl] = useState<string>("");
+    const [RandomNumForBannerClick, setRandomNumForBannerClick] = useState<number | null>(null);
     const [det, setDet] = useState(<AllMidBanners setMidBanDetCtrl={setMidBanDetCtrl} setRandomNumForBannerClick={setRandomNumForBannerClick} />);
 
     useEffect(() => {
@@ -28,7 +28,7 @@ const MiddleBannerMain = () => {
                 </div>
             </section>
 
-            <section className="">{det}</section>
+            <section>{det}</section>
         </div>
     );
 }

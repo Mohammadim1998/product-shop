@@ -7,13 +7,30 @@ import Cookies from "js-cookie";
 
 const newMidBanners = () => {
     const [auth_cookie, setAuth_cookie] = useState(Cookies.get("auth_cookie"));
-    const imageUrlRef = useRef();
-    const imageAltRef = useRef();
-    const imageLinkRef = useRef();
-    const imageSituationRef = useRef();
+    const imageUrlRef = useRef<HTMLInputElement>(null);
+    const imageAltRef = useRef<HTMLInputElement>(null);
+    const imageLinkRef = useRef<HTMLInputElement>(null);
+    const imageSituationRef = useRef<HTMLSelectElement>(null);
 
-    const submiter = (e) => {
+    const submiter = (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (
+            !imageUrlRef.current ||
+            !imageAltRef.current ||
+            !imageLinkRef.current ||
+            !imageSituationRef.current
+        ) {
+            toast.success("لطفا تمام فیلدها را پر کنید", {
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            })
+            return;
+        }
         const formData = {
             image: imageUrlRef.current.value,
             imageAlt: imageAltRef.current.value,
@@ -23,7 +40,7 @@ const newMidBanners = () => {
         }
 
         const url = "https://file-server.liara.run/api/new-middle-banner";
-        axios.post(url, formData,{ headers: { auth_cookie: auth_cookie }})
+        axios.post(url, formData, { headers: { auth_cookie: auth_cookie } })
             .then(d => {
                 toast.success("بنر با موفقیت ذخیره شد.", {
                     autoClose: 3000,
