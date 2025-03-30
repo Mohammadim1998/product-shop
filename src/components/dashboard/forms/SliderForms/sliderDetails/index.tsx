@@ -6,24 +6,46 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
+import { ItemSliderPropsTypes } from "../allSliders";
 
-const SliderDetails = ({ midBanId }) => {
+type SliderDetailsPropsTypes = {
+   midBanId: string;
+}
+
+const SliderDetails: React.FC<SliderDetailsPropsTypes> = ({ midBanId }) => {
    // FORM SHOULD BE NOT SEND WITH ENTER KEY
-   const formKeyNotSuber = (event) => {
+   const formKeyNotSuber = (event: React.KeyboardEvent) => {
       if (event.key == "Enter") {
          event.preventDefault();
       }
    };
 
    const [auth_cookie, setAuth_cookie] = useState(Cookies.get("auth_cookie"));
-   const imageUrlRef = useRef();
-   const imageAltRef = useRef();
-   const sorterRef = useRef();
-   const imageLinkRef = useRef();
-   const imageSituationRef = useRef();
+   const imageUrlRef = useRef<HTMLInputElement>(null);
+   const imageAltRef = useRef<HTMLInputElement>(null);
+   const sorterRef = useRef<HTMLInputElement>(null);
+   const imageLinkRef = useRef<HTMLInputElement>(null);
+   const imageSituationRef = useRef<HTMLSelectElement>(null);
 
-   const updater = (e) => {
+   const updater = (e: React.FormEvent) => {
       e.preventDefault();
+
+      if (!imageUrlRef.current ||
+         !imageAltRef.current ||
+         !sorterRef.current ||
+         !imageLinkRef.current ||
+         !imageSituationRef.current) {
+         toast.success("لطفا تمام فیلدها را پر کنید", {
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+         })
+         return;
+      }
+
       const formData = {
          goalId: midBanId,
          image: imageUrlRef.current.value,
@@ -38,28 +60,28 @@ const SliderDetails = ({ midBanId }) => {
       };
       const url = `https://file-server.liara.run/api/update-slider/${midBanId}`;
       axios
-         .post(url, formData,{ headers: { auth_cookie: auth_cookie }})
+         .post(url, formData, { headers: { auth_cookie: auth_cookie } })
          .then((d) => {
             formData.situation == "true"
                ? toast.success("اسلایدر با موفقیت به روزرسانی و منتشر شد.", {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                 })
+                  autoClose: 3000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+               })
                : toast.success(
-                    "اسلایدر به روزرسانی و به صورت پیشنویس ذخیره شد.",
-                    {
-                       autoClose: 3000,
-                       hideProgressBar: false,
-                       closeOnClick: true,
-                       pauseOnHover: true,
-                       draggable: true,
-                       progress: undefined,
-                    }
-                 );
+                  "اسلایدر به روزرسانی و به صورت پیشنویس ذخیره شد.",
+                  {
+                     autoClose: 3000,
+                     hideProgressBar: false,
+                     closeOnClick: true,
+                     pauseOnHover: true,
+                     draggable: true,
+                     progress: undefined,
+                  }
+               );
          })
          .catch((e) => {
             let message = "متاسفانه ناموفق بود.";
@@ -76,15 +98,16 @@ const SliderDetails = ({ midBanId }) => {
             });
          });
    };
-   const [fullData, setfullData] = useState([-1]);
+   const [fullData, setfullData] = useState<ItemSliderPropsTypes | null>(null);
+   const [loading, setLoadin] = useState<boolean>(true);
 
    useEffect(() => {
       axios
-         .get(`https://file-server.liara.run/api/get-slider/${midBanId}`,{ headers: { auth_cookie: auth_cookie }} )
+         .get(`https://file-server.liara.run/api/get-slider/${midBanId}`, { headers: { auth_cookie: auth_cookie } })
          .then((d) => {
             setfullData(d.data);
          })
-         .catch((e) =>
+         .catch((e) => {
             toast.error("خطا در لود اطلاعات", {
                autoClose: 3000,
                hideProgressBar: false,
@@ -93,13 +116,18 @@ const SliderDetails = ({ midBanId }) => {
                draggable: true,
                progress: undefined,
             })
-         );
+            setLoadin(false);
+         })
+         .finally(() => {
+            setLoadin(false);
+         })
+
    }, [midBanId]);
 
    const remover = () => {
       const url = `https://file-server.liara.run/api/delete-slider/${midBanId}`;
       axios
-         .post(url,{ headers: { auth_cookie: auth_cookie }})
+         .post(url, { headers: { auth_cookie: auth_cookie } })
          .then((d) => {
             toast.success("اسلایدر با موفقیت حذف شد.", {
                autoClose: 3000,
@@ -128,7 +156,7 @@ const SliderDetails = ({ midBanId }) => {
 
    return (
       <div className=" flex flex-col gap-8">
-         {fullData[0] == -1 ? (
+         {loading ? (
             <div className=" flex justify-center items-center p-12">
                <Image
                   alt="loading"
@@ -150,10 +178,10 @@ const SliderDetails = ({ midBanId }) => {
                </div>
                <div className=" flex justify-between items-center">
                   <div className=" bg-zinc-100 rounded px-3 py-1 text-sm">
-                     {fullData._id ? fullData._id : ""}
+                     {fullData?._id ? fullData?._id : ""}
                   </div>
                   <div className=" bg-zinc-100 rounded px-3 py-1 text-sm">
-                     {fullData.date ? fullData.date : ""}
+                     {fullData?.date ? fullData?.date : ""}
                   </div>
                </div>
                <form
@@ -165,7 +193,7 @@ const SliderDetails = ({ midBanId }) => {
                      <div>آدرس جدید عکس</div>
                      <input
                         required={true}
-                        defaultValue={fullData.image}
+                        defaultValue={fullData?.image}
                         ref={imageUrlRef}
                         type="text"
                         className="inputLtr p-2 rounded-md w-full outline-none border-2 border-zinc-300 focus:border-orange-400"
@@ -175,7 +203,7 @@ const SliderDetails = ({ midBanId }) => {
                      <div>آلت جدید عکس</div>
                      <input
                         required={true}
-                        defaultValue={fullData.imageAlt}
+                        defaultValue={fullData?.imageAlt}
                         ref={imageAltRef}
                         type="text"
                         className=" p-2 rounded-md w-full outline-none border-2 border-zinc-300 focus:border-orange-400"
@@ -185,7 +213,7 @@ const SliderDetails = ({ midBanId }) => {
                      <div>سورتر جدید اسلایدر</div>
                      <input
                         required={true}
-                        defaultValue={fullData.sorter}
+                        defaultValue={fullData?.sorter}
                         ref={sorterRef}
                         type="number"
                         className=" p-2 rounded-md w-full outline-none border-2 border-zinc-300 focus:border-orange-400"
@@ -195,7 +223,7 @@ const SliderDetails = ({ midBanId }) => {
                      <div>لینک جدید عکس</div>
                      <input
                         required={true}
-                        defaultValue={fullData.link}
+                        defaultValue={fullData?.link}
                         ref={imageLinkRef}
                         type="text"
                         className="inputLtr p-2 rounded-md w-full outline-none border-2 border-zinc-300 focus:border-orange-400"
@@ -207,15 +235,15 @@ const SliderDetails = ({ midBanId }) => {
                         ref={imageSituationRef}
                         className=" p-2 rounded-md w-full outline-none border-2 border-zinc-300 focus:border-orange-400"
                      >
-                        {fullData.situation == true ? (
+                        {fullData?.situation == true ? (
                            <>
-                              <option value={true}>روشن</option>
-                              <option value={false}>خاموش</option>
+                              <option value={"true"}>روشن</option>
+                              <option value={"false"}>خاموش</option>
                            </>
                         ) : (
                            <>
-                              <option value={false}>خاموش</option>
-                              <option value={true}>روشن</option>
+                              <option value={"false"}>خاموش</option>
+                              <option value={"true"}>روشن</option>
                            </>
                         )}
                      </select>

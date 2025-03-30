@@ -8,7 +8,22 @@ import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
 
-const Allsliders = ({ setmidBanDetCtrl, setrandNumForBannerClick }) => {
+type SlidersPropsTypes = {
+   setmidBanDetCtrl: (value: string) => void;
+   setrandNumForBannerClick: (value: number) => void;
+}
+
+export type ItemSliderPropsTypes = {
+   _id: string;
+   date: string;
+   image: string;
+   imageAlt: string;
+   situation: boolean;
+   sorter: number;
+   link?: string;
+}
+
+const Allsliders: React.FC<SlidersPropsTypes> = ({ setmidBanDetCtrl, setrandNumForBannerClick }) => {
    const goTopCtrl = () => {
       window.scrollTo({
          top: 0,
@@ -16,17 +31,18 @@ const Allsliders = ({ setmidBanDetCtrl, setrandNumForBannerClick }) => {
       });
    };
 
-   const [auth_cookie, setAuth_cookie] = useState(Cookies.get("auth_cookie"));
-   const [sliders, setsliders] = useState([-1]);
-   const [numbersOfBtns, setnumbersOfBtns] = useState([-1]);
-   const [filteredBtns, setfilteredBtns] = useState([-1]);
-   const [pageNumber, setpageNumber] = useState(1);
-   const [allSliderNumber, setallSliderNumber] = useState(0);
+   const [auth_cookie, setAuth_cookie] = useState<string | undefined>(Cookies.get("auth_cookie"));
+   const [sliders, setsliders] = useState<ItemSliderPropsTypes[] | null>(null);
+   const [numbersOfBtns, setnumbersOfBtns] = useState<number[]>([-1]);
+   const [filteredBtns, setfilteredBtns] = useState<number[]>([-1]);
+   const [pageNumber, setpageNumber] = useState<number>(1);
+   const [allSliderNumber, setallSliderNumber] = useState<number>(0);
+   const [loading, setLoading] = useState<boolean>(true);
    const paginate = 3;
 
    useEffect(() => {
       axios
-         .get(`https://file-server.liara.run/api/sliders?pn=${pageNumber}&&pgn=${paginate}`,{ headers: { auth_cookie: auth_cookie }})
+         .get(`https://file-server.liara.run/api/sliders?pn=${pageNumber}&&pgn=${paginate}`, { headers: { auth_cookie: auth_cookie } })
          .then((d) => {
             setsliders(d.data.GoalSliders);
             setnumbersOfBtns(
@@ -46,12 +62,16 @@ const Allsliders = ({ setmidBanDetCtrl, setrandNumForBannerClick }) => {
                progress: undefined,
             });
             console.log(e);
-         });
+            setLoading(false);
+         })
+         .finally(() => {
+            setLoading(false);
+         })
    }, [pageNumber]);
 
    useEffect(() => {
       if (numbersOfBtns[0] != -1 && numbersOfBtns.length > 0) {
-         const arr = [];
+         const arr: number[] = [];
          numbersOfBtns.map((n) => {
             if (
                n == 0 ||
@@ -76,7 +96,7 @@ const Allsliders = ({ setmidBanDetCtrl, setrandNumForBannerClick }) => {
             </div>
          </div>
          <div className=" flex flex-col gap-6">
-            {sliders[0] == -1 ? (
+            {loading ? (
                <div className=" flex justify-center items-center p-12">
                   <Image
                      alt="loading"
@@ -85,12 +105,12 @@ const Allsliders = ({ setmidBanDetCtrl, setrandNumForBannerClick }) => {
                      src={"/loading.svg"}
                   />
                </div>
-            ) : sliders.length < 1 ? (
+            ) : sliders && sliders?.length < 1 ? (
                <div className=" flex justify-center items-center w-full p-8">
                   اسلایدری موجود نیست...
                </div>
             ) : (
-               sliders.map((ba, i) => (
+               sliders && sliders?.map((ba, i) => (
                   <Box
                      setrandNumForBannerClick={setrandNumForBannerClick}
                      setmidBanDetCtrl={setmidBanDetCtrl}
@@ -111,7 +131,7 @@ const Allsliders = ({ setmidBanDetCtrl, setrandNumForBannerClick }) => {
                   />
                </div>
             ) : (
-               filteredBtns.map((da, i) => (
+               filteredBtns?.map((da, i) => (
                   <button className={
                      da + 1 == pageNumber
                         ? " bg-orange-400 text-white w-8 h-8 flex justify-center items-center rounded transition-all duration-500 hover:bg-orange-500"
@@ -119,7 +139,7 @@ const Allsliders = ({ setmidBanDetCtrl, setrandNumForBannerClick }) => {
                   } onClick={() => {
                      da + 1 == pageNumber
                         ? console.log("")
-                        : setsliders([-1]);
+                        : setsliders(null);
                      setpageNumber(da + 1);
                      goTopCtrl();
                   }}

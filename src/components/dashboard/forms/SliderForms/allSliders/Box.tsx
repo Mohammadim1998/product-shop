@@ -1,6 +1,14 @@
 "use client";
 import Image from "next/image";
-const Box = ({ data, setmidBanDetCtrl, setrandNumForBannerClick }) => {
+import { ItemSliderPropsTypes } from ".";
+
+type BoxPropsTypes = {
+   data: ItemSliderPropsTypes;
+   setmidBanDetCtrl: (value: string) => void;
+   setrandNumForBannerClick: (value: number) => void;
+}
+
+const Box: React.FC<BoxPropsTypes> = ({ data, setmidBanDetCtrl, setrandNumForBannerClick }) => {
    const goTopCtrl = () => {
       window.scrollTo({
          top: 0,

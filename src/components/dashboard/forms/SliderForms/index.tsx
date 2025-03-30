@@ -5,16 +5,16 @@ import NewSlider from "./newSlider";
 import SliderDetails from "./sliderDetails";
 
 const SliderMain = () => {
-   const [midBanDetCtrl, setmidBanDetCtrl] = useState("");
-   const [randNumForBannerClick, setrandNumForBannerClick] = useState(1);
+   const [midBanDetCtrl, setmidBanDetCtrl] = useState<string>("");
+   const [randNumForBannerClick, setrandNumForBannerClick] = useState<number | null>(null);
    const [det, setdet] = useState(<AllSliders setrandNumForBannerClick={setrandNumForBannerClick} setmidBanDetCtrl={setmidBanDetCtrl} />);
-   
+
    useEffect(() => {
-      if (midBanDetCtrl!="") {
+      if (midBanDetCtrl != "") {
          setdet(<SliderDetails midBanId={midBanDetCtrl} />);
       }
    }, [randNumForBannerClick]);
-   
+
    return (
       <div className=" flex flex-col gap-8">
          <section className=" flex justify-between items-center gap-2">
@@ -23,7 +23,7 @@ const SliderMain = () => {
                <button
                   onClick={() =>
                      setdet(
-                        <AllSliders  setrandNumForBannerClick={setrandNumForBannerClick} setmidBanDetCtrl={setmidBanDetCtrl} />
+                        <AllSliders setrandNumForBannerClick={setrandNumForBannerClick} setmidBanDetCtrl={setmidBanDetCtrl} />
                      )
                   }
                   className=" flex justify-center items-center w-32 h-10 rounded-md bg-indigo-600 text-white transition-all duration-500' hover:bg-orange-500"

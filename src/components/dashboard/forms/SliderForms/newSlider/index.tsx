@@ -1,5 +1,5 @@
 "use client";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import axios from "axios";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -7,15 +7,31 @@ import { toast } from "react-toastify";
 import Cookies from "js-cookie";
 
 const NewSlider = () => {
-   const [auth_cookie, setAuth_cookie] = useState(Cookies.get("auth_cookie"));
-   const imageUrlRef = useRef();
-   const imageAltRef = useRef();
-   const sorterRef = useRef();
-   const imageLinkRef = useRef();
-   const imageSituationRef = useRef();
+   const [auth_cookie, setAuth_cookie] = useState<string | undefined>(Cookies.get("auth_cookie"));
+   const imageUrlRef = useRef<HTMLInputElement>(null);
+   const imageAltRef = useRef<HTMLInputElement>(null);
+   const sorterRef = useRef<HTMLInputElement>(null);
+   const imageLinkRef = useRef<HTMLInputElement>(null);
+   const imageSituationRef = useRef<HTMLSelectElement>(null);
 
-   const submiter = (e) => {
+   const submiter = (e: React.FormEvent) => {
       e.preventDefault();
+
+      if (!imageUrlRef.current ||
+         !imageAltRef.current ||
+         !sorterRef.current ||
+         !imageLinkRef.current ||
+         !imageSituationRef.current) {
+         toast.success("لطفا تمام فیلدها را پر کنید", {
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+         })
+         return;
+      }
       const formData = {
          image: imageUrlRef.current.value,
          imageAlt: imageAltRef.current.value,
@@ -29,25 +45,25 @@ const NewSlider = () => {
       };
       const url = `https://file-server.liara.run/api/new-slider`;
       axios
-         .post(url, formData,{ headers: { auth_cookie: auth_cookie }})
+         .post(url, formData, { headers: { auth_cookie: auth_cookie } })
          .then((d) => {
             formData.situation == "true"
                ? toast.success("اسلایدر با موفقیت منتشر شد.", {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                 })
+                  autoClose: 3000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+               })
                : toast.success("اسلایدر به صورت پیشنویس ذخیره شد.", {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                 });
+                  autoClose: 3000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+               });
          })
          .catch((e) => {
             let message = "متاسفانه ناموفق بود.";
@@ -65,7 +81,7 @@ const NewSlider = () => {
          });
    };
    // FORM SHOULD BE NOT SEND WITH ENTER KEY
-   const formKeyNotSuber = (event) => {
+   const formKeyNotSuber = (event: React.KeyboardEvent) => {
       if (event.key == "Enter") {
          event.preventDefault();
       }
@@ -121,8 +137,8 @@ const NewSlider = () => {
                   ref={imageSituationRef}
                   className=" p-2 rounded-md w-full outline-none border-2 border-zinc-300 focus:border-orange-400"
                >
-                  <option value={true}>روشن</option>
-                  <option value={false}>خاموش</option>
+                  <option value={"true"}>روشن</option>
+                  <option value={"false"}>خاموش</option>
                </select>
             </div>
             <button
