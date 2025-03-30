@@ -40,9 +40,11 @@ const Files: React.FC<CookiesPropsTypes> = ({ cookie }) => {
                         progress: undefined,
                     });
                     setLoading(false);
+                    setNeedRefresh(0);
                 })
                 .finally(() => {
                     setLoading(false);
+                    setNeedRefresh(0);
                 })
         }
     }, [cookie, needRefresh]);

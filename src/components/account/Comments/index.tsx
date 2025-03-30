@@ -39,7 +39,6 @@ const Favorites: React.FC<CookiesPropsTypes> = ({ cookie }) => {
             axios.get("https://file-server.liara.run/api/get-part-of-user-data/comments", { headers: { auth_cookie: cookie } })
                 .then(d => {
                     setData(d.data);
-                    console.log("d.comment ===>>>", d.data);
                     setNeedRefresh(1);
                 })
                 .catch(e => {
@@ -52,9 +51,11 @@ const Favorites: React.FC<CookiesPropsTypes> = ({ cookie }) => {
                         progress: undefined,
                     });
                     setLoading(false);
+                    setNeedRefresh(0);
                 })
                 .finally(() => {
                     setLoading(false);
+                    setNeedRefresh(0);
                 })
         }
     }, [cookie, needRefresh]);
