@@ -1,7 +1,14 @@
 "use client";
 import Image from "next/image";
+import { ItemsPropsTypes } from ".";
 
-const Box = ({ data, setMidBanDetCtrl, setRandomNumForBannerClick }) => {
+type BoxPropsTypes = {
+    data: ItemsPropsTypes;
+    setMidBanDetCtrl: (value: string) => void;
+    setRandomNumForBannerClick: (value: number) => void;
+}
+
+const Box: React.FC<BoxPropsTypes> = ({ data, setMidBanDetCtrl, setRandomNumForBannerClick }) => {
     return (
         <div
             onClick={() => {
@@ -27,9 +34,9 @@ const Box = ({ data, setMidBanDetCtrl, setRandomNumForBannerClick }) => {
                     <div className="text-xs bg-orange-500 text-white w-24 h-6 rounded flex justify-center items-center">{data.pageView} بازدید</div>
                     {
                         data.published == true
-                        ?<div className="text-xs bg-green-600 text-white px-3 py-1 rounded">منتشر شده</div>
-                        :<div className="text-xs bg-orange-500 text-white px-3 py-1 rounded">پیشنویس</div>
-                        }
+                            ? <div className="text-xs bg-green-600 text-white px-3 py-1 rounded">منتشر شده</div>
+                            : <div className="text-xs bg-orange-500 text-white px-3 py-1 rounded">پیشنویس</div>
+                    }
                 </div>
             </div>
         </div>

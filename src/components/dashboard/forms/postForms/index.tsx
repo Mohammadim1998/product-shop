@@ -4,9 +4,11 @@ import AllPosts from "./AllPosts";
 import NewPost from "./newPost";
 import PostDetails from "./PostDetails";
 
+
+
 const PostsMain = () => {
-    const [midBanDetCtrl, setMidBanDetCtrl] = useState("");
-    const [RandomNumForBannerClick, setRandomNumForBannerClick] = useState("");
+    const [midBanDetCtrl, setMidBanDetCtrl] = useState<string>("");
+    const [RandomNumForBannerClick, setRandomNumForBannerClick] = useState<number | null>(null);
     const [det, setDet] = useState(<AllPosts setMidBanDetCtrl={setMidBanDetCtrl} setRandomNumForBannerClick={setRandomNumForBannerClick} />);
 
     useEffect(() => {
