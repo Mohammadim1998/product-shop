@@ -7,71 +7,97 @@ import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
 
+type Category = {
+   _id: string;
+   title: string;
+   slug: string;
+}
+
+type Product = {
+   _id: string;
+   title: string;
+}
+
+
 const NewProduct = () => {
    //FOR SPLIT CATEGORIES
-   const splitForCategories = (value) => {
+   const splitForCategories = (value: string): string[] => {
       return value.split("*");
    }
 
-   const [auth_cookie, setAuth_cookie] = useState(Cookies.get("auth_cookie"));
-   const titleRef = useRef();
-   const slugRef = useRef();
-   const mainFileRef = useRef();
-   const imageRef = useRef();
-   const imageAltRef = useRef();
-   const priceRef = useRef();
-   const shortDescRef = useRef();
-   const longDescRef = useRef();
-   const typeOfProductRef = useRef();
-   const publishedRef = useRef();
+   const [auth_cookie, setAuth_cookie] = useState<string | undefined>(Cookies.get("auth_cookie"));
+   const titleRef = useRef<HTMLInputElement>(null);
+   const slugRef = useRef<HTMLInputElement>(null);
+   const mainFileRef = useRef<HTMLInputElement>(null);
+   const imageRef = useRef<HTMLInputElement>(null);
+   const imageAltRef = useRef<HTMLInputElement>(null);
+   const priceRef = useRef<HTMLInputElement>(null);
+   const shortDescRef = useRef<HTMLInputElement>(null);
+   const longDescRef = useRef<HTMLTextAreaElement>(null);
+   const typeOfProductRef = useRef<HTMLSelectElement>(null);
+   const publishedRef = useRef<HTMLSelectElement>(null);
 
    // TAG MANAGING
-   const tagRef = useRef();
-   const [tag, setTag] = useState([]);
-   const tagSuber = (e) => {
+   const tagRef = useRef<HTMLInputElement>(null);
+   const [tag, setTag] = useState<string[]>([]);
+   const tagSuber = (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "Enter") {
+         e.preventDefault();
          let tagList = [...tag];
-         const data = tagRef.current.value;
-         if (data.length > 0) {
+         const data = tagRef.current?.value;
+         if (data && data.length > 0) {
             tagList = [...tag, data.replace(/\s+/g, '_').toLowerCase()];
             setTag(tagList);
          }
-         tagRef.current.value = "";
+         if (tagRef.current) {
+            tagRef.current.value = "";
+         }
       }
    };
-   const tagDeleter = (indexToRemove) => {
+   const tagDeleter = (indexToRemove: number) => {
       setTag(tag.filter((_, index) => index !== indexToRemove));
    };
    // FEATURE MANAGING
-   const featuresRef = useRef();
-   const [feature, setfeature] = useState([]);
-   const featureSuber = (e) => {
+   const featuresRef = useRef<HTMLInputElement>(null);
+   const [feature, setFeature] = useState<string[]>([]);
+   const featureSuber = (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "Enter") {
+         e.preventDefault();
          let featureList = [...feature];
-         const data = featuresRef.current.value;
-         if (data.length > 0) {
+         const data = featuresRef.current?.value;
+         if (data && data.length > 0) {
             featureList = [...feature, data];
-            setfeature(featureList);
+            setFeature(featureList);
          }
-         featuresRef.current.value = "";
+         if (featuresRef.current) {
+            featuresRef.current.value = "";
+         }
       }
    };
-   const featureDeleter = (indexToRemove) => {
-      setfeature(feature.filter((_, index) => index !== indexToRemove));
+   const featureDeleter = (indexToRemove: number) => {
+      setFeature(feature.filter((_, index) => index !== indexToRemove));
    };
    // RELATED
-   const [products, setProducts] = useState([-1]);
+   const [products, setProducts] = useState<Product[]>([]);
+   const [loadingProducts, setLoadingProducts] = useState<boolean>(true);
+
    useEffect(() => {
       const productUrl = "https://file-server.liara.run/api/products-rel";
       axios
-         .get(productUrl,{ headers: { auth_cookie: auth_cookie }})
+         .get(productUrl, { headers: { auth_cookie: auth_cookie } })
          .then((d) => {
             setProducts(d.data);
          })
-         .catch((e) => console.log("error in loading posts"));
+         .catch((e) => {
+            console.log(e);
+            setLoadingProducts(false);
+         })
+         .finally(() => {
+            setLoadingProducts(false);
+         })
    }, []);
-   const [relProducts, setrelProducts] = useState([]);
-   const productsRelatedMan = (v) => {
+   const [relProducts, setrelProducts] = useState<string[]>([]);
+   const productsRelatedMan = (v: React.ChangeEvent<HTMLInputElement>) => {
       let related = [...relProducts];
       if (v.target.checked) {
          related = [...related, v.target.value];
@@ -82,18 +108,27 @@ const NewProduct = () => {
    };
 
    // RELATED
-   const [categories, setCategories] = useState([-1]);
+   const [categories, setCategories] = useState<Category[]>([]);
+   const [loadingCategory, setLoadingCategory] = useState<boolean>(true);
+
    useEffect(() => {
       const postsUrl = "https://file-server.liara.run/api/products-categories-rel";
       axios
-         .get(postsUrl,{ headers: { auth_cookie: auth_cookie }})
+         .get(postsUrl, { headers: { auth_cookie: auth_cookie } })
          .then((d) => {
             setCategories(d.data);
          })
-         .catch((e) => console.log("error in loading posts"));
+         .catch((e) => {
+            console.log(e);
+            setLoadingCategory(false);
+         })
+         .finally(() => {
+            setLoadingCategory(false);
+         })
    }, []);
-   const [relCategories, setrelCategories] = useState([]);
-   const productsCategoriesMan = (v) => {
+
+   const [relCategories, setrelCategories] = useState<Category[]>([]);
+   const productsCategoriesMan = (v: React.ChangeEvent<HTMLInputElement>) => {
       let related = [...relCategories];
       if (v.target.checked) {
          const goalArr = splitForCategories(v.target.value);
@@ -104,18 +139,39 @@ const NewProduct = () => {
          }];
       } else {
          const goalArr = splitForCategories(v.target.value);
-         related.splice(relCategories.indexOf({
-            _id: goalArr[0],
-            title: goalArr[1],
-            slug: goalArr[2],
-         }), 1);
-         related.splice(relCategories.indexOf(v.target.value), 1);
+         related = related.filter(item =>
+            !(item._id === goalArr[0] && item.title === goalArr[1] && item.slug === goalArr[2])
+         );
       }
       setrelCategories(related);
    };
 
-   const submiter = (e) => {
+   const submiter = (e: React.FormEvent) => {
       e.preventDefault();
+
+      if (
+         !titleRef.current ||
+         !slugRef.current ||
+         !mainFileRef.current ||
+         !imageRef.current ||
+         !imageAltRef.current ||
+         !priceRef.current ||
+         !shortDescRef.current ||
+         !typeOfProductRef.current ||
+         !longDescRef.current ||
+         !publishedRef.current
+      ) {
+         toast.success("لطفا تمام فیلدها را پر کنید", {
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+         })
+         return;
+      }
+
       const formData = {
          title: titleRef.current.value,
          createdAt: new Date().toLocaleDateString("fa-IR", {
@@ -145,7 +201,7 @@ const NewProduct = () => {
       };
       const url = `https://file-server.liara.run/api/new-product`;
       axios
-         .post(url, formData,{ headers: { auth_cookie: auth_cookie }})
+         .post(url, formData, { headers: { auth_cookie: auth_cookie } })
          .then((d) => {
             formData.published == "true"
                ? toast.success("محصول با موفقیت منتشر شد.", {
@@ -182,7 +238,7 @@ const NewProduct = () => {
    };
 
    // FORM SHOULD BE NOT SEND WITH ENTER KEY
-   const formKeyNotSuber = (event) => {
+   const formKeyNotSuber = (event: React.KeyboardEvent) => {
       if (event.key == "Enter") {
          event.preventDefault();
       }
@@ -264,9 +320,8 @@ const NewProduct = () => {
                <textarea
                   required={true}
                   ref={longDescRef}
-                  type="text"
                   className=" p-2 rounded-md w-full outline-none border-2 border-zinc-300 focus:border-orange-400"
-                  rows="8"
+               // rows="8"
                />
             </div>
             <div className="tags flex flex-col gap-2">
@@ -369,8 +424,8 @@ const NewProduct = () => {
                <select
                   ref={publishedRef}
                   className="p-2 rounded-md w-full outline-none border-2 border-zinc-300 focus:border-orange-400">
-                  <option value={true}>انتشار</option>
-                  <option value={false}>پیشنویس</option>
+                  <option value={"true"}>انتشار</option>
+                  <option value={"false"}>پیشنویس</option>
                </select>
             </div>
 
@@ -388,7 +443,7 @@ const NewProduct = () => {
 
             <div className="tags flex flex-col gap-2">
                <h3>دسته بندی ها </h3>
-               {categories[0] == -1 ? (
+               {loadingCategory ? (
                   <div className=" flex justify-center items-center p-12">
                      <Image
                         alt="loading"
@@ -397,11 +452,11 @@ const NewProduct = () => {
                         src={"/loading.svg"}
                      />
                   </div>
-               ) : categories.length < 1 ? (
+               ) : categories && categories?.length < 1 ? (
                   <div className=" p-3">دسته ای یافت نشد</div>
                ) : (
                   <div className=" flex justify-start items-center flex-wrap gap-2">
-                     {categories.map((po, i) => (
+                     {categories && categories?.map((po, i) => (
                         <div key={i} className="flex justify-center items-center gap-x-2 px-2 py-1 bg-zinc-100 rounded">
                            <label htmlFor={po._id}>{po.title}</label>
                            <input
@@ -419,7 +474,7 @@ const NewProduct = () => {
 
             <div className="tags flex flex-col gap-2">
                <h3>محصولات مرتبط</h3>
-               {products[0] == -1 ? (
+               {loadingProducts ? (
                   <div className=" flex justify-center items-center p-12">
                      <Image
                         alt="loading"
@@ -428,11 +483,11 @@ const NewProduct = () => {
                         src={"/loading.svg"}
                      />
                   </div>
-               ) : products.length < 1 ? (
+               ) : products && products.length < 1 ? (
                   <div className=" p-3">محصولی یافت نشد</div>
                ) : (
                   <div className=" flex justify-start items-center flex-wrap gap-2">
-                     {products.map((po, i) => (
+                     {products && products.map((po, i) => (
                         <div key={i} className="flex justify-center items-center gap-x-2 px-2 py-1 bg-zinc-100 rounded">
                            <label htmlFor={po._id}>{po.title}</label>
                            <input

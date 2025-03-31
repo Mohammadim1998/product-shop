@@ -1,11 +1,14 @@
 "use client";
 import Image from "next/image";
-const Box = ({ data, setmidBanDetCtrl, setrandNumForBannerClick }) => {
-   //PRICE BEAUTIFUL
-   function priceChanger(x) {
-      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-   }
+import { ItemsProductsPropsTypes } from ".";
 
+type BoxPropsTypes = {
+   data: ItemsProductsPropsTypes;
+   setmidBanDetCtrl: (value: string) => void;
+   setrandNumForBannerClick: (value: number) => void;
+}
+
+const Box: React.FC<BoxPropsTypes> = ({ data, setmidBanDetCtrl, setrandNumForBannerClick }) => {
    const goTopCtrl = () => {
       window.scrollTo({
          top: 0,
@@ -17,7 +20,7 @@ const Box = ({ data, setmidBanDetCtrl, setrandNumForBannerClick }) => {
       <div
          onClick={() => {
             goTopCtrl();
-            setmidBanDetCtrl(data._id);
+            setmidBanDetCtrl(data?._id);
             const rn = Math.random();
             setrandNumForBannerClick(rn);
          }}
@@ -26,43 +29,43 @@ const Box = ({ data, setmidBanDetCtrl, setrandNumForBannerClick }) => {
          <div className=" flex justify-start items-center ">
             <Image
                className=" rounded-lg"
-               src={data.image}
-               alt={data.imageAlt}
-               title={data.imageAlt}
+               src={data?.image}
+               alt={data?.imageAlt}
+               title={data?.imageAlt}
                width={400}
                height={200}
             />
          </div>
          <div className=" flex  flex-col gap-4  h-40">
-            <div>{data.title} </div>
+            <div>{data?.title} </div>
             <div className="absolute top-3 left-3 flex text-white justify-end items-center gap-2">
                <div className=" text-xs  bg-blue-500 text-white px-3 py-1 rounded">
-                  {data.updatedAt}
+                  {data?.updatedAt}
                </div>
                <div className=" text-xs  bg-blue-500 text-white px-3 py-1 rounded">
-                  {data.buyNumber} فروش
+                  {data?.buyNumber} فروش
                </div>
                <div className=" text-xs  bg-blue-500 text-white px-3 py-1 rounded">
-                  {priceChanger(data.price)} تومان
+                  {Number(data?.price.toLocaleString())} تومان
                </div>
             </div>
 
-           
+
 
             <div className="absolute bottom-3 left-3 flex justify-end items-center gap-2">
-            <div className=" text-xs  bg-blue-500 text-white px-3 py-1 rounded">
-               {data.typeOfProduct == "book" ? (
-                  <div>کتاب</div>
-               ) : data.typeOfProduct == "app" ? (
-                  <div>اپلیکیشن</div>
-               ) : (<div>فایل گرافیکی</div>)
-               }
-            </div>
+               <div className=" text-xs  bg-blue-500 text-white px-3 py-1 rounded">
+                  {data?.typeOfProduct == "book" ? (
+                     <div>کتاب</div>
+                  ) : data?.typeOfProduct == "app" ? (
+                     <div>اپلیکیشن</div>
+                  ) : (<div>فایل گرافیکی</div>)
+                  }
+               </div>
                <div className=" text-xs bg-orange-500 w-24 h-6 rounded flex justify-center items-center">
-                  {data.pageView} بازدید
+                  {data?.pageView} بازدید
                </div>
                {
-                  data.published == true
+                  data?.published == true
                      ? <div className=" text-xs bg-green-600 px-3 py-1 rounded">منتشر شده</div>
                      : <div className=" text-xs bg-orange-500 px-3 py-1 rounded">پیشنویس</div>
                }

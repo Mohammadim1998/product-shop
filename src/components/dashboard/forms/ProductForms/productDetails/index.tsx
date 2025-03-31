@@ -8,133 +8,223 @@ import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
 
-const ProductsDetails = ({ goalId }) => {
+type ProductDetailsPropsTypes = {
+   goalId: string;
+}
+
+type CategoryType = {
+   _id: string;
+   title: string;
+   slug: string;
+};
+
+type ProductType = {
+   _id: string;
+   title: string;
+   // slug: string;
+};
+
+type FullDataType = {
+   _id?: string;
+   title?: string;
+   createdAt?: string;
+   updatedAt?: string;
+   slug?: string;
+   mainFile?: string;
+   image?: string;
+   imageAlt?: string;
+   price?: string;
+   shortDesc?: string;
+   longDesc?: string;
+   tags?: string[];
+   features?: string[];
+   typeOfProduct?: string;
+   published?: boolean;
+   relatedProducts?: string[];
+   categories?: CategoryType[];
+   pageView?: number;
+   comments?: any[];
+};
+
+const ProductsDetails: React.FC<ProductDetailsPropsTypes> = ({ goalId }) => {
    //FOR SPLIT CATEGORIES
-   const splitForCategories = (value) => {
+   const splitForCategories = (value: string) => {
       return value.split("*");
    }
 
-   const [auth_cookie, setAuth_cookie] = useState(Cookies.get("auth_cookie"));
+   const [auth_cookie, setAuth_cookie] = useState<string | undefined>(Cookies.get("auth_cookie"));
 
    // FORM SHOULD BE NOT SEND WITH ENTER KEY
-   const titleRef = useRef();
-   const slugRef = useRef();
-   const mainFileRef = useRef();
-   const imageRef = useRef();
-   const imageAltRef = useRef();
-   const priceRef = useRef();
-   const shortDescRef = useRef();
-   const longDescRef = useRef();
-   const typeOfProductRef = useRef();
-   const publishedRef = useRef();
+   const titleRef = useRef<HTMLInputElement>(null);
+   const slugRef = useRef<HTMLInputElement>(null);
+   const mainFileRef = useRef<HTMLInputElement>(null);
+   const imageRef = useRef<HTMLInputElement>(null);
+   const imageAltRef = useRef<HTMLInputElement>(null);
+   const priceRef = useRef<HTMLInputElement>(null);
+   const shortDescRef = useRef<HTMLInputElement>(null);
+   const longDescRef = useRef<HTMLTextAreaElement>(null);
+   const typeOfProductRef = useRef<HTMLSelectElement>(null);
+   const publishedRef = useRef<HTMLSelectElement>(null);
 
    // TAG MANAGING
-   const tagRef = useRef();
-   const [tag, setTag] = useState([]);
+   const tagRef = useRef<HTMLInputElement>(null);
+   const [tag, setTag] = useState<string[]>([]);
 
-   const tagSuber = (e) => {
+   const tagSuber = (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "Enter") {
+         e.preventDefault();
          let tagList = [...tag];
-         const data = tagRef.current.value;
-         if (data.length > 0) {
-            tagList = [...tag, data.replace(/\s+/g, '_').toLowerCase()];
+         const data = tagRef.current?.value;
+         if (data && data.length > 0) {
+            tagList = [...tag, data.replace(/\s+/g, "_").toLowerCase()];
             setTag(tagList);
          }
-         tagRef.current.value = "";
+         if (tagRef.current) tagRef.current.value = "";
       }
    };
-   const tagDeleter = (indexToRemove) => {
+   const tagDeleter = (indexToRemove: number) => {
       setTag(tag.filter((_, index) => index !== indexToRemove));
    };
    // FEATURE MANAGING
-   const featuresRef = useRef();
-   const [feature, setfeature] = useState([]);
-   const featureSuber = (e) => {
+   const featuresRef = useRef<HTMLInputElement>(null);
+   const [feature, setFeature] = useState<string[]>([]);
+
+   const featureSuber = (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "Enter") {
+         e.preventDefault();
          let featureList = [...feature];
-         const data = featuresRef.current.value;
-         if (data.length > 0) {
+         const data = featuresRef.current?.value;
+         if (data && data.length > 0) {
             featureList = [...feature, data];
-            setfeature(featureList);
+            setFeature(featureList);
          }
-         featuresRef.current.value = "";
+         if (featuresRef.current) featuresRef.current.value = "";
       }
    };
-   const featureDeleter = (indexToRemove) => {
-      setfeature(feature.filter((_, index) => index !== indexToRemove));
+   const featureDeleter = (indexToRemove: number) => {
+      setFeature(feature.filter((_, index) => index !== indexToRemove));
    };
+
    // RELATED
-   const [products, setProducts] = useState([-1]);
+   const [products, setProducts] = useState<ProductType[] | null>(null);
+   const [loadingProducts, setLoadingProducts] = useState(true);
+
    useEffect(() => {
-      const productUrl =
-         "https://file-server.liara.run/api/products-rel";
+      const productUrl = "https://file-server.liara.run/api/products-rel";
       axios
-         .get(productUrl,{ headers: { auth_cookie: auth_cookie }})
+         .get(productUrl, { headers: { auth_cookie: auth_cookie } })
          .then((d) => {
             setProducts(d.data);
          })
-         .catch((e) => console.log("error in loading posts"));
+         .catch((e) => {
+            console.log(e);
+            setLoadingProducts(false);
+         })
+         .finally(() => {
+            setLoadingProducts(false);
+         })
    }, []);
-   const [relProducts, setrelProducts] = useState([]);
-   const productsRelatedMan = (e) => {
+
+   const [relProducts, setRelProducts] = useState<string[]>([]);
+
+   const productsRelatedMan = (e: React.ChangeEvent<HTMLInputElement>) => {
       let related = [...relProducts];
       if (e.target.checked) {
          related = [...related, e.target.value];
       } else {
          related.splice(relProducts.indexOf(e.target.value), 1);
       }
-      setrelProducts(related);
+      setRelProducts(related);
    };
 
    // CATEGORIES
-   const [categories, setCategories] = useState([-1]);
+   const [categories, setCategories] = useState<CategoryType[]>([]);
+   const [loadingCategory, setLoadingCategory] = useState<boolean>(true);
+
    useEffect(() => {
       const postsUrl =
          "https://file-server.liara.run/api/products-categories-rel";
       axios
-         .get(postsUrl,{ headers: { auth_cookie: auth_cookie }})
+         .get(postsUrl, { headers: { auth_cookie: auth_cookie } })
          .then((d) => {
             setCategories(d.data);
          })
-         .catch((e) => console.log("error in loading posts"));
+         .catch((e) => {
+            console.log(e);
+            setLoadingCategory(false);
+         })
+         .finally(() => {
+            setLoadingCategory(false);
+         })
    }, []);
 
-   const [relCategories, setrelCategories] = useState([]);
-   const [thisProductCatsIds, setthisProductCatsIds] = useState([]);
-   const productsCategoriesMan = (e) => {
+   const [relCategories, setRelCategories] = useState<CategoryType[]>([]);
+   const [thisProductCatsIds, setThisProductCatsIds] = useState<string[]>([]);
+
+   const productsCategoriesMan = (e: React.ChangeEvent<HTMLInputElement>) => {
       let related = [...relCategories];
       if (e.target.checked) {
          const goalArr = splitForCategories(e.target.value);
-         related = [...related, {
-            _id: goalArr[0],
-            title: goalArr[1],
-            slug: goalArr[2],
-         }];
+         related = [
+            ...related,
+            {
+               _id: goalArr[0],
+               title: goalArr[1],
+               slug: goalArr[2],
+            },
+         ];
       } else {
          const goalArr = splitForCategories(e.target.value);
-         related.splice(relCategories.indexOf({
-            _id: goalArr[0],
-            title: goalArr[1],
-            slug: goalArr[2],
-         }), 1);
-         related.splice(relCategories.indexOf(e.target.value), 1);
+         related = related.filter(
+            (item) =>
+               !(
+                  item._id === goalArr[0] &&
+                  item.title === goalArr[1] &&
+                  item.slug === goalArr[2]
+               )
+         );
       }
-      setrelCategories(related);
+      setRelCategories(related);
    };
+
 
    console.log("relProducts: ", relProducts);
    console.log("relCategories: ", relCategories);
    console.log("thisProductCatsIds: ", thisProductCatsIds);
 
    // FORM SHOULD BE NOT SEND WITH ENTER KEY
-   const formKeyNotSuber = (event) => {
+   const formKeyNotSuber = (event: React.KeyboardEvent) => {
       if (event.key == "Enter") {
          event.preventDefault();
       }
    };
 
-   const updater = (e) => {
+   const updater = (e: React.FormEvent) => {
       e.preventDefault();
+
+      if (
+         !titleRef.current ||
+         !slugRef.current ||
+         !mainFileRef.current ||
+         !imageRef.current ||
+         !imageAltRef.current ||
+         !priceRef.current ||
+         !shortDescRef.current ||
+         !longDescRef.current ||
+         !typeOfProductRef.current ||
+         !publishedRef.current
+      ) {
+         toast.success("لطفا تمام فیلدها را پر کنید", {
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+         })
+         return;
+      }
+
       const formData = {
          title: titleRef.current.value,
          createdAt: new Date().toLocaleDateString("fa-IR", {
@@ -161,7 +251,7 @@ const ProductsDetails = ({ goalId }) => {
       };
       const url = `https://file-server.liara.run/api/update-product/${goalId}`;
       axios
-         .post(url, formData,{ headers: { auth_cookie: auth_cookie }})
+         .post(url, formData, { headers: { auth_cookie: auth_cookie } })
          .then((d) => {
             formData.published == "true"
                ? toast.success("محصول با موفقیت به روز رسانی شد.", {
@@ -200,7 +290,7 @@ const ProductsDetails = ({ goalId }) => {
    const remover = () => {
       const url = `https://file-server.liara.run/api/delete-product/${goalId}`;
       axios
-         .post(url,{ headers: { auth_cookie: auth_cookie }})
+         .post(url, { headers: { auth_cookie: auth_cookie } })
          .then((d) => {
             toast.success("محصول با موفقیت حذف شد.", {
                autoClose: 3000,
@@ -228,21 +318,23 @@ const ProductsDetails = ({ goalId }) => {
    };
 
    // LOADING DEFAULT VALUES
-   const [fullData, setfullData] = useState([-1]);
+   const [fullData, setfullData] = useState<FullDataType | null>(null);
+   const [loading, setLoading] = useState<boolean>(true);
+
    useEffect(() => {
       axios
          .get(
-            `https://file-server.liara.run/api/get-product-by-id/${goalId}`,{ headers: { auth_cookie: auth_cookie }}
+            `https://file-server.liara.run/api/get-product-by-id/${goalId}`, { headers: { auth_cookie: auth_cookie } }
          )
          .then((d) => {
             setfullData(d.data);
             setTag(d.data.tags);
-            setfeature(d.data.features);
-            setrelProducts(d.data.relatedProducts);
-            setrelCategories(d.data.categories);
-            setthisProductCatsIds(d.data.categories.map(c => c._id));
+            setFeature(d.data.features);
+            setRelProducts(d.data.relatedProducts);
+            setRelCategories(d.data.categories);
+            setThisProductCatsIds(d.data.categories?.map((c: CategoryType) => c._id));
          })
-         .catch((e) =>
+         .catch((e) => {
             toast.error("خطا در لود اطلاعات", {
                autoClose: 3000,
                hideProgressBar: false,
@@ -251,12 +343,17 @@ const ProductsDetails = ({ goalId }) => {
                draggable: true,
                progress: undefined,
             })
-         );
+            setLoading(false);
+         })
+         .finally(() => {
+            setLoading(false);
+         })
+
    }, [goalId]);
 
    return (
       <div className=" flex flex-col gap-8">
-         {fullData[0] == -1 ? (
+         {loading ? (
             <div className=" flex justify-center items-center p-12">
                <Image
                   alt="loading"
@@ -272,7 +369,7 @@ const ProductsDetails = ({ goalId }) => {
                   <div className=" flex justify-end items-center gap-4">
                      <Link
                         target="_blank"
-                        href={`/shop/${fullData.slug}`}
+                        href={`/shop/${fullData?.slug}`}
                         className=" bg-blue-600 text-white px-4 py-1 rounded-md text-sm transition-all duration-500 hover:bg-blue-700"
                      >
                         لینک پست
@@ -287,22 +384,22 @@ const ProductsDetails = ({ goalId }) => {
                </div>
                <div className=" flex justify-between items-center">
                   <div className=" bg-zinc-100 rounded px-3 py-1 text-sm">
-                     {fullData._id ? fullData._id : ""}
+                     {fullData?._id ? fullData?._id : ""}
                   </div>
                   <div className=" bg-zinc-100 rounded px-3 py-1 text-sm">
-                     تاریخ ایجاد{fullData.createdAt ? fullData.createdAt : ""}
+                     تاریخ ایجاد{fullData?.createdAt ? fullData?.createdAt : ""}
                   </div>
                   <div className=" bg-zinc-100 rounded px-3 py-1 text-sm">
-                     به روز رسانی{fullData.updatedAt ? fullData.updatedAt : ""}
+                     به روز رسانی{fullData?.updatedAt ? fullData?.updatedAt : ""}
                   </div>
                   <div className=" bg-zinc-100 rounded px-3 py-1 text-sm">
-                     {fullData.pageView ? fullData.pageView : 0} بازدید
+                     {fullData?.pageView ? fullData?.pageView : 0} بازدید
                   </div>
                   <div className=" bg-zinc-100 rounded px-3 py-1 text-sm">
-                     {fullData.pageView ? fullData.pageView : 0} فروش
+                     {fullData?.pageView ? fullData?.pageView : 0} فروش
                   </div>
                   <div className=" bg-zinc-100 rounded px-3 py-1 text-sm">
-                     {fullData.comments ? fullData.comments.length : 0} دیدگاه
+                     {fullData?.comments ? fullData?.comments.length : 0} دیدگاه
                   </div>
                </div>
 
@@ -314,7 +411,7 @@ const ProductsDetails = ({ goalId }) => {
                   <div className=" flex flex-col gap-2">
                      <div>عنوان جدید محصول</div>
                      <input
-                        defaultValue={fullData.title ? fullData.title : ""}
+                        defaultValue={fullData?.title ? fullData?.title : ""}
                         required={true}
                         ref={titleRef}
                         type="text"
@@ -324,7 +421,7 @@ const ProductsDetails = ({ goalId }) => {
                   <div className=" flex flex-col gap-2">
                      <div>اسلاگ جدید پست</div>
                      <input
-                        defaultValue={fullData.slug ? fullData.slug : ""}
+                        defaultValue={fullData?.slug ? fullData?.slug : ""}
                         required={true}
                         ref={slugRef}
                         type="text"
@@ -334,7 +431,7 @@ const ProductsDetails = ({ goalId }) => {
                   <div className=" flex flex-col gap-2">
                      <div>URL فایل اصلی جدید محصول</div>
                      <input
-                        defaultValue={fullData.mainFile ? fullData.mainFile : ""}
+                        defaultValue={fullData?.mainFile ? fullData?.mainFile : ""}
                         required={true}
                         ref={mainFileRef}
                         type="text"
@@ -344,7 +441,7 @@ const ProductsDetails = ({ goalId }) => {
                   <div className=" flex flex-col gap-2">
                      <div>آدرس جدید عکس</div>
                      <input
-                        defaultValue={fullData.image ? fullData.image : ""}
+                        defaultValue={fullData?.image ? fullData?.image : ""}
                         required={true}
                         ref={imageRef}
                         type="text"
@@ -355,7 +452,7 @@ const ProductsDetails = ({ goalId }) => {
                      <div>آلت جدید عکس</div>
                      <input
                         defaultValue={
-                           fullData.imageAlt ? fullData.imageAlt : ""
+                           fullData?.imageAlt ? fullData?.imageAlt : ""
                         }
                         required={true}
                         ref={imageAltRef}
@@ -367,7 +464,7 @@ const ProductsDetails = ({ goalId }) => {
                      <div>قیمت جدید محصول (تومان)</div>
                      <input
                         defaultValue={
-                           fullData.price ? fullData.price : ""
+                           fullData?.price ? fullData?.price : ""
                         }
                         required={true}
                         ref={priceRef}
@@ -379,7 +476,7 @@ const ProductsDetails = ({ goalId }) => {
                      <div>توضیحات کوتاه جدید</div>
                      <input
                         defaultValue={
-                           fullData.shortDesc ? fullData.shortDesc : ""
+                           fullData?.shortDesc ? fullData?.shortDesc : ""
                         }
                         required={true}
                         ref={shortDescRef}
@@ -391,13 +488,12 @@ const ProductsDetails = ({ goalId }) => {
                      <div>توضیحات کامل جدید</div>
                      <textarea
                         defaultValue={
-                           fullData.longDesc ? fullData.longDesc : ""
+                           fullData?.longDesc ? fullData?.longDesc : ""
                         }
                         required={true}
                         ref={longDescRef}
-                        type="text"
                         className=" p-2 rounded-md w-full outline-none border-2 border-zinc-300 focus:border-orange-400"
-                        rows="8"
+                     // rows="8"
                      />
                   </div>
                   <div className="tags flex flex-col gap-2">
@@ -500,14 +596,14 @@ const ProductsDetails = ({ goalId }) => {
                         ref={typeOfProductRef}
                         className=" p-2 rounded-md w-full outline-none border-2 border-zinc-300 focus:border-orange-400"
                      >
-                        {fullData.typeOfProduct && fullData.typeOfProduct == "book" ? (
+                        {fullData?.typeOfProduct && fullData?.typeOfProduct == "book" ? (
                            <>
                               <option value={"book"}>کتاب</option>
                               <option value={"app"}>اپلیکیشن</option>
                               <option value={"gr"}>فایل گرافیکی</option>
                            </>
-                        ) : fullData.typeOfProduct &&
-                           fullData.typeOfProduct == "app" ? (
+                        ) : fullData?.typeOfProduct &&
+                           fullData?.typeOfProduct == "app" ? (
                            <>
                               <option value={"app"}>اپلیکیشن</option>
                               <option value={"book"}>کتاب</option>
@@ -524,7 +620,7 @@ const ProductsDetails = ({ goalId }) => {
                   </div>
                   <div className="tags flex flex-col gap-2">
                      <h3>دسته بندی های محصول</h3>
-                     {categories[0] == -1 ? (
+                     {loadingCategory ? (
                         <div className=" flex justify-center items-center p-12">
                            <Image
                               alt="loading"
@@ -533,11 +629,11 @@ const ProductsDetails = ({ goalId }) => {
                               src={"/loading.svg"}
                            />
                         </div>
-                     ) : categories.length < 1 ? (
+                     ) : categories && categories.length < 1 ? (
                         <div className=" p-3">دسته ای یافت نشد</div>
                      ) : (
                         <div className=" flex justify-start items-center flex-wrap gap-2">
-                           {categories.map((po, i) => (
+                           {categories && categories?.map((po, i) => (
                               <div
                                  key={i}
                                  className="flex justify-center items-center gap-x-2 px-2 py-1 bg-zinc-100 rounded"
@@ -569,7 +665,7 @@ const ProductsDetails = ({ goalId }) => {
                   </div>
                   <div className="tags flex flex-col gap-2">
                      <h3>محصولات مرتبط</h3>
-                     {products[0] == -1 ? (
+                     {loadingProducts ? (
                         <div className=" flex justify-center items-center p-12">
                            <Image
                               alt="loading"
@@ -578,18 +674,18 @@ const ProductsDetails = ({ goalId }) => {
                               src={"/loading.svg"}
                            />
                         </div>
-                     ) : products.length < 1 ? (
+                     ) : products && products?.length < 1 ? (
                         <div className=" p-3">محصولی یافت نشد</div>
                      ) : (
                         <div className=" flex justify-start items-center flex-wrap gap-2">
-                           {products.map((po, i) => (
+                           {products && products?.map((po, i) => (
                               <div
                                  key={i}
                                  className="flex justify-center items-center gap-x-2 px-2 py-1 bg-zinc-100 rounded"
                               >
                                  <label htmlFor={po._id}>{po.title}</label>{" "}
-                                 {fullData.relatedProducts &&
-                                    fullData.relatedProducts.includes(po._id) ? (
+                                 {fullData?.relatedProducts &&
+                                    fullData?.relatedProducts.includes(po._id) ? (
                                     <input
                                        name={po._id}
                                        id={po._id}
@@ -618,15 +714,15 @@ const ProductsDetails = ({ goalId }) => {
                         ref={publishedRef}
                         className=" p-2 rounded-md w-full outline-none border-2 border-zinc-300 focus:border-orange-400"
                      >
-                        {fullData.published && fullData.published == true ? (
+                        {fullData?.published && fullData?.published == true ? (
                            <>
-                              <option value={true}>انتشار</option>
-                              <option value={false}>پیشنویس</option>
+                              <option value={"true"}>انتشار</option>
+                              <option value={"false"}>پیشنویس</option>
                            </>
                         ) : (
                            <>
-                              <option value={false}>پیشنویس</option>
-                              <option value={true}>انتشار</option>
+                              <option value={"false"}>پیشنویس</option>
+                              <option value={"true"}>انتشار</option>
                            </>
                         )}
                      </select>

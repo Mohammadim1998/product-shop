@@ -8,26 +8,45 @@ import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
 
-const AllProducts = ({ setmidBanDetCtrl, setrandNumForBannerClick }) => {
+type AllProductsPropsTypes = {
+   setmidBanDetCtrl: (value: string) => void;
+   setrandNumForBannerClick: (value: number) => void;
+}
+
+export type ItemsProductsPropsTypes = {
+   _id: string;
+   buyNumber: number;
+   image: string;
+   imageAlt: string;
+   pageView: number;
+   price: boolean;
+   published: boolean;
+   title: string;
+   typeOfProduct: string;
+   updatedAt: string;
+}
+
+const AllProducts: React.FC<AllProductsPropsTypes> = ({ setmidBanDetCtrl, setrandNumForBannerClick }) => {
    const goTopCtrl = () => {
       window.scrollTo({
          top: 0,
          behavior: "smooth",
       });
    };
-   const [auth_cookie, setAuth_cookie] = useState(Cookies.get("auth_cookie"));
 
-   const [products, setproducts] = useState([-1]);
-   const [numbersOfBtns, setnumbersOfBtns] = useState([-1]);
-   const [filteredBtns, setfilteredBtns] = useState([-1]);
-   const [pageNumber, setpageNumber] = useState(1);
-   const [allProductNumber, setallProductNumber] = useState(0);
+   const [auth_cookie, setAuth_cookie] = useState<string | undefined>(Cookies.get("auth_cookie"));
+   const [products, setproducts] = useState<ItemsProductsPropsTypes[] | null>(null);
+   const [numbersOfBtns, setnumbersOfBtns] = useState<number[]>([-1]);
+   const [filteredBtns, setfilteredBtns] = useState<number[]>([-1]);
+   const [pageNumber, setpageNumber] = useState<number>(1);
+   const [allProductNumber, setallProductNumber] = useState<number>(0);
+   const [loading, setLoading] = useState<boolean>(true);
    const paginate = 10;
-   const [categoryUrl, setcategoryUrl] = useState("products");
+   const [categoryUrl, setcategoryUrl] = useState<string>("products");
 
    useEffect(() => {
       axios
-         .get(`https://file-server.liara.run/api/${categoryUrl}?pn=${pageNumber}&&pgn=${paginate}`,{ headers: { auth_cookie: auth_cookie }})
+         .get(`https://file-server.liara.run/api/${categoryUrl}?pn=${pageNumber}&&pgn=${paginate}`, { headers: { auth_cookie: auth_cookie } })
          .then((d) => {
             setproducts(d.data.GoalProducts);
             setnumbersOfBtns(
@@ -46,13 +65,16 @@ const AllProducts = ({ setmidBanDetCtrl, setrandNumForBannerClick }) => {
                draggable: true,
                progress: undefined,
             });
-            console.log(e);
-         });
+            setLoading(false);
+         })
+         .finally(() => {
+            setLoading(false);
+         })
    }, [pageNumber, categoryUrl]);
 
    useEffect(() => {
       if (numbersOfBtns[0] != -1 && numbersOfBtns.length > 0) {
-         const arr = [];
+         const arr: number[] = [];
          numbersOfBtns.map((n) => {
             if (
                n == 0 ||
@@ -77,7 +99,7 @@ const AllProducts = ({ setmidBanDetCtrl, setrandNumForBannerClick }) => {
                <button onClick={() => {
                   categoryUrl == "products"
                      ? console.log("")
-                     : setproducts([-1]);
+                     : setproducts(null);
                   setcategoryUrl("products");
                   setpageNumber(1);
                }}
@@ -89,7 +111,7 @@ const AllProducts = ({ setmidBanDetCtrl, setrandNumForBannerClick }) => {
                <button onClick={() => {
                   categoryUrl == "get-products-of-type/book"
                      ? console.log("")
-                     : setproducts([-1]);
+                     : setproducts(null);
                   setcategoryUrl("get-products-of-type/book");
                   setpageNumber(1);
                }}
@@ -101,7 +123,7 @@ const AllProducts = ({ setmidBanDetCtrl, setrandNumForBannerClick }) => {
                <button onClick={() => {
                   categoryUrl == "get-products-of-type/app"
                      ? console.log("")
-                     : setproducts([-1]);
+                     : setproducts(null);
                   setcategoryUrl("get-products-of-type/app");
                   setpageNumber(1);
                }}
@@ -113,7 +135,7 @@ const AllProducts = ({ setmidBanDetCtrl, setrandNumForBannerClick }) => {
                <button onClick={() => {
                   categoryUrl == "get-products-of-type/gr"
                      ? console.log("")
-                     : setproducts([-1]);
+                     : setproducts(null);
                   setcategoryUrl("get-products-of-type/gr");
                   setpageNumber(1);
                }}
@@ -129,7 +151,7 @@ const AllProducts = ({ setmidBanDetCtrl, setrandNumForBannerClick }) => {
 
          </div>
          <div className=" flex flex-col gap-6">
-            {products[0] == -1 ? (
+            {loading ? (
                <div className=" flex justify-center items-center p-12">
                   <Image
                      alt="loading"
@@ -138,12 +160,12 @@ const AllProducts = ({ setmidBanDetCtrl, setrandNumForBannerClick }) => {
                      src={"/loading.svg"}
                   />
                </div>
-            ) : products.length < 1 ? (
+            ) : products && products?.length < 1 ? (
                <div className=" flex justify-center items-center w-full p-8">
                   محصولی موجود نیست...
                </div>
             ) : (
-               products.map((da, i) => (
+               products && products?.map((da, i) => (
                   <Box
                      setrandNumForBannerClick={setrandNumForBannerClick}
                      setmidBanDetCtrl={setmidBanDetCtrl}
@@ -172,7 +194,7 @@ const AllProducts = ({ setmidBanDetCtrl, setrandNumForBannerClick }) => {
                   } onClick={() => {
                      da + 1 == pageNumber
                         ? console.log("")
-                        : setproducts([-1]);
+                        : setproducts(null);
                      setpageNumber(da + 1);
                      goTopCtrl();
                   }}
