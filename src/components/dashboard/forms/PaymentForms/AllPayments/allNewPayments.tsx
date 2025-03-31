@@ -4,35 +4,49 @@ import { useEffect, useState } from "react";
 import Box from "./box";
 import Image from "next/image";
 import Cookies from "js-cookie";
+import { PaymentsPropsTypes } from ".";
 
-const AllPayments = ({ setMidBanDetCtrl, setRandomNumForBannerClick }) => {
+type AllNewPaymentsPropsTypes = {
+    setMidBanDetCtrl: (value: string) => void;
+    setRandomNumForBannerClick: (value: number) => void;
+}
+
+const allNewPayments: React.FC<AllNewPaymentsPropsTypes> = ({ setMidBanDetCtrl, setRandomNumForBannerClick }) => {
     const goTopCtrl = () => {
         window.scrollTo({
             top: 0,
             behavior: "smooth",
         });
     };
-    const [auth_cookie, setAuth_cookie] = useState(Cookies.get("auth_cookie"));
-    const [payments, setPayments] = useState([-1]);
-    const [numbersOfBtns, setNumbersOfBtns] = useState([-1]);
-    const [filteredBtns, setfilteredBtns] = useState([-1]);
-    const [pageNumber, setPageNumber] = useState(1);
-    const [allPaymentsNumber, setAllPaymentsNumber] = useState(0);
+
+    const [auth_cookie, setAuth_cookie] = useState<string | undefined>(Cookies.get("auth_cookie"));
+    const [payments, setPayments] = useState<PaymentsPropsTypes[] | null>(null);
+    const [numbersOfBtns, setNumbersOfBtns] = useState<number[]>([-1]);
+    const [filteredBtns, setfilteredBtns] = useState<number[]>([-1]);
+    const [pageNumber, setPageNumber] = useState<number>(1);
+    const [allPaymentsNumber, setAllPaymentsNumber] = useState<number>(0);
+    const [loading, setLoading] = useState<boolean>(true);
     const paginate = 2;
 
     useEffect(() => {
-        axios.get(`https://file-server.liara.run/api/payments?pn=${pageNumber}&&pgn=${paginate}`,{ headers: { auth_cookie: auth_cookie }})
+        axios.get(`https://file-server.liara.run/api/not-viewed-payments?pn=${pageNumber}&&pgn=${paginate}`, { headers: { auth_cookie: auth_cookie } })
             .then(d => {
                 setPayments(d.data.GoalUsers);
                 setNumbersOfBtns(Array.from(Array(Math.ceil(d.data.AllUsersNum / paginate)).keys()));
                 setAllPaymentsNumber(d.data.AllUsersNum);
             })
-            .catch(e => console.log("error"))
+            .catch(e => {
+                console.log(e);
+                setLoading(false);
+            })
+            .finally(() => {
+                setLoading(false);
+            })
     }, [pageNumber]);
 
     useEffect(() => {
         if (numbersOfBtns[0] != -1 && numbersOfBtns.length > 0) {
-            const arr = [];
+            const arr: number[] = [];
             numbersOfBtns.map((n) => {
                 if (
                     n == 0 ||
@@ -52,18 +66,18 @@ const AllPayments = ({ setMidBanDetCtrl, setRandomNumForBannerClick }) => {
     return (
         <div className="flex flex-col gap-8">
             <div className="flex justify-between items-center">
-                <div>همه سفارش ها</div>
+                <div>سفارش های جدید (دیده نشده)</div>
                 <div className="w-32 h-10 rounded bg-indigo-500 text-white flex justify-center items-center">{allPaymentsNumber} سفارش</div>
             </div>
             <div className="flex flex-col gap-6">
-                {payments[0] == -1
+                {loading
                     ? (
                         <div className="flex justify-center items-center p-12">
                             <Image alt="loading" width={120} height={120} src={"/loading.svg"} />
                         </div>
-                    ) : payments.length < 1
+                    ) : payments && payments?.length < 1
                         ? (<div className="flex justify-center items-center w-full p-8">سفارشی موجود نیست ...</div>)
-                        : (payments.map((da, i) => (
+                        : (payments && payments?.map((da, i) => (
                             <Box key={i} data={da} setMidBanDetCtrl={setMidBanDetCtrl} setRandomNumForBannerClick={setRandomNumForBannerClick} />
                         )))
                 }
@@ -88,7 +102,7 @@ const AllPayments = ({ setMidBanDetCtrl, setRandomNumForBannerClick }) => {
                         } onClick={() => {
                             da + 1 == pageNumber
                                 ? console.log("")
-                                : setPayments([-1]);
+                                : setPayments(null);
                             setPageNumber(da + 1);
                             goTopCtrl();
                         }}
@@ -103,4 +117,4 @@ const AllPayments = ({ setMidBanDetCtrl, setRandomNumForBannerClick }) => {
     );
 }
 
-export default AllPayments;
+export default allNewPayments;

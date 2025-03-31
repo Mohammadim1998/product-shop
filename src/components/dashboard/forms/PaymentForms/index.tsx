@@ -5,16 +5,15 @@ import PaymentDetails from "./PaymentDetails";
 import AllNewPayments from "./AllPayments/allNewPayments";
 
 const PaymentsMain = () => {
-    const [midBanDetCtrl, setMidBanDetCtrl] = useState("");
-    const [RandomNumForBannerClick, setRandomNumForBannerClick] = useState("");
+    const [midBanDetCtrl, setMidBanDetCtrl] = useState<string>("");
+    const [RandomNumForBannerClick, setRandomNumForBannerClick] = useState<number | null>(null);
     const [det, setDet] = useState(<AllPayments setMidBanDetCtrl={setMidBanDetCtrl} setRandomNumForBannerClick={setRandomNumForBannerClick} />);
 
     useEffect(() => {
         if (midBanDetCtrl != "") {
             setDet(<PaymentDetails goalId={midBanDetCtrl} />)
         }
-        console.log("midBanDetCtrl ==>>>",midBanDetCtrl);
-        
+
     }, [RandomNumForBannerClick]);
 
     return (
