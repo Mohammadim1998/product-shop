@@ -7,20 +7,39 @@ import UserDetails from "../UserDetails";
 import Image from "next/image";
 import Cookies from "js-cookie";
 
-const FindUser = () => {
-    const [auth_cookie, setAuth_cookie] = useState(Cookies.get("auth_cookie"));
-    const emailRef = useRef();
-    const [userData, setUserData] = useState(0);
+type UserDataPropsTypes = {
+    _id: string;
+}
 
-    const submiter = (e) => {
+type UserDataStatePropsTypes = 0 | 1 | 2 | UserDataPropsTypes;
+
+const FindUser = () => {
+    const [auth_cookie, setAuth_cookie] = useState<string | undefined>(Cookies.get("auth_cookie"));
+    const emailRef = useRef<HTMLInputElement>(null);
+    const [userData, setUserData] = useState<UserDataStatePropsTypes>(0);
+
+    const submiter = (e: React.FormEvent) => {
         setUserData(2);
         e.preventDefault();
+
+        if (!emailRef.current) {
+            toast.success("لطفا تمام فیلدها را پر کنید", {
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            })
+            return;
+        }
+
         const formData = {
             email: emailRef.current.value,
         }
 
         const url = "https://file-server.liara.run/api/search-user";
-        axios.post(url, formData,{ headers: { auth_cookie: auth_cookie }})
+        axios.post(url, formData, { headers: { auth_cookie: auth_cookie } })
             .then((d) => {
                 if (d.data.userData == 0) {
                     toast.success("چنین کاربری وجود ندارد.", {
@@ -52,6 +71,12 @@ const FindUser = () => {
                 }
 
             })
+    };
+
+    const formKeyNotSuber = (event: React.KeyboardEvent) => {
+        if (event.key == "Enter") {
+            event.preventDefault();
+        }
     };
 
 

@@ -4,8 +4,15 @@ import { useEffect, useState } from "react";
 import Box from "./box";
 import Image from "next/image";
 import Cookies from "js-cookie";
+import { CommentsPropsTypes } from ".";
 
-const AllNewComments = ({ setMidBanDetCtrl, setRandomNumForBannerClick }) => {
+type AllNewCommentsPropsTypes = {
+    setMidBanDetCtrl: (value: string) => void;
+    setRandomNumForBannerClick: (value: number) => void;
+}
+
+
+const AllNewComments: React.FC<AllNewCommentsPropsTypes> = ({ setMidBanDetCtrl, setRandomNumForBannerClick }) => {
     const goTopCtrl = () => {
         window.scrollTo({
             top: 0,
@@ -13,28 +20,35 @@ const AllNewComments = ({ setMidBanDetCtrl, setRandomNumForBannerClick }) => {
         });
     };
 
-    const [auth_cookie, setAuth_cookie] = useState(Cookies.get("auth_cookie"));
-    const [comments, setComments] = useState([-1]);
-    const [numbersOfBtns, setNumbersOfBtns] = useState([-1]);
-    const [filteredBtns, setfilteredBtns] = useState([-1]);
-    const [pageNumber, setPageNumber] = useState(1);
-    const [allCommentsNumber, setAllCommentsNumber] = useState(0);
+    const [auth_cookie, setAuth_cookie] = useState<string | undefined>(Cookies.get("auth_cookie"));
+    const [comments, setComments] = useState<CommentsPropsTypes[] | null>(null);
+    const [numbersOfBtns, setNumbersOfBtns] = useState<number[]>([-1]);
+    const [filteredBtns, setfilteredBtns] = useState<number[]>([-1]);
+    const [pageNumber, setPageNumber] = useState<number>(1);
+    const [allCommentsNumber, setAllCommentsNumber] = useState<number>(0);
+    const [loading, setLoading] = useState<boolean>(true);
     const paginate = 2;
 
     useEffect(() => {
-        axios.get(`https://file-server.liara.run/api/comments?pn=${pageNumber}&&pgn=${paginate}`,{ headers: { auth_cookie: auth_cookie }})
+        axios.get(`https://file-server.liara.run/api/comments?pn=${pageNumber}&&pgn=${paginate}`, { headers: { auth_cookie: auth_cookie } })
             .then(d => {
-                console.log("CCCCCCCCCC: ",d.data.GoalCommentss);
+                console.log("CCCCCCCCCC: ", d.data.GoalCommentss);
                 setComments(d.data.GoalCommentss);
                 setNumbersOfBtns(Array.from(Array(Math.ceil(d.data.AllCommentsNum / paginate)).keys()));
                 setAllCommentsNumber(d.data.AllCommentsNum);
             })
-            .catch(e => console.log("error"))
+            .catch(e => {
+                console.log(e);
+                setLoading(false);
+            })
+            .finally(() => {
+                setLoading(false);
+            })
     }, [pageNumber]);
 
     useEffect(() => {
         if (numbersOfBtns[0] != -1 && numbersOfBtns.length > 0) {
-            const arr = [];
+            const arr: number[] = [];
             numbersOfBtns.map((n) => {
                 if (
                     n == 0 ||
@@ -58,14 +72,14 @@ const AllNewComments = ({ setMidBanDetCtrl, setRandomNumForBannerClick }) => {
                 <div className="w-32 h-10 rounded bg-indigo-500 text-white flex justify-center items-center">{allCommentsNumber} سفارش</div>
             </div>
             <div className="flex flex-col gap-6">
-                {comments[0] == -1
+                {loading
                     ? (
                         <div className="flex justify-center items-center p-12">
                             <Image alt="loading" width={120} height={120} src={"/loading.svg"} />
                         </div>
-                    ) : comments.length < 1
-                        ? (<div className="flex justify-center items-center w-full p-8">سفارشی موجود نیست ...</div>)
-                        : (comments.map((da, i) => (
+                    ) : comments && comments?.length < 1
+                        ? (<div className="flex justify-center items-center w-full p-8">دیدگاهی موجود نیست ...</div>)
+                        : (comments && comments?.map((da, i) => (
                             <Box key={i} data={da} setMidBanDetCtrl={setMidBanDetCtrl} setRandomNumForBannerClick={setRandomNumForBannerClick} />
                         )))
                 }
@@ -90,7 +104,7 @@ const AllNewComments = ({ setMidBanDetCtrl, setRandomNumForBannerClick }) => {
                         } onClick={() => {
                             da + 1 == pageNumber
                                 ? console.log("")
-                                : setComments([-1]);
+                                : setComments(null);
                             setPageNumber(da + 1);
                             goTopCtrl();
                         }}

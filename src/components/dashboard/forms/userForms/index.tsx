@@ -5,16 +5,16 @@ import FindUser from "./FindUser";
 import UserDetails from "./UserDetails";
 
 const PostsMain = () => {
-    const [midBanDetCtrl, setMidBanDetCtrl] = useState("");
-    const [RandomNumForBannerClick, setRandomNumForBannerClick] = useState("");
+    const [midBanDetCtrl, setMidBanDetCtrl] = useState<string>("");
+    const [RandomNumForBannerClick, setRandomNumForBannerClick] = useState<number | null>(null);
     const [det, setDet] = useState(<AllUsers setMidBanDetCtrl={setMidBanDetCtrl} setRandomNumForBannerClick={setRandomNumForBannerClick} />);
 
     useEffect(() => {
         if (midBanDetCtrl != "") {
             setDet(<UserDetails goalId={midBanDetCtrl} />)
         }
-        console.log("midBanDetCtrl ==>>>",midBanDetCtrl);
-        
+        console.log("midBanDetCtrl ==>>>", midBanDetCtrl);
+
     }, [RandomNumForBannerClick]);
 
     return (

@@ -6,43 +6,102 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Cookies from "js-cookie";
 
-const CommentDetails = ({ goalId }) => {
-    const [auth_cookie, setAuth_cookie] = useState(Cookies.get("auth_cookie"));
-    const [needToRefresh, setNeedToRefresh] = useState(1);
-    const viewedRef = useRef();
-    const publishedRef = useRef();
-    const messageRef = useRef();
-    const emailRef = useRef();
-    const displaynameRef = useRef();
+interface Comment {
+    _id: string;
+    parenId: string;
+    email: string;
+    displayname: string;
+    message: string;
+    viewed: boolean;
+    published: boolean;
+    createdAt: string;
+    typeOfProduct: "post" | "product";
+    src: {
+        slug: string;
+        title: string;
+    };
+    parent?: {
+        displayname: string;
+        email: string;
+        createdAt: string;
+        message: string;
+    };
+}
 
-    const formKeyNotSuber = (event) => {
+type CommentsDetailPropsTypes = {
+    goalId: string;
+}
+
+const CommentDetails: React.FC<CommentsDetailPropsTypes> = ({ goalId }) => {
+    const [auth_cookie, setAuth_cookie] = useState<string | undefined>(Cookies.get("auth_cookie"));
+    const [needToRefresh, setNeedToRefresh] = useState<number>(1);
+    const viewedRef = useRef<HTMLSelectElement>(null);
+    const publishedRef = useRef<HTMLSelectElement>(null);
+    const messageRef = useRef<HTMLTextAreaElement>(null);
+    const emailRef = useRef<HTMLInputElement>(null);
+    const displaynameRef = useRef<HTMLInputElement>(null);
+
+    const formKeyNotSuber = (event: React.KeyboardEvent) => {
         if (event.key == "Enter") {
             event.preventDefault();
         }
     };
 
-    //Loading default values
-    const [fullData, setFullData] = useState("");
+    const [fullData, setFullData] = useState<Comment | null>(null);
+    const [loading, setLoading] = useState<boolean>(true);
+
     useEffect(() => {
-        axios.get(`https://file-server.liara.run/api/get-comment/${goalId}`,{ headers: { auth_cookie: auth_cookie }})
+        axios.get(`https://file-server.liara.run/api/get-comment/${goalId}`, { headers: { auth_cookie: auth_cookie } })
             .then((d) => {
                 setFullData(d.data);
             })
-            .catch(e => console.log("error"))
+            .catch(e => {
+                console.log(e);
+                setLoading(false);
+            })
+            .finally(() => {
+                setLoading(false);
+            })
     }, [goalId, needToRefresh]);
 
-    const updater = (e) => {
+    const updater = (e: React.FormEvent) => {
         e.preventDefault();
-        const formData = {
-            viewed: viewedRef.current.value,
-            published: publishedRef.current.value,
-            message: messageRef.resnumber,
-            email: emailRef.current.value,
-            displayname: displaynameRef.products,
+
+        if (
+            !viewedRef.current ||
+            !publishedRef.current ||
+            !emailRef.current ||
+            !emailRef.current ||
+            !messageRef.current ||
+            !displaynameRef.current
+        ) {
+            toast.success("لطفا تمام فیلدها را پر کنید", {
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            })
+            return;
         }
+        const formData = {
+            viewed: viewedRef.current.value === "true",
+            published: publishedRef.current.value === "true",
+            message: messageRef.current.value,
+            email: emailRef.current.value,
+            displayname: displaynameRef.current.value,
+        };
+        // const formData = {
+        //     viewed: viewedRef.current.value,
+        //     published: publishedRef.current.value,
+        //     message: messageRef.resnumber,
+        //     email: emailRef.current.value,
+        //     displayname: displaynameRef.products,
+        // }
 
         const url = `https://file-server.liara.run/api/update-comment/${goalId}`;
-        axios.post(url, formData,{ headers: { auth_cookie: auth_cookie }})
+        axios.post(url, formData, { headers: { auth_cookie: auth_cookie } })
             .then((d) => {
                 toast.success("یدگاه با موفقیت بروزرسانی شد.", {
                     autoClose: 3000,
@@ -70,7 +129,7 @@ const CommentDetails = ({ goalId }) => {
     };
 
     const remover = () => {
-        axios.post(`https://file-server.liara.run/api/delete-comment/${goalId}`,{ headers: { auth_cookie: auth_cookie }})
+        axios.post(`https://file-server.liara.run/api/delete-comment/${goalId}`, { headers: { auth_cookie: auth_cookie } })
             .then(d => {
                 toast.success("دیدگاه با موفقیت حذف شد.", {
                     autoClose: 3000,
@@ -99,12 +158,12 @@ const CommentDetails = ({ goalId }) => {
 
     const publisher = () => {
         const sendingData = {
-            goalId: fullData._id,
-            parenId: fullData.parenId,
-            email: fullData.email,
+            goalId: fullData?._id,
+            parenId: fullData?.parenId,
+            email: fullData?.email,
         };
 
-        axios.post(`https://file-server.liara.run/api/publish-comment`, sendingData,{ headers: { auth_cookie: auth_cookie }})
+        axios.post(`https://file-server.liara.run/api/publish-comment`, sendingData, { headers: { auth_cookie: auth_cookie } })
             .then(d => {
                 toast.success("انتشار دیدگاه و ارسال ایمیل با موفقیت انجام شد", {
                     autoClose: 3000,
@@ -114,7 +173,7 @@ const CommentDetails = ({ goalId }) => {
                     draggable: true,
                     progress: undefined,
                 })
-                setFullData([-1]);
+                setFullData(null);
                 setNeedToRefresh(needToRefresh * -1);
             })
             .catch((e) => {
@@ -144,17 +203,17 @@ const CommentDetails = ({ goalId }) => {
             </div>
 
             <div className="flex justify-between items-center">
-                <Link target="_blank" href={fullData.typeOfProduct == "post" ? `/blog/${fullData.src.slug}` : `/shop/${fullData.src.slug}`} className="bg-green-600 text-white rounded px-3 py-1 text-sm flex justify-between items-center">
-                    {fullData.src.title}
+                <Link target="_blank" href={fullData?.typeOfProduct == "post" ? `/blog/${fullData?.src?.slug}` : `/shop/${fullData?.src?.slug}`} className="bg-green-600 text-white rounded px-3 py-1 text-sm flex justify-between items-center">
+                    {fullData?.src?.title}
                 </Link>
 
                 <div className="bg-zinc-100 rounded px-3 py-1 text-sm flex justify-between items-center gap-2">
                     <div>دیدگاهی برای یک</div>
-                    <div>{fullData.typeOfProduct == "post" ? "مقاله" : "محصول"}</div>
+                    <div>{fullData?.typeOfProduct == "post" ? "مقاله" : "محصول"}</div>
                 </div>
                 <div className="bg-zinc-100 rounded px-3 py-1 text-sm flex justify-between items-center gap-2">
                     <div>تاریخ ایجاد</div>
-                    <div>{fullData.createdAt ? fullData.createdAt : ""}</div>
+                    <div>{fullData?.createdAt ? fullData?.createdAt : ""}</div>
                 </div>
             </div>
 
@@ -162,15 +221,15 @@ const CommentDetails = ({ goalId }) => {
                 <div className="flex flex-col gap-6">
                     <div>دیده شد</div>
                     <select ref={viewedRef} className="p-2 rounded-md w-full outline-none border-2 border-zinc-300 focus:border-orange-400">
-                        {fullData.viewed && fullData.viewed == true ? (
+                        {fullData?.viewed && fullData?.viewed == true ? (
                             <>
-                                <option value={true}>دیده شده</option>
-                                <option value={false}>دیده نشده</option>
+                                <option value={"true"}>دیده شده</option>
+                                <option value={"false"}>دیده نشده</option>
                             </>
                         ) : (
                             <>
-                                <option value={false}>دیده نشده</option>
-                                <option value={true}>دیده شده</option>
+                                <option value={"false"}>دیده نشده</option>
+                                <option value={"true"}>دیده شده</option>
                             </>
                         )}
                     </select>
@@ -179,15 +238,15 @@ const CommentDetails = ({ goalId }) => {
                 <div className="flex flex-col gap-6">
                     <div>منتشر شود</div>
                     <select ref={publishedRef} className="p-2 rounded-md w-full outline-none border-2 border-zinc-300 focus:border-orange-400">
-                        {fullData.published && fullData.published == true ? (
+                        {fullData?.published && fullData?.published == true ? (
                             <>
-                                <option value={true}>بله</option>
-                                <option value={false}>خیر</option>
+                                <option value={"true"}>بله</option>
+                                <option value={"false"}>خیر</option>
                             </>
                         ) : (
                             <>
-                                <option value={false}>خیر</option>
-                                <option value={true}>بله</option>
+                                <option value={"false"}>خیر</option>
+                                <option value={"true"}>بله</option>
                             </>
                         )}
                     </select>
@@ -195,27 +254,27 @@ const CommentDetails = ({ goalId }) => {
 
                 <div className="flex flex-col gap-6">
                     <div>ایمیل کاربر</div>
-                    <input defaultValue={fullData.email ? fullData.email : ""} required={true} ref={emailRef} type="text" className="inputLtr p-2 rounded-md w-full outline-none border-2 border-zinc-300 focus:border-orange-400" />
+                    <input defaultValue={fullData?.email ? fullData?.email : ""} required={true} ref={emailRef} type="text" className="inputLtr p-2 rounded-md w-full outline-none border-2 border-zinc-300 focus:border-orange-400" />
                 </div>
 
                 <div className="flex flex-col gap-6">
                     <div>نام نمایشی (displayname)</div>
-                    <input defaultValue={fullData.displayname ? fullData.displayname : ""} required={true} ref={displaynameRef} type="text" className="p-2 rounded-md w-full outline-none border-2 border-zinc-300 focus:border-orange-400" />
+                    <input defaultValue={fullData?.displayname ? fullData?.displayname : ""} required={true} ref={displaynameRef} type="text" className="p-2 rounded-md w-full outline-none border-2 border-zinc-300 focus:border-orange-400" />
                 </div>
 
-                {fullData.parenId == "nothing"
+                {fullData?.parenId == "nothing"
                     ? <div></div>
                     : (
                         <div className="flex flex-col gap-6">
                             <div>دیدگاه پدر</div>
                             <div className="bg-zinc-100 border-2 border-zinc-300 p-1 rounded-md flex flex-col gap-2">
                                 <div className="flex justify-between items-center flex-wrap">
-                                    <div className="px-2 py-1 rounded bg-zinc-200">{fullData.parent.displayname}</div>
-                                    <div className="px-2 py-1 rounded bg-zinc-200">{fullData.parent.email}</div>
-                                    <div className="px-2 py-1 rounded bg-orange-500 text-white">{fullData.parent.createdAt}</div>
+                                    <div className="px-2 py-1 rounded bg-zinc-200">{fullData?.parent?.displayname}</div>
+                                    <div className="px-2 py-1 rounded bg-zinc-200">{fullData?.parent?.email}</div>
+                                    <div className="px-2 py-1 rounded bg-orange-500 text-white">{fullData?.parent?.createdAt}</div>
                                 </div>
 
-                                <p className="text-black leading-9 text-justify p-2">{fullData.parent.message}</p>
+                                <p className="text-black leading-9 text-justify p-2">{fullData?.parent?.message}</p>
                             </div>
                         </div>)}
 
@@ -223,10 +282,10 @@ const CommentDetails = ({ goalId }) => {
                 <div className="flex flex-col gap-2">
                     <div>متن دیدگاه</div>
                     <textarea
-                        defaultValue={fullData.message ? fullData.message : ""}
+                        defaultValue={fullData?.message ? fullData?.message : ""}
                         required={true}
                         ref={messageRef}
-                        rows="5"
+                        // rows="5"
                         className="p-2 rounded-md w-full outline-none border-2 border-zinc-300 focus:border-orange-400"
                     />
                 </div>

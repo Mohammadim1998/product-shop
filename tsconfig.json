@@ -22,6 +22,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/components/dashboard/forms/CommentForms/AllComments/index.jsx", "src/components/dashboard/forms/CommentForms/AllComments/box.jsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/components/dashboard/forms/CommentForms/AllComments/index.tsx", "src/components/dashboard/forms/CommentForms/AllComments/box.tsx"],
   "exclude": ["node_modules"]
 }

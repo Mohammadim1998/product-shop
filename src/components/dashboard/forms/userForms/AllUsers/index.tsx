@@ -5,34 +5,57 @@ import Box from "./box";
 import Image from "next/image";
 import Cookies from "js-cookie";
 
-const AllComments = ({ setMidBanDetCtrl, setRandomNumForBannerClick }) => {
+type AllUsersPropsTypes = {
+    setMidBanDetCtrl: (value: string) => void;
+    setRandomNumForBannerClick: (value: number) => void;
+}
+
+export type UsersDataPropsTypes = {
+    _id: string;
+    createdAt: string;
+    displayname: string;
+    email: string;
+    userIsAcive: boolean;
+    username: string;
+    viewed: boolean;
+}
+
+const AllUsers: React.FC<AllUsersPropsTypes> = ({ setMidBanDetCtrl, setRandomNumForBannerClick }) => {
     const goTopCtrl = () => {
         window.scrollTo({
             top: 0,
             behavior: "smooth",
         });
     };
-    const [auth_cookie, setAuth_cookie] = useState(Cookies.get("auth_cookie"));
-    const [comments, setComments] = useState([-1]);
-    const [numbersOfBtns, setNumbersOfBtns] = useState([-1]);
-    const [filteredBtns, setfilteredBtns] = useState([-1]);
-    const [pageNumber, setPageNumber] = useState(1);
-    const [allCommentsNumber, setAllCommentsNumber] = useState(0);
+
+    const [auth_cookie, setAuth_cookie] = useState<string | undefined>(Cookies.get("auth_cookie"));
+    const [users, setusers] = useState<UsersDataPropsTypes[] | null>(null);
+    const [numbersOfBtns, setNumbersOfBtns] = useState<number[]>([-1]);
+    const [filteredBtns, setfilteredBtns] = useState<number[]>([-1]);
+    const [pageNumber, setPageNumber] = useState<number>(1);
+    const [allusersNumber, setAllusersNumber] = useState<number>(0);
+    const [loading, setLoading] = useState<boolean>(true);
     const paginate = 2;
 
     useEffect(() => {
-        axios.get(`https://file-server.liara.run/api/comments?pn=${pageNumber}&&pgn=${paginate}`, { headers: { auth_cookie: auth_cookie } })
+        axios.get(`https://file-server.liara.run/api/users?pn=${pageNumber}&&pgn=${paginate}`, { headers: { auth_cookie: auth_cookie } })
             .then(d => {
-                setComments(d.data.GoalCommentss);
-                setNumbersOfBtns(Array.from(Array(Math.ceil(d.data.AllCommentsNum / paginate)).keys()));
-                setAllCommentsNumber(d.data.AllCommentsNum);
+                setusers(d.data.GoalUsers);
+                setNumbersOfBtns(Array.from(Array(Math.ceil(d.data.AllUsersNum / paginate)).keys()));
+                setAllusersNumber(d.data.AllUsersNum);
             })
-            .catch(e => console.log("error"))
+            .catch(e => {
+                console.log(e);
+                setLoading(false);
+            })
+            .finally(() => {
+                setLoading(false);
+            })
     }, [pageNumber]);
 
     useEffect(() => {
         if (numbersOfBtns[0] != -1 && numbersOfBtns.length > 0) {
-            const arr = [];
+            const arr: number[] = [];
             numbersOfBtns.map((n) => {
                 if (
                     n == 0 ||
@@ -51,22 +74,22 @@ const AllComments = ({ setMidBanDetCtrl, setRandomNumForBannerClick }) => {
 
     return (
         <div className="flex flex-col gap-8">
-            <div className="flex justify-between items-center">
-                <div>همه دیدگاه ها</div>
-                <div className="w-32 h-10 rounded bg-indigo-500 text-white flex justify-center items-center">{allCommentsNumber} سفارش</div>
+            <div className="flex justify-end">
+                <div className="w-32 h-10 rounded bg-indigo-500 text-white flex justify-center items-center">{allusersNumber} کاربر</div>
             </div>
             <div className="flex flex-col gap-6">
-                {comments && comments[0] == -1
+                {loading
                     ? (
                         <div className="flex justify-center items-center p-12">
                             <Image alt="loading" width={120} height={120} src={"/loading.svg"} />
                         </div>
-                    ) : comments && comments.length < 1
-                        ? (<div className="flex justify-center items-center w-full p-8">سفارشی موجود نیست ...</div>)
-                        : (comments && comments.map((da, i) => (
+                    ) : users && users?.length < 1
+                        ? (<div className="flex justify-center items-center w-full p-8">کاربری موجود نیست ...</div>)
+                        : (users && users?.map((da, i) => (
                             <Box key={i} data={da} setMidBanDetCtrl={setMidBanDetCtrl} setRandomNumForBannerClick={setRandomNumForBannerClick} />
                         )))
                 }
+
             </div>
 
             <div className=" flex justify-center gap-4 items-center">
@@ -88,7 +111,7 @@ const AllComments = ({ setMidBanDetCtrl, setRandomNumForBannerClick }) => {
                         } onClick={() => {
                             da + 1 == pageNumber
                                 ? console.log("")
-                                : setComments([-1]);
+                                : setusers(null);
                             setPageNumber(da + 1);
                             goTopCtrl();
                         }}
@@ -103,4 +126,4 @@ const AllComments = ({ setMidBanDetCtrl, setRandomNumForBannerClick }) => {
     );
 }
 
-export default AllComments;
+export default AllUsers;

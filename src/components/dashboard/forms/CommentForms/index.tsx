@@ -5,8 +5,8 @@ import CommentDetails from "./CommentDetails";
 import AllNewComments from "./AllComments/AllNewComments";
 
 const CommentMain = () => {
-    const [midBanDetCtrl, setMidBanDetCtrl] = useState("");
-    const [RandomNumForBannerClick, setRandomNumForBannerClick] = useState("");
+    const [midBanDetCtrl, setMidBanDetCtrl] = useState<string>("");
+    const [RandomNumForBannerClick, setRandomNumForBannerClick] = useState<number | null>(null);
     const [det, setDet] = useState(<AllComments setMidBanDetCtrl={setMidBanDetCtrl} setRandomNumForBannerClick={setRandomNumForBannerClick} />);
 
     useEffect(() => {
