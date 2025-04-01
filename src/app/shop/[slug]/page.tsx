@@ -37,9 +37,7 @@ type CommentProps = {
     typeOfModel: string;
 };
 
-type Params = {
-    slug: string;
-};
+type ParamsPropsTypes = Promise<{ slug: string }>
 
 const getData = async (slug: string): Promise<Product> => {
     const data = await fetch(
@@ -53,8 +51,9 @@ function priceChanger(x: string) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-const SingleProduct = async ({ params }: { params: Params }) => {
-    const data = await getData(params.slug);
+const SingleProduct = async ({ params }: { params: ParamsPropsTypes }) => {
+    const { slug } = await params;
+    const data = await getData(slug);
 
     const spliterForFeatures = (value: string): string[] => {
         return value.split(":");

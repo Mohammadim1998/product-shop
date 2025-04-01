@@ -30,17 +30,16 @@ type CommentProps = {
     typeOfModel: string;
 };
 
-type Params = {
-    slug: string;
-}
+type ParamsPropsTypes = Promise<{ slug: string }>
 
 const getData = async (slug: string): Promise<BlogPost> => {
     const data = await fetch(`https://file-server.liara.run/api/get-post/${slug}`, { cache: "no-store" });
     return data.json();
 }
 
-const SingleBlog = async ({ params }: { params: Params }) => {
-    const data = await getData(params.slug);
+const SingleBlog = async ({ params }: { params: ParamsPropsTypes }) => {
+    const { slug } = await params;
+    const data = await getData(slug);
     const commentProps = { src_id: data._id, typeOfModel: "post" };
 
     //FOR SEO
