@@ -16,7 +16,7 @@ const MainSlider = async () => {
     const data = await getData();
 
     return (
-        <div className="w-full">
+        <div className="w-full z-30">
             <SliderDetails data={data} />
         </div>
     )

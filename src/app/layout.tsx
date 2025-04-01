@@ -2,6 +2,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import ContextProvider from "../../context/contextProvider";
 import { ReactNode } from "react";
+import Header from "@/components/header";
+import Footer from "@/components/footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,7 +22,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </>
       <body className="">
         <ContextProvider>
+          <Header />
           {children}
+          <Footer />
         </ContextProvider>
       </body>
     </html>

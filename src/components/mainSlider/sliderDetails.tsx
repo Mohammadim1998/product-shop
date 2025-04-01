@@ -85,7 +85,7 @@ const SliderDetails: React.FC<SliderPropsTypes> = ({ data }) => {
                                     className="bg-white w-8 h-8 md:w-10 md:h-10 p-2 rounded border-zinc-800 border-[.2rem] cursor-pointer hover:border-zinc-500 transition-all duration-500"
                                 />
                             </div>
-                            <div className="mt-4 md:mt-0 z-20 flex justify-center items-center transition-all duration-700">
+                            <div className="mt-14 md:mt-0 z-20 flex justify-center items-center transition-all duration-700">
                                 <Image
                                     width={1280}
                                     height={250}
