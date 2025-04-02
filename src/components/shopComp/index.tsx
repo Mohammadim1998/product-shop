@@ -242,7 +242,7 @@ const ShopComp: React.FC<ShopCompProps> = ({ url }) => {
             <aside
                 className={
                     menuIsOpen == -1
-                        ? "z-50 flex flex-col gap-4 bg-[#000000cc] md:bg-transparent md:w-80 py-4 md:py-0 h-[100vh] w-full md:h-auto fixed top-0 bottom-0 left-[100%] -right-[100%] md:left-0 md:right-0 md:relative transition-all duration-500"
+                        ? "z-40 flex flex-col gap-4 bg-[#000000cc] md:bg-transparent md:w-80 py-4 md:py-0 h-[100vh] w-full md:h-auto fixed top-0 bottom-0 left-[100%] -right-[100%] md:left-0 md:right-0 md:relative transition-all duration-500"
                         : "z-50 flex flex-col gap-4 backdrop-blur-md bg-[#000000cc] md:bg-transparent md:w-80 py-4 md:py-0 h-[100vh] w-full overflow-auto md:h-auto fixed top-0 bottom-0 left-0 right-0 md:static transition-all duration-500"
                 }>
                 <div className="flex flex-col gap-4 bg-transparent md:bg-zinc-100 rounded-lg p-2">
@@ -445,7 +445,7 @@ const ShopComp: React.FC<ShopCompProps> = ({ url }) => {
                         ) : result && result?.length < 1 ? (
                             <div>محصولی با این شرایط موجود نیست...</div>
                         ) : (
-                            <div className="flex justify-between flex-wrap ">
+                            <div className="flex justify-center md:justify-between flex-wrap">
                                 {
                                     result && result?.map((product) => (<GraphicSlideBox key={product._id} itemData={product} />))
                                 }

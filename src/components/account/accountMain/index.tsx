@@ -97,7 +97,7 @@ const AccountMain = ({ items }: ItemsPropsTypes) => {
                     <div
                         className={
                             menuIsOpen == -1
-                                ? "z-50 w-72 min-w-72 md:bg-zinc-100 bg-[#000000cc] rounded-none md:rounded-md fixed md:sticky md:top-8 md:bottom-8 px-2 py-24 md:py-0 h-auto bottom-0 top-0 left-[100%] -right-[100%] md:left-0 md:right-0 transition-all duration-500"
+                                ? "z-40 w-72 min-w-72 md:bg-zinc-100 bg-[#000000cc] rounded-none md:rounded-md fixed md:sticky md:top-8 md:bottom-8 px-2 py-24 md:py-0 h-auto bottom-0 top-0 left-[100%] -right-[100%] md:left-0 md:right-0 transition-all duration-500"
                                 : "z-50 w-full md:w-72 min-w-72 flex flex-col gap-4 backdrop-blur-md bg-[#000000cc] md:bg-transparent px-2 py-24 md:py-0 h-[100vh] overflow-auto md:h-auto fixed top-0 bottom-0 left-0 right-0 md:static transition-all duration-500"
                         }>
 

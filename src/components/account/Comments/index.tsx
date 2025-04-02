@@ -129,7 +129,7 @@ const Favorites: React.FC<CookiesPropsTypes> = ({ cookie }) => {
     }
 
     return (
-        <div className="relative flex flex-col gap-8 p-20">
+        <div className="relative flex flex-col gap-8 py-20 px-4 md:p-20">
             <>
                 <meta charSet="utf-8" />
                 <title>دیدگاه های من</title>
@@ -139,7 +139,7 @@ const Favorites: React.FC<CookiesPropsTypes> = ({ cookie }) => {
                 <link rel="shortcut icon" href="/favicon2.ico" type="image/x-icon" />
                 <link rel="canonical" href="https://localhost:3000/account/comments" />
             </>
-            <h3 className="absolute top-1 ring-1 text-lg">دیدگاه های من</h3>
+            <h3 className="absolute top-1 right-1 text-lg rounded-md p-1 bg-purple-400">دیدگاه های من</h3>
 
             <div onClick={() => {
                 setNeedRefresh(1);
@@ -163,14 +163,14 @@ const Favorites: React.FC<CookiesPropsTypes> = ({ cookie }) => {
                                     ? <div className="w-full flex justify-center items-center p-8">دیدگاهی موجود نیست...</div>
                                     : (<div className="w-full flex flex-col gap-8">
                                         {data && data.map((da, i) => (
-                                            <div key={i} className="w-full flex flex-col gap-4 bg-zinc-200 text-sm h-10 rounded-md p-4 relative">
+                                            <div key={i} className="w-full flex flex-col gap-4 bg-zinc-200 text-sm rounded-md relative">
                                                 <div className="flex justify-between items-start gap-4">
                                                     <div className="relative w-full flex flex-col gap-8">
-                                                        <div className="flex justify-between items-center">
+                                                        <div className="flex flex-col md:flex-row justify-between items-center p-1 gap-y-1 md:gap-x-4">
                                                             <Link
                                                                 href={da.typeOfModel == "post" ? `/blog/${da.src.slug}` : `/shop/${da.src.slug}`}
                                                                 target={"_blank"}
-                                                                className="rounded-sm px-3 py-1 flex justify-center items-center text-sm w-20 h-6 bg-green-600 text-white transition-all duration-300 hover:bg-green-600 pt-2"
+                                                                className="w-full rounded-sm px-3 flex justify-start items-center text-sm h-6 bg-green-600 text-white transition-all duration-300 hover:bg-green-600"
                                                             >
                                                                 {da.typeOfModel == "post" ? "مقاله" : "محصول"} : {da.src.title}
                                                             </Link>
@@ -192,7 +192,7 @@ const Favorites: React.FC<CookiesPropsTypes> = ({ cookie }) => {
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <p className="text-base leading-9 text-black">{da.message}</p>
+                                                        <p className="text-base leading-9 text-black px-4">{da.message}</p>
                                                     </div>
                                                 </div>
                                             </div>

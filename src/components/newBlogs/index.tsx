@@ -25,13 +25,13 @@ const NewBlog = async () => {
             {data.length < 1 ? (
                 <div></div>
             ) : (
-                <section className=" flex flex-col gap-[1.5rem] container mx-auto ">
+                <section className="w-full flex flex-col gap-[1.5rem] container mx-auto ">
                     <header className=" flex justify-between items-center ">
-                        <h2 className="  text-2xl border-r-zinc-700 border-r-2 pr-1 ">
+                        <h2 className="  text-2xl border-r-zinc-700 border-r-2 pr-1 mr-1">
                             آخرین مقالات
                         </h2>
                     </header>
-                    <div className="flex justify-between items-center flex-wrap gap-2">
+                    <div className="flex justify-center md:justify-between items-center flex-wrap gap-2">
                         {data.map((bl, i) => (
                             <BlogBox data={bl} key={i} />
                         ))}

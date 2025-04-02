@@ -37,11 +37,6 @@ const Favorites: React.FC<CookiesPropsTypes> = ({ cookie }) => {
         return value.split(":");
     }
 
-    //PRICE BEAUTIFUL
-    function priceChanger(x: string) {
-        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    }
-
     useEffect(() => {
         if (cookie && cookie.length > 0) {
             axios.get("https://file-server.liara.run/api/get-part-of-user-data/favorite", { headers: { auth_cookie: cookie } })
@@ -134,7 +129,7 @@ const Favorites: React.FC<CookiesPropsTypes> = ({ cookie }) => {
     }
 
     return (
-        <div className="relative flex flex-col gap-8 p-20">
+        <div className="w-full relative flex flex-col gap-8 py-20 px-6 md:p-20">
             <>
                 <meta charSet="utf-8" />
                 <title>محصولات مورد علاقه من</title>
@@ -144,7 +139,7 @@ const Favorites: React.FC<CookiesPropsTypes> = ({ cookie }) => {
                 <link rel="shortcut icon" href="/favicon2.ico" type="image/x-icon" />
                 <link rel="canonical" href="https://localhost:3000/account/favorite" />
             </>
-            <h3 className="absolute top-1 ring-1 text-lg">محصولات مورد علاقه من</h3>
+            <h3 className="absolute top-1 right-1 text-lg rounded-md p-1 bg-purple-400">محصولات مورد علاقه من</h3>
 
             <div onClick={() => {
                 setNeedRefresh(1);
@@ -152,19 +147,19 @@ const Favorites: React.FC<CookiesPropsTypes> = ({ cookie }) => {
             }} className="absolute top-1 left-1 cursor-pointer text-white bg-indigo-500 rounded flex text-sm justify-center items-center gap-1 w-24 h-10">
                 <FiRefreshCw />به روزرسانی
             </div>
-            <div>
+            <div className="w-full">
                 {loading
                     ? (<div className="flex justify-center items-center p-12">
                         <Image alt="loading" width={120} height={120} src={"/loading.svg"} />
                     </div>)
                     : (
-                        <div className="flex flex-col gap-4">
+                        <div className="w-full flex flex-col gap-4">
                             <div className="flex justify-end items-center w-full">
                                 <div className="rounded-md flex justify-center items-center bg-orange-600 w-20 h-10 text-white">{data?.length} محصول</div>
                             </div>
 
-                            <div>
-                                <div>
+                            <div className="w-full">
+                                <div className="w-full">
                                     {data !== null && data?.length < 1
                                         ? <div className="w-full flex justify-center items-center p-8">محصولی موجود نیست...</div>
                                         : (<div className="w-full flex flex-col gap-8">
@@ -200,43 +195,44 @@ const Favorites: React.FC<CookiesPropsTypes> = ({ cookie }) => {
                                                                 )}
                                                             </div>
 
-                                                            <div onClick={() => cartAdder(da?._id)} className="cursor-pointer absolute top-1 left-44 bg-blue-500 text-white transition-all duration-300 hover:bg-blue-600 rounded-sm text-xs flex justify-center items-center w-24 h-6">
+                                                            <div onClick={() => cartAdder(da?._id)} className="cursor-pointer absolute top-1 left-24 md:left-47 bg-blue-500 text-white transition-all duration-300 hover:bg-blue-600 rounded-sm text-xs flex justify-center items-center w-24 h-6">
                                                                 افزودن به سبد
                                                             </div>
 
-                                                            <h3 className="mt-10 lg:mt-0">{da?.title}</h3>
-                                                            <p>{da?.shortDesc}</p>
-                                                            <div className="flex justify-start items-center gap-4">
-                                                                <div>{da?.buyNumber} فروش</div>
-                                                                {/* <div>{priceChanger(da.price)} تومان</div> */}
-                                                                <div>{Number(da?.price).toLocaleString()} تومان</div>
-                                                            </div>
+                                                            <div className="px-4 pb-2 md:px-0 md:pb-0">
+                                                                <h3 className="mt-10 lg:mt-0">{da?.title}</h3>
+                                                                <p className="my-4">{da?.shortDesc}</p>
+                                                                <div className="flex justify-start items-center gap-4">
+                                                                    <div>{da?.buyNumber} فروش</div>
+                                                                    {/* <div>{priceChanger(da.price)} تومان</div> */}
+                                                                    <div>{Number(da?.price).toLocaleString()} تومان</div>
+                                                                </div>
 
-                                                            <div className="w-[95%] h-[0.16rem] bg-zinc-400 rounded-md"></div>
+                                                                <div className="w-[95%] h-[0.16rem] my-4 mx-auto bg-zinc-400 rounded-md"></div>
 
-                                                            <div className="">{
-                                                                da?.features.length < 1
-                                                                    ? (
-                                                                        <div className="flex justify-center items-center w-full p-4">بدون ویژگی</div>
-                                                                    ) : (
-                                                                        da?.features.map((fe, i) => (
-                                                                            <div key={i} className="flex justify-start items-center  gap-6">
-                                                                                <div className="w-40 flex justify-start items-center gap-1">
-                                                                                    {spliterForFeatures(fe)[0]}
+                                                                <div className="">{
+                                                                    da?.features.length < 1
+                                                                        ? (
+                                                                            <div className="flex justify-center items-center w-full p-4">بدون ویژگی</div>
+                                                                        ) : (
+                                                                            da?.features.map((fe, i) => (
+                                                                                <div key={i} className="flex justify-start items-center  gap-6">
+                                                                                    <div className="w-40 flex justify-start items-center gap-1">
+                                                                                        {spliterForFeatures(fe)[0]}
+                                                                                    </div>
+                                                                                    <div>
+                                                                                        {spliterForFeatures(fe)[1]}
+                                                                                    </div>
                                                                                 </div>
-                                                                                <div>
-                                                                                    {spliterForFeatures(fe)[1]}
-                                                                                </div>
-                                                                            </div>
-                                                                        ))
-                                                                    )}
+                                                                            ))
+                                                                        )}
+                                                                </div>
                                                             </div>
 
                                                         </div>
                                                     </div>
 
                                                     <div onClick={() => productRemover(da._id)} className="absolute bottom-2 left-2 w-16 h-6 cursor-pointer flex justify-center items-center gap-2 rounded bg-rose-600 text-white hover:bg-rose-700 transition-all duration-300">حذف <RiDeleteBin6Line /></div>
-
                                                 </div>
                                             ))}
                                         </div>)

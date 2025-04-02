@@ -10,7 +10,6 @@ export interface PaymentResultPageProps {
     searchParams: Promise<{
         Status?: string;
         Authority?: string;
-        // [key: string]: string | undefined;
     }>
 }
 
