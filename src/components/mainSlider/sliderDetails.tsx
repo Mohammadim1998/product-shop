@@ -1,21 +1,14 @@
 "use client";
 import Image from "next/image";
-// import "animate.css";
-// import { Swiper, SwiperSlide } from "swiper/react";
-// import SwiperCore, {
-//     Navigation,
-//     Pagination,
-//     Scrollbar,
-//     Autoplay,
-// } from "swiper/modules";
-
-// import "swiper/css";
-// import "swiper/css/navigation";
-// import "swiper/css/pagination";
-// import "swiper/css/autoplay";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import { useEffect, useState } from "react";
-// SwiperCore.use([Autoplay]);
+import { useEffect, useRef, useState } from "react";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay, Navigation, Pagination } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/autoplay';
+import Link from "next/link";
 
 type SliderItem = {
     _id: string;
@@ -25,82 +18,98 @@ type SliderItem = {
 }
 
 type SliderPropsTypes = {
-    data: SliderItem[]
+    data: SliderItem[];
 }
 
 const SliderDetails: React.FC<SliderPropsTypes> = ({ data }) => {
-    const [nowSlide, setnowSlide] = useState(0);
-    const sliderChangingHandler = (inp: number) => {
-        let newNumber = nowSlide + inp;
-        if (newNumber > data.length - 1) {
-            newNumber = 0;
+    const swiperRef = useRef<any>(null);
+    const [isBeginning, setIsBeginning] = useState(true);
+    const [isEnd, setIsEnd] = useState(false);
+
+    // if (!data || data.length === 0) {
+    //     return <div className="h-64 bg-gray-100 flex items-center justify-center">
+    //         <p>No slides available</p>
+    //     </div>;
+    // }
+
+    const handlePrev = () => {
+        if (swiperRef.current && !isBeginning) {
+            swiperRef.current.swiper.slidePrev();
         }
-        if (newNumber < 0) {
-            newNumber = data.length - 1;
-        }
-        setnowSlide(newNumber);
     };
-    const [slideHandler, setslideHandler] = useState(1);
 
-    // useEffect(() => {
-    //     let i = 1;
-    //     if (i > data.length - 1) {
-    //         i = 1;
-    //     }else {
-    //         i++;
-    //     }
-
-    //     setInterval(() => {
-    //         sliderChangingHandler(i)
-    //     }, 1000);
-    // }, []);
+    const handleNext = () => {
+        if (swiperRef.current && !isEnd) {
+            swiperRef.current.swiper.slideNext();
+        }
+    };
 
     return (
-        <>
-            {
-                !data.length
-                    ? (<div></div>)
-                    : (
-                        <section className="z-20 container w-full mx-auto flex flex-col gap-0 md:gap-8 relative">
-                            <div className="btns z-30 flex justify-end gap-1">
-                                <FaChevronRight
-                                    onClick={() => {
-                                        setslideHandler(0);
-                                        setTimeout(() => {
-                                            sliderChangingHandler(-1);
-                                            setslideHandler(1);
-                                        }, 100);
-                                    }}
-                                    className="bg-white w-8 h-8 md:w-10 md:h-10 p-2 rounded border-zinc-800 border-[.2rem] cursor-pointer hover:border-zinc-500 transition-all duration-500"
-                                />
+        <div>
+            {!data.length
+                ? (<div></div>)
+                : (
+                    <section className="relative w-full h-full mx-auto mt-4 md:mt-22">
+                        <Swiper
+                            ref={swiperRef}
+                            modules={[Navigation, Pagination, Autoplay]}
+                            spaceBetween={30}
+                            slidesPerView={1}
+                            loop={true}
+                            autoplay={{
+                                delay: 5000,
+                                disableOnInteraction: false,
+                            }}
+                            pagination={{
+                                clickable: true,
+                            }}
+                            onSlideChange={(swiper) => {
+                                setIsBeginning(swiper.isBeginning);
+                                setIsEnd(swiper.isEnd);
+                            }}
+                            onSwiper={(swiper) => {
+                                setIsBeginning(swiper.isBeginning);
+                                setIsEnd(swiper.isEnd);
+                            }}
+                            className="w-full h-full"
+                        >
+                            {data?.map((item) => (
+                                // <SwiperSlide key={item._id} className="relative h-64 md:h-96">
+                                <SwiperSlide key={item._id} className="relative h-96">
+                                    {/* <Link href={item.link} target="_blank" rel="noopener noreferrer"> */}
+                                    <Image
+                                        src={item.image}
+                                        alt={item.imageAlt}
+                                        quality={100}
+                                        priority
+                                        width={1351}
+                                        height={250}
+                                    />
+                                    {/* </Link> */}
+                                </SwiperSlide>
+                            ))}
+                        </Swiper>
 
-                                <FaChevronLeft
-                                    onClick={() => {
-                                        setslideHandler(0);
-                                        setTimeout(() => {
-                                            sliderChangingHandler(1);
-                                            setslideHandler(1);
-                                        }, 100);
-                                    }}
-                                    className="bg-white w-8 h-8 md:w-10 md:h-10 p-2 rounded border-zinc-800 border-[.2rem] cursor-pointer hover:border-zinc-500 transition-all duration-500"
-                                />
-                            </div>
-                            <div className="mt-14 md:mt-0 z-20 flex justify-center items-center transition-all duration-700">
-                                <Image
-                                    width={1280}
-                                    height={250}
-                                    className={
-                                        slideHandler == 1
-                                            ? "rounded-xl animate__animated  animate__bounceIn animate__slow"
-                                            : "rounded-xl animate__animated  animate__bounceOut animate__slow"
-                                    }
-                                    alt={data[nowSlide].imageAlt}
-                                    src={data[nowSlide].image}
-                                />
-                            </div>
-                        </section>
-                    )}
-        </>
+                        {/* Custom Navigation Buttons */}
+                        <button
+                            onClick={handlePrev}
+                            disabled={isBeginning}
+                            className={`absolute left-4 -top-14 z-10 bg-black/30 text-white p-2 rounded-full hover:bg-black/50 transition-all ${isBeginning ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            aria-label="Previous slide"
+                        >
+                            <FaChevronLeft size={24} />
+                        </button>
+                        <button
+                            onClick={handleNext}
+                            disabled={isEnd}
+                            className={`absolute left-16 -top-14 z-10 bg-black/30 text-white p-2 rounded-full hover:bg-black/50 transition-all ${isEnd ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            aria-label="Next slide"
+                        >
+                            <FaChevronRight size={24} />
+                        </button>
+                    </section>
+                )}
+        </div>
     );
 };
 
