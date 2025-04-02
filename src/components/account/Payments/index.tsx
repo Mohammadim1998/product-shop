@@ -58,7 +58,7 @@ const Payments: React.FC<CookiesPropsTypes> = ({ cookie }) => {
                 <meta name="robots" content="index, follow" />
                 <link rel="canonical" href="https://localhost:3000/account/payments" />
             </>
-            <h3 className="absolute top-1 ring-1 text-lg">سفارش های من</h3>
+            <h3 className="absolute top-1 right-1 text-lg rounded-md p-1 bg-purple-400">سفارش های من</h3>
 
             <div onClick={() => {
                 setNeedRefresh(1);

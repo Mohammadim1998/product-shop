@@ -60,7 +60,7 @@ const Files: React.FC<CookiesPropsTypes> = ({ cookie }) => {
                 <link rel="shortcut icon" href="/favicon2.ico" type="image/x-icon" />
                 <link rel="canonical" href="https://localhost:3000/account/files" />
             </>
-            <h3 className="absolute top-1 ring-1 text-lg">فایل های من</h3>
+            <h3 className="absolute top-1 right-1 text-lg rounded-md p-1 bg-purple-400">فایل های من</h3>
 
             <div onClick={() => {
                 setNeedRefresh(1);

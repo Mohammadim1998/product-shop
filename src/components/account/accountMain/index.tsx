@@ -92,7 +92,7 @@ const AccountMain = ({ items }: ItemsPropsTypes) => {
 
     return (
         <div className="container mx-auto">
-            <div className="flex justify-between items-center gap-2">
+            <div className="w-full flex justify-between gap-2">
                 <div>
                     <div
                         className={
@@ -101,7 +101,7 @@ const AccountMain = ({ items }: ItemsPropsTypes) => {
                                 : "z-50 w-full md:w-72 min-w-72 flex flex-col gap-4 backdrop-blur-md bg-[#000000cc] md:bg-transparent px-2 py-24 md:py-0 h-[100vh] overflow-auto md:h-auto fixed top-0 bottom-0 left-0 right-0 md:static transition-all duration-500"
                         }>
 
-                        <nav className="flex justify-center items-center">
+                        <nav className="w-full flex justify-center items-center">
                             <ul className="w-full flex flex-col gap-4">
                                 <li>
                                     <Link onClick={() => {
