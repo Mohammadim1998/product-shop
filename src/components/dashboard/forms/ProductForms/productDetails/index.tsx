@@ -125,16 +125,24 @@ const ProductsDetails: React.FC<ProductDetailsPropsTypes> = ({ goalId }) => {
          })
    }, []);
 
-   const [relProducts, setRelProducts] = useState<string[]>([]);
 
+   // const productsRelatedMan = (e: React.ChangeEvent<HTMLInputElement>) => {
+   //    let related = [...relProducts];
+   //    if (e.target.checked) {
+   //       related = [...related, e.target.value];
+   //    } else {
+   //       related.splice(relProducts.indexOf(e.target.value), 1);
+   //    }
+   //    setRelProducts(related);
+   // };
+   const [relProducts, setRelProducts] = useState<string[]>([]);
    const productsRelatedMan = (e: React.ChangeEvent<HTMLInputElement>) => {
-      let related = [...relProducts];
+      let productId = e.target.value;
       if (e.target.checked) {
-         related = [...related, e.target.value];
+         setRelProducts(prev => [...prev, productId]);
       } else {
-         related.splice(relProducts.indexOf(e.target.value), 1);
+         setRelProducts(prev => prev.filter(id => id !== productId));
       }
-      setRelProducts(related);
    };
 
    // CATEGORIES
@@ -186,7 +194,6 @@ const ProductsDetails: React.FC<ProductDetailsPropsTypes> = ({ goalId }) => {
       }
       setRelCategories(related);
    };
-
 
    console.log("relProducts: ", relProducts);
    console.log("relCategories: ", relCategories);
@@ -243,17 +250,17 @@ const ProductsDetails: React.FC<ProductDetailsPropsTypes> = ({ goalId }) => {
          shortDesc: shortDescRef.current.value,
          longDesc: longDescRef.current.value,
          tags: tag,
-         features: feature,
-         typeOfProduct: typeOfProductRef.current.value,
-         published: publishedRef.current.value,
          relatedProducts: relProducts,
+         typeOfProduct: typeOfProductRef.current.value,
+         features: feature,
+         published: publishedRef.current.value,
          categories: relCategories,
       };
       const url = `https://file-server.liara.run/api/update-product/${goalId}`;
-      axios
-         .post(url, formData, { headers: { auth_cookie: auth_cookie } })
+
+      axios.post(url, formData, { headers: { auth_cookie: auth_cookie } })
          .then((d) => {
-            formData.published == "true"
+            formData?.published == "true"
                ? toast.success("محصول با موفقیت به روز رسانی شد.", {
                   autoClose: 3000,
                   hideProgressBar: false,
@@ -273,7 +280,7 @@ const ProductsDetails: React.FC<ProductDetailsPropsTypes> = ({ goalId }) => {
          })
          .catch((e) => {
             let message = "متاسفانه ناموفق بود.";
-            if (e.response.data.msg) {
+            if (e.response?.data?.msg) {
                message = e.response.data.msg;
             }
             toast.error(message, {
@@ -284,6 +291,8 @@ const ProductsDetails: React.FC<ProductDetailsPropsTypes> = ({ goalId }) => {
                draggable: true,
                progress: undefined,
             });
+            console.log("formData: ", formData);
+
          });
    };
 
@@ -352,7 +361,7 @@ const ProductsDetails: React.FC<ProductDetailsPropsTypes> = ({ goalId }) => {
    }, [goalId]);
 
    return (
-      <div className=" flex flex-col gap-8">
+      <div className="flex flex-col gap-8">
          {loading ? (
             <div className=" flex justify-center items-center p-12">
                <Image
@@ -667,38 +676,33 @@ const ProductsDetails: React.FC<ProductDetailsPropsTypes> = ({ goalId }) => {
                      <h3>محصولات مرتبط</h3>
                      {loadingProducts ? (
                         <div className=" flex justify-center items-center p-12">
-                           <Image
-                              alt="loading"
-                              width={40}
-                              height={40}
-                              src={"/loading.svg"}
-                           />
+                           <Image alt="loading" width={40} height={40} src={"/loading.svg"} />
                         </div>
                      ) : products && products?.length < 1 ? (
                         <div className=" p-3">محصولی یافت نشد</div>
                      ) : (
                         <div className=" flex justify-start items-center flex-wrap gap-2">
-                           {products && products?.map((po, i) => (
+                           {products && products?.map((product, i) => (
                               <div
                                  key={i}
                                  className="flex justify-center items-center gap-x-2 px-2 py-1 bg-zinc-100 rounded"
                               >
-                                 <label htmlFor={po._id}>{po.title}</label>{" "}
+                                 <label htmlFor={product._id}>{product.title}</label>{" "}
                                  {fullData?.relatedProducts &&
-                                    fullData?.relatedProducts.includes(po._id) ? (
+                                    fullData?.relatedProducts.includes(product._id) ? (
                                     <input
-                                       name={po._id}
-                                       id={po._id}
-                                       value={po._id}
+                                       name={product._id}
+                                       id={product._id}
+                                       value={product._id}
                                        onChange={productsRelatedMan}
                                        type="checkbox"
                                        defaultChecked
                                     />
                                  ) : (
                                     <input
-                                       name={po._id}
-                                       id={po._id}
-                                       value={po._id}
+                                       name={product._id}
+                                       id={product._id}
+                                       value={product._id}
                                        onChange={productsRelatedMan}
                                        type="checkbox"
                                     />

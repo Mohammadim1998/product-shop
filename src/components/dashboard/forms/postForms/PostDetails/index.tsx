@@ -120,7 +120,6 @@ const PostDetails: React.FC<PostDetailsPropsTypes> = ({ goalId }) => {
             })
     }, [goalId]);
 
-
     const updater = (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -330,9 +329,22 @@ const PostDetails: React.FC<PostDetailsPropsTypes> = ({ goalId }) => {
                                                     </label>
                                                     {fullData?.relatedPosts &&
                                                         fullData?.relatedPosts.includes(post._id) ? (
-                                                        <input name={post._id} id={post._id} type="checkbox" value={post._id} onChange={postsRelatedManager} defaultChecked />
+                                                        <input
+                                                            name={post._id}
+                                                            id={post._id}
+                                                            type="checkbox"
+                                                            value={post._id}
+                                                            onChange={postsRelatedManager}
+                                                            defaultChecked
+                                                        />
                                                     ) : (
-                                                        <input name={post._id} id={post._id} type="checkbox" value={post._id} onChange={postsRelatedManager} />
+                                                        <input
+                                                            name={post._id}
+                                                            id={post._id}
+                                                            type="checkbox"
+                                                            value={post._id}
+                                                            onChange={postsRelatedManager}
+                                                        />
                                                     )
                                                     }
                                                 </div>

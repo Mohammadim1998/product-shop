@@ -166,7 +166,6 @@ const NewPost = () => {
             })
     };
 
-
     return (
         <div className="flex flex-col gap-8">
             <h2 className="text-orange-500">پست جدید</h2>

@@ -96,15 +96,15 @@ const NewProduct = () => {
             setLoadingProducts(false);
          })
    }, []);
+
    const [relProducts, setrelProducts] = useState<string[]>([]);
-   const productsRelatedMan = (v: React.ChangeEvent<HTMLInputElement>) => {
-      let related = [...relProducts];
-      if (v.target.checked) {
-         related = [...related, v.target.value];
+   const productsRelatedMan = (e: React.ChangeEvent<HTMLInputElement>) => {
+      let productId = e.target.value;
+      if (e.target.checked) {
+         setrelProducts(prev => [...prev, productId]);
       } else {
-         related.splice(relProducts.indexOf(v.target.value), 1);
+         setrelProducts(prev => prev.filter(id => id !== productId));
       }
-      setrelProducts(related);
    };
 
    // RELATED
