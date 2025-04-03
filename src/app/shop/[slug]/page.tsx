@@ -9,7 +9,6 @@ import AddToCart from "@/components/shopComp/addToCart";
 import CommentManager from "@/components/commentManager";
 import ProductShopCommentNum from "@/components/shopComp/productPost-ShopCommentNum/productShopCommentNum";
 
-
 type Product = {
     _id: string;
     title: string;
