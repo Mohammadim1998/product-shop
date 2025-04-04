@@ -95,20 +95,24 @@ const MidBannersDetails: React.FC<BannerDetailsPropsTypes> = ({ midBanId }) => {
 
     useEffect(() => {
         const fetData = async () => {
-            await axios.get(`https://file-server.liara.run/api/get-mid-ban/${midBanId}`, { headers: { auth_cookie: auth_cookie } })
-                .then((d) => {
-                    setImageUrlS(d.data.image)
-                    setImageAltS(d.data.imageAlt)
-                    setImageLinkS(d.data.link)
-                    setImageSituationS(d.data.situation)
-                    setFullData(d.data)
-                })
-                .catch(e => {
-                    setLoading(false);
-                })
-                .finally(() => {
-                    setLoading(false);
-                })
+            try {
+                await axios.get(`https://file-server.liara.run/api/get-mid-ban/${midBanId}`, { headers: { auth_cookie: auth_cookie } })
+                    .then((d) => {
+                        setImageUrlS(d.data.image)
+                        setImageAltS(d.data.imageAlt)
+                        setImageLinkS(d.data.link)
+                        setImageSituationS(d.data.situation)
+                        setFullData(d.data)
+                    })
+                    .catch(e => {
+                        setLoading(false);
+                    })
+                    .finally(() => {
+                        setLoading(false);
+                    })
+            } catch (error) {
+                console.log(error);
+            }
         }
 
         fetData();

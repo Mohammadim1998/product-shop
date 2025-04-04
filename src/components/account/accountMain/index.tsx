@@ -42,13 +42,17 @@ const AccountMain = ({ items }: ItemsPropsTypes) => {
             router.push("/login");
         } else {
             const fetchData = async () => {
-                await axios.get("https://file-server.liara.run/api/get-user-data", { headers: { auth_cookie: auth_cookie } })
-                    .then(d => {
-                        if (!d.data._id) {
-                            router.push("/login")
-                        }
-                    })
-                    .catch(e => { router.push("/login") })
+                try {
+                    await axios.get("https://file-server.liara.run/api/get-user-data", { headers: { auth_cookie: auth_cookie } })
+                        .then(d => {
+                            if (!d.data._id) {
+                                router.push("/login")
+                            }
+                        })
+                        .catch(e => { router.push("/login") })
+                } catch (error) {
+                    console.log(error);
+                }
             }
 
             fetchData();
@@ -89,10 +93,14 @@ const AccountMain = ({ items }: ItemsPropsTypes) => {
     const { setCartNumber } = useAppContext();
     useEffect(() => {
         const fetchData = async () => {
-            const url = "https://file-server.liara.run/api/cart-number";
-            await axios.get(url, { headers: { auth_cookie: auth_cookie } })
-                .then(d => setCartNumber(d.data.number))
-                .catch(d => setCartNumber(0))
+            try {
+                const url = "https://file-server.liara.run/api/cart-number";
+                await axios.get(url, { headers: { auth_cookie: auth_cookie } })
+                    .then(d => setCartNumber(d.data.number))
+                    .catch(d => setCartNumber(0))
+            } catch (error) {
+                console.log(error);
+            }
         }
 
         fetchData();

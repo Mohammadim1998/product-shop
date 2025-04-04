@@ -82,19 +82,26 @@ const NewProduct = () => {
    const [loadingProducts, setLoadingProducts] = useState<boolean>(true);
 
    useEffect(() => {
-      const productUrl = "https://file-server.liara.run/api/products-rel";
-      axios
-         .get(productUrl, { headers: { auth_cookie: auth_cookie } })
-         .then((d) => {
-            setProducts(d.data);
-         })
-         .catch((e) => {
-            console.log(e);
-            setLoadingProducts(false);
-         })
-         .finally(() => {
-            setLoadingProducts(false);
-         })
+      const fetchData = async () => {
+         try {
+            const productUrl = "https://file-server.liara.run/api/products-rel";
+            await axios.get(productUrl, { headers: { auth_cookie: auth_cookie } })
+               .then((d) => {
+                  setProducts(d.data);
+               })
+               .catch((e) => {
+                  console.log(e);
+                  setLoadingProducts(false);
+               })
+               .finally(() => {
+                  setLoadingProducts(false);
+               })
+         } catch (error) {
+            console.log(error);
+         }
+      }
+
+      fetchData();
    }, []);
 
    const [relProducts, setrelProducts] = useState<string[]>([]);
@@ -112,18 +119,25 @@ const NewProduct = () => {
    const [loadingCategory, setLoadingCategory] = useState<boolean>(true);
 
    useEffect(() => {
-      const postsUrl = "https://file-server.liara.run/api/products-categories-rel";
-      axios
-         .get(postsUrl, { headers: { auth_cookie: auth_cookie } })
-         .then((d) => {
-            setCategories(d.data);
-         })
-         .catch((e) => {
-            setLoadingCategory(false);
-         })
-         .finally(() => {
-            setLoadingCategory(false);
-         })
+      const fetchData = async () => {
+         try {
+            const postsUrl = "https://file-server.liara.run/api/products-categories-rel";
+            await axios.get(postsUrl, { headers: { auth_cookie: auth_cookie } })
+               .then((d) => {
+                  setCategories(d.data);
+               })
+               .catch((e) => {
+                  setLoadingCategory(false);
+               })
+               .finally(() => {
+                  setLoadingCategory(false);
+               })
+         } catch (error) {
+            console.log(error);
+         }
+      }
+
+      fetchData();
    }, []);
 
    const [relCategories, setrelCategories] = useState<Category[]>([]);
@@ -191,27 +205,41 @@ const NewProduct = () => {
          tags: tag,
          features: feature,
          typeOfProduct: typeOfProductRef.current.value,
-
          pageView: 0,
          published: publishedRef.current.value,
          comments: [],
          relatedProducts: relProducts,
          categories: relCategories,
       };
-      const url = `https://file-server.liara.run/api/new-product`;
-      axios
-         .post(url, formData, { headers: { auth_cookie: auth_cookie } })
-         .then((d) => {
-            formData.published == "true"
-               ? toast.success("محصول با موفقیت منتشر شد.", {
-                  autoClose: 3000,
-                  hideProgressBar: false,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: true,
-                  progress: undefined,
-               })
-               : toast.success("محصول به صورت پیشنویس ذخیره شد.", {
+
+      try {
+         const url = `https://file-server.liara.run/api/new-product`;
+         axios.post(url, formData, { headers: { auth_cookie: auth_cookie } })
+            .then((d) => {
+               formData.published == "true"
+                  ? toast.success("محصول با موفقیت منتشر شد.", {
+                     autoClose: 3000,
+                     hideProgressBar: false,
+                     closeOnClick: true,
+                     pauseOnHover: true,
+                     draggable: true,
+                     progress: undefined,
+                  })
+                  : toast.success("محصول به صورت پیشنویس ذخیره شد.", {
+                     autoClose: 3000,
+                     hideProgressBar: false,
+                     closeOnClick: true,
+                     pauseOnHover: true,
+                     draggable: true,
+                     progress: undefined,
+                  });
+            })
+            .catch((e) => {
+               let message = "متاسفانه ناموفق بود.";
+               if (e.response.data.msg) {
+                  message = e.response.data.msg;
+               }
+               toast.error(message, {
                   autoClose: 3000,
                   hideProgressBar: false,
                   closeOnClick: true,
@@ -219,21 +247,10 @@ const NewProduct = () => {
                   draggable: true,
                   progress: undefined,
                });
-         })
-         .catch((e) => {
-            let message = "متاسفانه ناموفق بود.";
-            if (e.response.data.msg) {
-               message = e.response.data.msg;
-            }
-            toast.error(message, {
-               autoClose: 3000,
-               hideProgressBar: false,
-               closeOnClick: true,
-               pauseOnHover: true,
-               draggable: true,
-               progress: undefined,
             });
-         });
+      } catch (error) {
+         console.log(error);
+      }
    };
 
    // FORM SHOULD BE NOT SEND WITH ENTER KEY

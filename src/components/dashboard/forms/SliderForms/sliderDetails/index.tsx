@@ -58,102 +58,114 @@ const SliderDetails: React.FC<SliderDetailsPropsTypes> = ({ midBanId }) => {
             minute: "2-digit",
          }),
       };
-      const url = `https://file-server.liara.run/api/update-slider/${midBanId}`;
-      axios
-         .post(url, formData, { headers: { auth_cookie: auth_cookie } })
-         .then((d) => {
-            formData.situation == "true"
-               ? toast.success("اسلایدر با موفقیت به روزرسانی و منتشر شد.", {
-                  autoClose: 3000,
-                  hideProgressBar: false,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: true,
-                  progress: undefined,
-               })
-               : toast.success(
-                  "اسلایدر به روزرسانی و به صورت پیشنویس ذخیره شد.",
-                  {
+
+      try {
+         const url = `https://file-server.liara.run/api/update-slider/${midBanId}`;
+         axios
+            .post(url, formData, { headers: { auth_cookie: auth_cookie } })
+            .then((d) => {
+               formData.situation == "true"
+                  ? toast.success("اسلایدر با موفقیت به روزرسانی و منتشر شد.", {
                      autoClose: 3000,
                      hideProgressBar: false,
                      closeOnClick: true,
                      pauseOnHover: true,
                      draggable: true,
                      progress: undefined,
-                  }
-               );
-         })
-         .catch((e) => {
-            let message = "متاسفانه ناموفق بود.";
-            if (e.response.data.msg) {
-               message = e.response.data.msg;
-            }
-            toast.error(message, {
-               autoClose: 3000,
-               hideProgressBar: false,
-               closeOnClick: true,
-               pauseOnHover: true,
-               draggable: true,
-               progress: undefined,
-            });
-         });
-   };
-   const [fullData, setfullData] = useState<ItemSliderPropsTypes | null>(null);
-   const [loading, setLoadin] = useState<boolean>(true);
-
-   useEffect(() => {
-      const fetchData = async () => {
-         await axios.get(`https://file-server.liara.run/api/get-slider/${midBanId}`, { headers: { auth_cookie: auth_cookie } })
-            .then((d) => {
-               setfullData(d.data);
+                  })
+                  : toast.success(
+                     "اسلایدر به روزرسانی و به صورت پیشنویس ذخیره شد.",
+                     {
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                     }
+                  );
             })
             .catch((e) => {
-               toast.error("خطا در لود اطلاعات", {
+               let message = "متاسفانه ناموفق بود.";
+               if (e.response.data.msg) {
+                  message = e.response.data.msg;
+               }
+               toast.error(message, {
                   autoClose: 3000,
                   hideProgressBar: false,
                   closeOnClick: true,
                   pauseOnHover: true,
                   draggable: true,
                   progress: undefined,
+               });
+            });
+      } catch (error) {
+         console.log(error);
+      }
+   };
+   const [fullData, setfullData] = useState<ItemSliderPropsTypes | null>(null);
+   const [loading, setLoadin] = useState<boolean>(true);
+
+   useEffect(() => {
+      const fetchData = async () => {
+         try {
+            await axios.get(`https://file-server.liara.run/api/get-slider/${midBanId}`, { headers: { auth_cookie: auth_cookie } })
+               .then((d) => {
+                  setfullData(d.data);
                })
-               setLoadin(false);
-            })
-            .finally(() => {
-               setLoadin(false);
-            })
+               .catch((e) => {
+                  toast.error("خطا در لود اطلاعات", {
+                     autoClose: 3000,
+                     hideProgressBar: false,
+                     closeOnClick: true,
+                     pauseOnHover: true,
+                     draggable: true,
+                     progress: undefined,
+                  })
+                  setLoadin(false);
+               })
+               .finally(() => {
+                  setLoadin(false);
+               })
+         } catch (error) {
+            console.log(error);
+         }
       }
 
       fetchData();
    }, [midBanId]);
 
    const remover = () => {
-      const url = `https://file-server.liara.run/api/delete-slider/${midBanId}`;
-      axios
-         .post(url, { headers: { auth_cookie: auth_cookie } })
-         .then((d) => {
-            toast.success("اسلایدر با موفقیت حذف شد.", {
-               autoClose: 3000,
-               hideProgressBar: false,
-               closeOnClick: true,
-               pauseOnHover: true,
-               draggable: true,
-               progress: undefined,
+      try {
+         const url = `https://file-server.liara.run/api/delete-slider/${midBanId}`;
+         axios.post(url, { headers: { auth_cookie: auth_cookie } })
+            .then((d) => {
+               toast.success("اسلایدر با موفقیت حذف شد.", {
+                  autoClose: 3000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+               });
+            })
+            .catch((e) => {
+               let message = "متاسفانه ناموفق بود.";
+               if (e.response.data.msg) {
+                  message = e.response.data.msg;
+               }
+               toast.error(message, {
+                  autoClose: 3000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+               });
             });
-         })
-         .catch((e) => {
-            let message = "متاسفانه ناموفق بود.";
-            if (e.response.data.msg) {
-               message = e.response.data.msg;
-            }
-            toast.error(message, {
-               autoClose: 3000,
-               hideProgressBar: false,
-               closeOnClick: true,
-               pauseOnHover: true,
-               draggable: true,
-               progress: undefined,
-            });
-         });
+      } catch (error) {
+         console.log(error);
+      }
    };
 
    return (

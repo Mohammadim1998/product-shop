@@ -46,30 +46,34 @@ const AllProducts: React.FC<AllProductsPropsTypes> = ({ setmidBanDetCtrl, setran
 
    useEffect(() => {
       const fetchData = async () => {
-         await axios.get(`https://file-server.liara.run/api/${categoryUrl}?pn=${pageNumber}&&pgn=${paginate}`, { headers: { auth_cookie: auth_cookie } })
-            .then((d) => {
-               setproducts(d.data.GoalProducts);
-               setnumbersOfBtns(
-                  Array.from(
-                     Array(Math.ceil(d.data.AllProductsNum / paginate)).keys()
-                  )
-               );
-               setallProductNumber(d.data.AllProductsNum);
-            })
-            .catch((e) => {
-               toast.error("خطا در لود اطلاعات", {
-                  autoClose: 3000,
-                  hideProgressBar: false,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: true,
-                  progress: undefined,
-               });
-               setLoading(false);
-            })
-            .finally(() => {
-               setLoading(false);
-            })
+         try {
+            await axios.get(`https://file-server.liara.run/api/${categoryUrl}?pn=${pageNumber}&&pgn=${paginate}`, { headers: { auth_cookie: auth_cookie } })
+               .then((d) => {
+                  setproducts(d.data.GoalProducts);
+                  setnumbersOfBtns(
+                     Array.from(
+                        Array(Math.ceil(d.data.AllProductsNum / paginate)).keys()
+                     )
+                  );
+                  setallProductNumber(d.data.AllProductsNum);
+               })
+               .catch((e) => {
+                  toast.error("خطا در لود اطلاعات", {
+                     autoClose: 3000,
+                     hideProgressBar: false,
+                     closeOnClick: true,
+                     pauseOnHover: true,
+                     draggable: true,
+                     progress: undefined,
+                  });
+                  setLoading(false);
+               })
+               .finally(() => {
+                  setLoading(false);
+               })
+         } catch (error) {
+            console.log(error);
+         }
       }
 
       fetchData();

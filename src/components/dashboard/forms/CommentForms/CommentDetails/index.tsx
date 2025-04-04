@@ -54,17 +54,21 @@ const CommentDetails: React.FC<CommentsDetailPropsTypes> = ({ goalId }) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            await axios.get(`https://file-server.liara.run/api/get-comment/${goalId}`, { headers: { auth_cookie: auth_cookie } })
-                .then((d) => {
-                    setFullData(d.data);
-                })
-                .catch(e => {
-                    console.log(e);
-                    setLoading(false);
-                })
-                .finally(() => {
-                    setLoading(false);
-                })
+            try {
+                await axios.get(`https://file-server.liara.run/api/get-comment/${goalId}`, { headers: { auth_cookie: auth_cookie } })
+                    .then((d) => {
+                        setFullData(d.data);
+                    })
+                    .catch(e => {
+                        console.log(e);
+                        setLoading(false);
+                    })
+                    .finally(() => {
+                        setLoading(false);
+                    })
+            } catch (error) {
+                console.log(error);
+            }
         }
 
         fetchData();
@@ -106,60 +110,68 @@ const CommentDetails: React.FC<CommentsDetailPropsTypes> = ({ goalId }) => {
         //     displayname: displaynameRef.products,
         // }
 
-        const url = `https://file-server.liara.run/api/update-comment/${goalId}`;
-        axios.post(url, formData, { headers: { auth_cookie: auth_cookie } })
-            .then((d) => {
-                toast.success("یدگاه با موفقیت بروزرسانی شد.", {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+        try {
+            const url = `https://file-server.liara.run/api/update-comment/${goalId}`;
+            axios.post(url, formData, { headers: { auth_cookie: auth_cookie } })
+                .then((d) => {
+                    toast.success("یدگاه با موفقیت بروزرسانی شد.", {
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    })
                 })
-            })
-            .catch((e) => {
-                let message = "متاسفانه ناموفق بود";
-                if (e.response.data.msg) {
-                    message = e.response.data.msg;
-                }
-                toast.error(message, {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+                .catch((e) => {
+                    let message = "متاسفانه ناموفق بود";
+                    if (e.response.data.msg) {
+                        message = e.response.data.msg;
+                    }
+                    toast.error(message, {
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    })
                 })
-            })
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const remover = () => {
-        axios.post(`https://file-server.liara.run/api/delete-comment/${goalId}`, { headers: { auth_cookie: auth_cookie } })
-            .then(d => {
-                toast.success("دیدگاه با موفقیت حذف شد.", {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+        try {
+            axios.post(`https://file-server.liara.run/api/delete-comment/${goalId}`, { headers: { auth_cookie: auth_cookie } })
+                .then(d => {
+                    toast.success("دیدگاه با موفقیت حذف شد.", {
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    })
                 })
-            })
-            .catch((e) => {
-                let message = "متاسفانه ناموفق بود";
-                if (e.response.data.msg) {
-                    message = e.response.data.msg;
-                }
-                toast.error(message, {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+                .catch((e) => {
+                    let message = "متاسفانه ناموفق بود";
+                    if (e.response.data.msg) {
+                        message = e.response.data.msg;
+                    }
+                    toast.error(message, {
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    })
                 })
-            })
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const publisher = () => {
@@ -168,34 +180,37 @@ const CommentDetails: React.FC<CommentsDetailPropsTypes> = ({ goalId }) => {
             parenId: fullData?.parenId,
             email: fullData?.email,
         };
-
-        axios.post(`https://file-server.liara.run/api/publish-comment`, sendingData, { headers: { auth_cookie: auth_cookie } })
-            .then(d => {
-                toast.success("انتشار دیدگاه و ارسال ایمیل با موفقیت انجام شد", {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+        try {
+            axios.post(`https://file-server.liara.run/api/publish-comment`, sendingData, { headers: { auth_cookie: auth_cookie } })
+                .then(d => {
+                    toast.success("انتشار دیدگاه و ارسال ایمیل با موفقیت انجام شد", {
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    })
+                    setFullData(null);
+                    setNeedToRefresh(needToRefresh * -1);
                 })
-                setFullData(null);
-                setNeedToRefresh(needToRefresh * -1);
-            })
-            .catch((e) => {
-                let message = "متاسفانه ناموفق بود";
-                if (e.response.data.msg) {
-                    message = e.response.data.msg;
-                }
-                toast.error(message, {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+                .catch((e) => {
+                    let message = "متاسفانه ناموفق بود";
+                    if (e.response.data.msg) {
+                        message = e.response.data.msg;
+                    }
+                    toast.error(message, {
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    })
                 })
-            })
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (

@@ -55,18 +55,22 @@ const BlogComp = ({ url }: { url: UrlParams }) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            await axios.get(`https://file-server.liara.run/api/search-posts?${pgn}${pn}${keyword}`)
-                .then(d => {
-                    setPosts(d.data.allPosts);
-                    setBtns(d.data.btns);
-                    setSearchedPostsNumbers(d.data.postsNumber);
-                })
-                .catch(e => {
-                    setLoading(false);
-                })
-                .finally(() => {
-                    setLoading(false);
-                })
+            try {
+                await axios.get(`https://file-server.liara.run/api/search-posts?${pgn}${pn}${keyword}`)
+                    .then(d => {
+                        setPosts(d.data.allPosts);
+                        setBtns(d.data.btns);
+                        setSearchedPostsNumbers(d.data.postsNumber);
+                    })
+                    .catch(e => {
+                        setLoading(false);
+                    })
+                    .finally(() => {
+                        setLoading(false);
+                    })
+            } catch (error) {
+                console.log(error);
+            }
         }
 
         fetchData();

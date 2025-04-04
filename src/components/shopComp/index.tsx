@@ -90,25 +90,29 @@ const ShopComp: React.FC<ShopCompProps> = ({ url }) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            setMenutIsOpen(-1);
-            setResult(null);
-            setBtns([-1]);
-            setPgn('&pgn=12');
-            goTopCtrl();
+            try {
+                setMenutIsOpen(-1);
+                setResult(null);
+                setBtns([-1]);
+                setPgn('&pgn=12');
+                goTopCtrl();
 
-            router.push(mainFrontUrl)
-            await axios.get<ApiResponse>(mainBackendUrl)
-                .then((d) => {
-                    setResult(d.data.allProducts);
-                    setBtns(d.data.btns);
-                    setSearchedProductsNumber(d.data.productsNumber);
-                })
-                .catch((e) => {
-                    setResultLoading(false);
-                })
-                .finally(() => {
-                    setResultLoading(false);
-                })
+                router.push(mainFrontUrl)
+                await axios.get<ApiResponse>(mainBackendUrl)
+                    .then((d) => {
+                        setResult(d.data.allProducts);
+                        setBtns(d.data.btns);
+                        setSearchedProductsNumber(d.data.productsNumber);
+                    })
+                    .catch((e) => {
+                        setResultLoading(false);
+                    })
+                    .finally(() => {
+                        setResultLoading(false);
+                    })
+            } catch (error) {
+                console.log(error);
+            }
         }
 
         fetchData();
@@ -174,15 +178,19 @@ const ShopComp: React.FC<ShopCompProps> = ({ url }) => {
     const [categoryLoading, setCategoryLoading] = useState<boolean>(true);
     useEffect(() => {
         const fetchData = async () => {
-            const url = "https://file-server.liara.run/api/products-categories-rel";
-            await axios.get<Category[]>(url)
-                .then((d) => setAllCategories(d.data))
-                .catch((e) => {
-                    setCategoryLoading(false);
-                })
-                .finally(() => {
-                    setCategoryLoading(false);
-                })
+            try {
+                const url = "https://file-server.liara.run/api/products-categories-rel";
+                await axios.get<Category[]>(url)
+                    .then((d) => setAllCategories(d.data))
+                    .catch((e) => {
+                        setCategoryLoading(false);
+                    })
+                    .finally(() => {
+                        setCategoryLoading(false);
+                    })
+            } catch (error) {
+                console.log(error);
+            }
         }
 
         fetchData();

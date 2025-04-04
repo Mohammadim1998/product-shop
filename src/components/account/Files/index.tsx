@@ -25,27 +25,31 @@ const Files: React.FC<CookiesPropsTypes> = ({ cookie }) => {
     useEffect(() => {
         if (cookie && cookie.length > 0) {
             const fetchData = async () => {
-                await axios.get("https://file-server.liara.run/api/get-part-of-user-data/files", { headers: { auth_cookie: cookie } })
-                    .then(d => {
-                        setData(d.data);
-                        setNeedRefresh(1);
-                    })
-                    .catch(e => {
-                        toast.error("خطا در لود اطلاعات", {
-                            autoClose: 3000,
-                            hideProgressBar: false,
-                            closeOnClick: true,
-                            pauseOnHover: true,
-                            draggable: true,
-                            progress: undefined,
-                        });
-                        setLoading(false);
-                        setNeedRefresh(0);
-                    })
-                    .finally(() => {
-                        setLoading(false);
-                        setNeedRefresh(0);
-                    })
+                try {
+                    await axios.get("https://file-server.liara.run/api/get-part-of-user-data/files", { headers: { auth_cookie: cookie } })
+                        .then(d => {
+                            setData(d.data);
+                            setNeedRefresh(1);
+                        })
+                        .catch(e => {
+                            toast.error("خطا در لود اطلاعات", {
+                                autoClose: 3000,
+                                hideProgressBar: false,
+                                closeOnClick: true,
+                                pauseOnHover: true,
+                                draggable: true,
+                                progress: undefined,
+                            });
+                            setLoading(false);
+                            setNeedRefresh(0);
+                        })
+                        .finally(() => {
+                            setLoading(false);
+                            setNeedRefresh(0);
+                        })
+                } catch (error) {
+                    console.log(error);
+                }
             }
 
             fetchData();

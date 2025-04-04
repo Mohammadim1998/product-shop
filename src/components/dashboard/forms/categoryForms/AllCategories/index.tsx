@@ -40,30 +40,34 @@ const AllCategories: React.FC<CategoryPropsTypes> = ({ setmidBanDetCtrl, setrand
 
     useEffect(() => {
         const fetchData = async () => {
-            await axios.get(`https://file-server.liara.run/api/categories?pn=${pageNumber}&&pgn=${paginate}`, { headers: { auth_cookie: auth_cookie } })
-                .then((d) => {
-                    setcategories(d.data.GoalCategories);
-                    setnumbersOfBtns(
-                        Array.from(
-                            Array(Math.ceil(d.data.AllCategoriesNum / paginate)).keys()
-                        )
-                    );
-                    setallCategoriesNumber(d.data.AllCategoriesNum);
-                })
-                .catch((e) => {
-                    toast.error("خطا در لود اطلاعات", {
-                        autoClose: 3000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                    });
-                    setLoading(false);
-                })
-                .finally(() => {
-                    setLoading(false);
-                })
+            try {
+                await axios.get(`https://file-server.liara.run/api/categories?pn=${pageNumber}&&pgn=${paginate}`, { headers: { auth_cookie: auth_cookie } })
+                    .then((d) => {
+                        setcategories(d.data.GoalCategories);
+                        setnumbersOfBtns(
+                            Array.from(
+                                Array(Math.ceil(d.data.AllCategoriesNum / paginate)).keys()
+                            )
+                        );
+                        setallCategoriesNumber(d.data.AllCategoriesNum);
+                    })
+                    .catch((e) => {
+                        toast.error("خطا در لود اطلاعات", {
+                            autoClose: 3000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                        });
+                        setLoading(false);
+                    })
+                    .finally(() => {
+                        setLoading(false);
+                    })
+            } catch (error) {
+                console.log(error);
+            }
         }
 
         fetchData();

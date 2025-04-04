@@ -11,9 +11,19 @@ type ProductShopCommentNumPropsTypes = {
 const ProductShopCommentNum: React.FC<ProductShopCommentNumPropsTypes> = ({ goalId }) => {
     const [commentsNumber, setCommentsNumber] = useState(-1);
     useEffect(() => {
-        axios.get(`https://file-server.liara.run/api/get-comments-number/${goalId}`)
-            .then(d => { setCommentsNumber(d.data.number) })
-            .catch(e => { })
+        const fetchData = async () => {
+            try {
+                await axios.get(`https://file-server.liara.run/api/get-comments-number/${goalId}`)
+                    .then(d => { setCommentsNumber(d.data.number) })
+                    .catch(error => {
+                        console.log(error);
+                    })
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        fetchData();
     })
 
     return (

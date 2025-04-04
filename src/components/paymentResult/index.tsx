@@ -8,8 +8,8 @@ import { useAppContext } from "../../../context/appContext";
 import { useRouter } from "next/navigation";
 
 type PaymentResultProps = {
-        Status?: string;
-        Authority?: string;
+    Status?: string;
+    Authority?: string;
     cookie?: string;
 }
 
@@ -42,33 +42,36 @@ const PaymentResultcom: React.FC<PaymentResultProps> = ({ Status, Authority, coo
             const formData = {
                 resnumber: Authority,
             };
-
-            axios.post("https://file-server.liara.run/api/new-payment/", formData,
-                { headers: { auth_cookie: cookie } })
-                .then((d) => {
-                    const message = (d.data && d.data.msg) ? d.data.msg : "پرداخت انجام شد"
-                    toast.success(message, {
-                        autoClose: 3000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
+            try {
+                axios.post("https://file-server.liara.run/api/new-payment/", formData,
+                    { headers: { auth_cookie: cookie } })
+                    .then((d) => {
+                        const message = (d.data && d.data.msg) ? d.data.msg : "پرداخت انجام شد"
+                        toast.success(message, {
+                            autoClose: 3000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                        })
+                        setCartNumber(0);
+                        router.push("/account/files")
                     })
-                    setCartNumber(0);
-                    router.push("/account/files")
-                })
-                .catch((e) => {
-                    const message = (e.response && e.response.data && e.response.data.msg) ? e.response.data.msg : "خطا در پرداخت"
-                    toast.error(message, {
-                        autoClose: 3000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
+                    .catch((e) => {
+                        const message = (e.response && e.response.data && e.response.data.msg) ? e.response.data.msg : "خطا در پرداخت"
+                        toast.error(message, {
+                            autoClose: 3000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                        })
                     })
-                })
+            } catch (error) {
+                console.log(error);
+            }
         }
     }, [Status, Authority]);
 

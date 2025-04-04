@@ -73,12 +73,16 @@ const PostDetails: React.FC<PostDetailsPropsTypes> = ({ goalId }) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const postsUrl = "https://file-server.liara.run/api/posts-rel";
-            await axios.get(postsUrl, { headers: { auth_cookie: auth_cookie } })
-                .then((d) => {
-                    setPosts(d.data);
-                })
-                .catch((e) => console.log("error in loading posts"));
+            try {
+                const postsUrl = "https://file-server.liara.run/api/posts-rel";
+                await axios.get(postsUrl, { headers: { auth_cookie: auth_cookie } })
+                    .then((d) => {
+                        setPosts(d.data);
+                    })
+                    .catch((e) => console.log("error in loading posts"));
+            } catch (error) {
+                console.log(error);
+            }
         }
 
         fetchData();
@@ -110,18 +114,23 @@ const PostDetails: React.FC<PostDetailsPropsTypes> = ({ goalId }) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            await axios.get(`https://file-server.liara.run/api/get-post-by-id/${goalId}`, { headers: { auth_cookie: auth_cookie } })
-                .then((d) => {
-                    setFullData(d.data);
-                    setTag(d.data.tags);
-                    setRelPosts(d.data.relatedPosts);
-                })
-                .catch(e => {
-                    setLoading(false);
-                })
-                .finally(() => {
-                    setLoading(false);
-                })
+            try {
+                await axios.get(`https://file-server.liara.run/api/get-post-by-id/${goalId}`, { headers: { auth_cookie: auth_cookie } })
+                    .then((d) => {
+                        setFullData(d.data);
+                        setTag(d.data.tags);
+                        setRelPosts(d.data.relatedPosts);
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        setLoading(false);
+                    })
+                    .finally(() => {
+                        setLoading(false);
+                    })
+            } catch (error) {
+                console.log(error);
+            }
         }
 
         fetchData();
@@ -162,12 +171,34 @@ const PostDetails: React.FC<PostDetailsPropsTypes> = ({ goalId }) => {
             relatedPosts: relPosts,
             published: publishedRef.current.value,
         }
-
-        const url = `https://file-server.liara.run/api/update-post/${goalId}`;
-        axios.post(url, formData, { headers: { auth_cookie: auth_cookie } })
-            .then((d) => {
-                formData.published == "true"
-                    ? toast.success("مقاله با موفقیت بروزرسانی شد.", {
+        try {
+            const url = `https://file-server.liara.run/api/update-post/${goalId}`;
+            axios.post(url, formData, { headers: { auth_cookie: auth_cookie } })
+                .then((d) => {
+                    formData.published == "true"
+                        ? toast.success("مقاله با موفقیت بروزرسانی شد.", {
+                            autoClose: 3000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                        })
+                        : toast.success("مقاله به صورت پیشنویس ذخیره شد.", {
+                            autoClose: 3000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                        });
+                })
+                .catch((e) => {
+                    let message = "متاسفانه ناموفق بود";
+                    if (e.response.data.msg) {
+                        message = e.response.data.msg;
+                    }
+                    toast.error(message, {
                         autoClose: 3000,
                         hideProgressBar: false,
                         closeOnClick: true,
@@ -175,44 +206,31 @@ const PostDetails: React.FC<PostDetailsPropsTypes> = ({ goalId }) => {
                         draggable: true,
                         progress: undefined,
                     })
-                    : toast.success("مقاله به صورت پیشنویس ذخیره شد.", {
+                })
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const remover = () => {
+        try {
+            axios.post(`https://file-server.liara.run/api/delete-post/${goalId}`, { headers: { auth_cookie: auth_cookie } })
+                .then(d => {
+                    toast.success("مقاله با موفقیت حذف شد.", {
                         autoClose: 3000,
                         hideProgressBar: false,
                         closeOnClick: true,
                         pauseOnHover: true,
                         draggable: true,
                         progress: undefined,
-                    });
-            })
-            .catch((e) => {
-                let message = "متاسفانه ناموفق بود";
-                if (e.response.data.msg) {
-                    message = e.response.data.msg;
-                }
-                toast.error(message, {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+                    })
                 })
-            })
-    };
-
-    const remover = () => {
-        axios.post(`https://file-server.liara.run/api/delete-post/${goalId}`, { headers: { auth_cookie: auth_cookie } })
-            .then(d => {
-                toast.success("مقاله با موفقیت حذف شد.", {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+                .catch(error => {
+                    console.log(error);
                 })
-            })
-            .catch(e => {})
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (

@@ -75,20 +75,35 @@ const CategoryDetails: React.FC<DetailsCategoryPropsTypes> = ({ midBanId }) => {
             minute: "2-digit",
          }),
       };
-      const url = `https://file-server.liara.run/api/update-category/${midBanId}`;
-      axios
-         .post(url, formData, { headers: { auth_cookie: auth_cookie } })
-         .then((d) => {
-            formData.situation == "true"
-               ? toast.success("دسته محصول با موفقیت منتشر شد", {
-                  autoClose: 3000,
-                  hideProgressBar: false,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: true,
-                  progress: undefined,
-               })
-               : toast.success("دسته محصول به صورت پیشفرض ذخیره شد", {
+      try {
+         const url = `https://file-server.liara.run/api/update-category/${midBanId}`;
+         axios
+            .post(url, formData, { headers: { auth_cookie: auth_cookie } })
+            .then((d) => {
+               formData.situation == "true"
+                  ? toast.success("دسته محصول با موفقیت منتشر شد", {
+                     autoClose: 3000,
+                     hideProgressBar: false,
+                     closeOnClick: true,
+                     pauseOnHover: true,
+                     draggable: true,
+                     progress: undefined,
+                  })
+                  : toast.success("دسته محصول به صورت پیشفرض ذخیره شد", {
+                     autoClose: 3000,
+                     hideProgressBar: false,
+                     closeOnClick: true,
+                     pauseOnHover: true,
+                     draggable: true,
+                     progress: undefined,
+                  });
+            })
+            .catch((e) => {
+               let message = "متاسفانه ناموفق بود.";
+               if (e.response.data.msg) {
+                  message = e.response.data.msg;
+               }
+               toast.error(message, {
                   autoClose: 3000,
                   hideProgressBar: false,
                   closeOnClick: true,
@@ -96,21 +111,10 @@ const CategoryDetails: React.FC<DetailsCategoryPropsTypes> = ({ midBanId }) => {
                   draggable: true,
                   progress: undefined,
                });
-         })
-         .catch((e) => {
-            let message = "متاسفانه ناموفق بود.";
-            if (e.response.data.msg) {
-               message = e.response.data.msg;
-            }
-            toast.error(message, {
-               autoClose: 3000,
-               hideProgressBar: false,
-               closeOnClick: true,
-               pauseOnHover: true,
-               draggable: true,
-               progress: undefined,
             });
-         });
+      } catch (error) {
+         console.log(error);
+      }
    };
    const [fullData, setfullData] = useState<ItemsPropsTypes | null>(null);
    const [loading, setLoading] = useState<boolean>(true);
@@ -142,33 +146,36 @@ const CategoryDetails: React.FC<DetailsCategoryPropsTypes> = ({ midBanId }) => {
    }, [midBanId]);
 
    const remover = () => {
-      const url = `https://file-server.liara.run/api/delete-category/${midBanId}`;
-      axios
-         .post(url, { headers: { auth_cookie: auth_cookie } })
-         .then((d) => {
-            toast.success("دسته محصول با موفقیت حذف شد.", {
-               autoClose: 3000,
-               hideProgressBar: false,
-               closeOnClick: true,
-               pauseOnHover: true,
-               draggable: true,
-               progress: undefined,
+      try {
+         const url = `https://file-server.liara.run/api/delete-category/${midBanId}`;
+         axios.post(url, { headers: { auth_cookie: auth_cookie } })
+            .then((d) => {
+               toast.success("دسته محصول با موفقیت حذف شد.", {
+                  autoClose: 3000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+               });
+            })
+            .catch((e) => {
+               let message = "متاسفانه ناموفق بود.";
+               if (e.response.data.msg) {
+                  message = e.response.data.msg;
+               }
+               toast.error(message, {
+                  autoClose: 3000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+               });
             });
-         })
-         .catch((e) => {
-            let message = "متاسفانه ناموفق بود.";
-            if (e.response.data.msg) {
-               message = e.response.data.msg;
-            }
-            toast.error(message, {
-               autoClose: 3000,
-               hideProgressBar: false,
-               closeOnClick: true,
-               pauseOnHover: true,
-               draggable: true,
-               progress: undefined,
-            });
-         });
+      } catch (error) {
+         console.log(error);
+      }
    };
 
    return (

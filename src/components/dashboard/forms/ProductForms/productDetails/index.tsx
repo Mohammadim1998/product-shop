@@ -111,17 +111,21 @@ const ProductsDetails: React.FC<ProductDetailsPropsTypes> = ({ goalId }) => {
 
    useEffect(() => {
       const fetchData = async () => {
-         const productUrl = "https://file-server.liara.run/api/products-rel";
-         await axios.get(productUrl, { headers: { auth_cookie: auth_cookie } })
-            .then((d) => {
-               setProducts(d.data);
-            })
-            .catch((e) => {
-               setLoadingProducts(false);
-            })
-            .finally(() => {
-               setLoadingProducts(false);
-            })
+         try {
+            const productUrl = "https://file-server.liara.run/api/products-rel";
+            await axios.get(productUrl, { headers: { auth_cookie: auth_cookie } })
+               .then((d) => {
+                  setProducts(d.data);
+               })
+               .catch((e) => {
+                  setLoadingProducts(false);
+               })
+               .finally(() => {
+                  setLoadingProducts(false);
+               })
+         } catch (error) {
+            console.log(error);
+         }
       }
 
       fetchData();
@@ -153,17 +157,21 @@ const ProductsDetails: React.FC<ProductDetailsPropsTypes> = ({ goalId }) => {
 
    useEffect(() => {
       const fetchData = async () => {
-         const postsUrl = "https://file-server.liara.run/api/products-categories-rel";
-         await axios.get(postsUrl, { headers: { auth_cookie: auth_cookie } })
-            .then((d) => {
-               setCategories(d.data);
-            })
-            .catch((e) => {
-               setLoadingCategory(false);
-            })
-            .finally(() => {
-               setLoadingCategory(false);
-            })
+         try {
+            const postsUrl = "https://file-server.liara.run/api/products-categories-rel";
+            await axios.get(postsUrl, { headers: { auth_cookie: auth_cookie } })
+               .then((d) => {
+                  setCategories(d.data);
+               })
+               .catch((e) => {
+                  setLoadingCategory(false);
+               })
+               .finally(() => {
+                  setLoadingCategory(false);
+               })
+         } catch (error) {
+            console.log(error);
+         }
       }
 
       fetchData();
@@ -255,20 +263,35 @@ const ProductsDetails: React.FC<ProductDetailsPropsTypes> = ({ goalId }) => {
          published: publishedRef.current.value,
          categories: relCategories,
       };
-      const url = `https://file-server.liara.run/api/update-product/${goalId}`;
 
-      axios.post(url, formData, { headers: { auth_cookie: auth_cookie } })
-         .then((d) => {
-            formData?.published == "true"
-               ? toast.success("محصول با موفقیت به روز رسانی شد.", {
-                  autoClose: 3000,
-                  hideProgressBar: false,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: true,
-                  progress: undefined,
-               })
-               : toast.success("محصول با موفقیت به روز رسانی و به صورت پیشنویس ذخیره شد.", {
+      try {
+         const url = `https://file-server.liara.run/api/update-product/${goalId}`;
+         axios.post(url, formData, { headers: { auth_cookie: auth_cookie } })
+            .then((d) => {
+               formData?.published == "true"
+                  ? toast.success("محصول با موفقیت به روز رسانی شد.", {
+                     autoClose: 3000,
+                     hideProgressBar: false,
+                     closeOnClick: true,
+                     pauseOnHover: true,
+                     draggable: true,
+                     progress: undefined,
+                  })
+                  : toast.success("محصول با موفقیت به روز رسانی و به صورت پیشنویس ذخیره شد.", {
+                     autoClose: 3000,
+                     hideProgressBar: false,
+                     closeOnClick: true,
+                     pauseOnHover: true,
+                     draggable: true,
+                     progress: undefined,
+                  });
+            })
+            .catch((e) => {
+               let message = "متاسفانه ناموفق بود.";
+               if (e.response?.data?.msg) {
+                  message = e.response.data.msg;
+               }
+               toast.error(message, {
                   autoClose: 3000,
                   hideProgressBar: false,
                   closeOnClick: true,
@@ -276,53 +299,45 @@ const ProductsDetails: React.FC<ProductDetailsPropsTypes> = ({ goalId }) => {
                   draggable: true,
                   progress: undefined,
                });
-         })
-         .catch((e) => {
-            let message = "متاسفانه ناموفق بود.";
-            if (e.response?.data?.msg) {
-               message = e.response.data.msg;
-            }
-            toast.error(message, {
-               autoClose: 3000,
-               hideProgressBar: false,
-               closeOnClick: true,
-               pauseOnHover: true,
-               draggable: true,
-               progress: undefined,
-            });
-            console.log("formData: ", formData);
+               console.log("formData: ", formData);
 
-         });
+            });
+      } catch (error) {
+         console.log(error);
+      }
    };
 
    const remover = () => {
-      const url = `https://file-server.liara.run/api/delete-product/${goalId}`;
-      axios
-         .post(url, { headers: { auth_cookie: auth_cookie } })
-         .then((d) => {
-            toast.success("محصول با موفقیت حذف شد.", {
-               autoClose: 3000,
-               hideProgressBar: false,
-               closeOnClick: true,
-               pauseOnHover: true,
-               draggable: true,
-               progress: undefined,
+      try {
+         const url = `https://file-server.liara.run/api/delete-product/${goalId}`;
+         axios.post(url, { headers: { auth_cookie: auth_cookie } })
+            .then((d) => {
+               toast.success("محصول با موفقیت حذف شد.", {
+                  autoClose: 3000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+               });
+            })
+            .catch((e) => {
+               let message = "متاسفانه ناموفق بود.";
+               if (e.response.data.msg) {
+                  message = e.response.data.msg;
+               }
+               toast.error(message, {
+                  autoClose: 3000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+               });
             });
-         })
-         .catch((e) => {
-            let message = "متاسفانه ناموفق بود.";
-            if (e.response.data.msg) {
-               message = e.response.data.msg;
-            }
-            toast.error(message, {
-               autoClose: 3000,
-               hideProgressBar: false,
-               closeOnClick: true,
-               pauseOnHover: true,
-               draggable: true,
-               progress: undefined,
-            });
-         });
+      } catch (error) {
+         console.log(error);
+      }
    };
 
    // LOADING DEFAULT VALUES
@@ -330,33 +345,37 @@ const ProductsDetails: React.FC<ProductDetailsPropsTypes> = ({ goalId }) => {
    const [loading, setLoading] = useState<boolean>(true);
 
    useEffect(() => {
-      axios
-         .get(
-            `https://file-server.liara.run/api/get-product-by-id/${goalId}`, { headers: { auth_cookie: auth_cookie } }
-         )
-         .then((d) => {
-            setfullData(d.data);
-            setTag(d.data.tags);
-            setFeature(d.data.features);
-            setRelProducts(d.data.relatedProducts);
-            setRelCategories(d.data.categories);
-            setThisProductCatsIds(d.data.categories?.map((c: CategoryType) => c._id));
-         })
-         .catch((e) => {
-            toast.error("خطا در لود اطلاعات", {
-               autoClose: 3000,
-               hideProgressBar: false,
-               closeOnClick: true,
-               pauseOnHover: true,
-               draggable: true,
-               progress: undefined,
-            })
-            setLoading(false);
-         })
-         .finally(() => {
-            setLoading(false);
-         })
+      const fetchData = async () => {
+         try {
+            await axios.get(`https://file-server.liara.run/api/get-product-by-id/${goalId}`, { headers: { auth_cookie: auth_cookie } })
+               .then((d) => {
+                  setfullData(d.data);
+                  setTag(d.data.tags);
+                  setFeature(d.data.features);
+                  setRelProducts(d.data.relatedProducts);
+                  setRelCategories(d.data.categories);
+                  setThisProductCatsIds(d.data.categories?.map((c: CategoryType) => c._id));
+               })
+               .catch((e) => {
+                  toast.error("خطا در لود اطلاعات", {
+                     autoClose: 3000,
+                     hideProgressBar: false,
+                     closeOnClick: true,
+                     pauseOnHover: true,
+                     draggable: true,
+                     progress: undefined,
+                  })
+                  setLoading(false);
+               })
+               .finally(() => {
+                  setLoading(false);
+               })
+         } catch (error) {
+            console.log(error);
+         }
+      }
 
+      fetchData();
    }, [goalId]);
 
    return (

@@ -23,7 +23,7 @@ const NewComment = ({ commentProps, text, itemParentId }) => {
         if (itemParentId != undefined) {
             theParentId = itemParentId;
         }
-    },[]);
+    }, []);
 
     const formSubmiter = (e) => {
         e.preventDefault();
@@ -38,32 +38,36 @@ const NewComment = ({ commentProps, text, itemParentId }) => {
                 typeOfModel: commentProps.typeOfModel,
             };
             const backendUrl = "https://file-server.liara.run/api/new-comment";
-            axios.post(backendUrl, formData, {
-                headers: { auth_cookie: auth_cookie }
-            })
-                .then((d) => {
-                    const message = d.data.msg ? d.data.msg : "دیدگاه شما پس از بررسی منتشر خواهد شد"
-                    toast.success(message, {
-                        autoClose: 3000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                    })
-                    messageRef.current.value = "";
+            try {
+                axios.post(backendUrl, formData, {
+                    headers: { auth_cookie: auth_cookie }
                 })
-                .catch((err) => {
-                    const errorMsg = (err.response && err.response.data && err.response.data.msg) ? err.response.data.msg : "خطا در ثبت دیدگاه"
-                    toast.error(errorMsg, {
-                        autoClose: 3000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
+                    .then((d) => {
+                        const message = d.data.msg ? d.data.msg : "دیدگاه شما پس از بررسی منتشر خواهد شد"
+                        toast.success(message, {
+                            autoClose: 3000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                        })
+                        messageRef.current.value = "";
                     })
-                })
+                    .catch((err) => {
+                        const errorMsg = (err.response && err.response.data && err.response.data.msg) ? err.response.data.msg : "خطا در ثبت دیدگاه"
+                        toast.error(errorMsg, {
+                            autoClose: 3000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                        })
+                    })
+            } catch (error) {
+                console.log(error);
+            }
         }
     }
 

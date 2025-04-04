@@ -38,33 +38,36 @@ const newMidBanners = () => {
             situation: imageSituationRef.current.value,
             date: new Date().toLocaleDateString('fa-IR', { hour: "2-digit", minute: "2-digit" })
         }
-
-        const url = "https://file-server.liara.run/api/new-middle-banner";
-        axios.post(url, formData, { headers: { auth_cookie: auth_cookie } })
-            .then(d => {
-                toast.success("بنر با موفقیت ذخیره شد.", {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+        try {
+            const url = "https://file-server.liara.run/api/new-middle-banner";
+            axios.post(url, formData, { headers: { auth_cookie: auth_cookie } })
+                .then(d => {
+                    toast.success("بنر با موفقیت ذخیره شد.", {
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    })
                 })
-            })
-            .catch(e => {
-                let message = "متاسفانه ناموفق بود";
-                if (e.response.data.msg) {
-                    message = e.response.data.msg;
-                }
-                toast.error(message, {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+                .catch(e => {
+                    let message = "متاسفانه ناموفق بود";
+                    if (e.response.data.msg) {
+                        message = e.response.data.msg;
+                    }
+                    toast.error(message, {
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    })
                 })
-            })
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     return (

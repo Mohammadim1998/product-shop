@@ -6,11 +6,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
 import Image from "next/image";
 import { FiRefreshCw } from "react-icons/fi";
-import Cookies from "js-cookie";
 import Link from "next/link";
 import { CookiesPropsTypes } from "../Info";
-//USING CONTEXT
-import { useAppContext } from "../../../../context/appContext";
 
 type CommentSourceType = {
     slug: string;
@@ -31,33 +28,34 @@ const Favorites: React.FC<CookiesPropsTypes> = ({ cookie }) => {
     const [needRefresh, setNeedRefresh] = useState(0);
     const [loading, setLoading] = useState<boolean>(true);
 
-    //CONTEXT OF CART NUMBER
-    const { cartNumber, setCartNumber } = useAppContext();
-
     useEffect(() => {
         if (cookie && cookie.length > 0) {
             const fetchData = async () => {
-                await axios.get("https://file-server.liara.run/api/get-part-of-user-data/comments", { headers: { auth_cookie: cookie } })
-                    .then(d => {
-                        setData(d.data);
-                        setNeedRefresh(1);
-                    })
-                    .catch(e => {
-                        toast.error("خطا در لود اطلاعات", {
-                            autoClose: 3000,
-                            hideProgressBar: false,
-                            closeOnClick: true,
-                            pauseOnHover: true,
-                            draggable: true,
-                            progress: undefined,
-                        });
-                        setLoading(false);
-                        setNeedRefresh(0);
-                    })
-                    .finally(() => {
-                        setLoading(false);
-                        setNeedRefresh(0);
-                    })
+                try {
+                    await axios.get("https://file-server.liara.run/api/get-part-of-user-data/comments", { headers: { auth_cookie: cookie } })
+                        .then(d => {
+                            setData(d.data);
+                            setNeedRefresh(1);
+                        })
+                        .catch(e => {
+                            toast.error("خطا در لود اطلاعات", {
+                                autoClose: 3000,
+                                hideProgressBar: false,
+                                closeOnClick: true,
+                                pauseOnHover: true,
+                                draggable: true,
+                                progress: undefined,
+                            });
+                            setLoading(false);
+                            setNeedRefresh(0);
+                        })
+                        .finally(() => {
+                            setLoading(false);
+                            setNeedRefresh(0);
+                        })
+                } catch (error) {
+                    console.log(error);
+                }
             }
 
             fetchData();

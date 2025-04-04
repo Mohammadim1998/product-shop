@@ -84,12 +84,18 @@ const UserDetails: React.FC<UserDetailsPropsTypes> = ({ goalId }) => {
     const [posts, setPosts] = useState([-1]);
     useEffect(() => {
         const fetchData = async () => {
-            const postsUrl = "https://file-server.liara.run/api/posts-rel";
-            await axios.get(postsUrl, { headers: { auth_cookie: auth_cookie } })
-                .then((d) => {
-                    setPosts(d.data);
-                })
-                .catch((e) => {});
+            try {
+                const postsUrl = "https://file-server.liara.run/api/posts-rel";
+                await axios.get(postsUrl, { headers: { auth_cookie: auth_cookie } })
+                    .then((d) => {
+                        setPosts(d.data);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            } catch (error) {
+                console.log(error);
+            }
         }
 
         fetchData();
@@ -101,16 +107,20 @@ const UserDetails: React.FC<UserDetailsPropsTypes> = ({ goalId }) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            await axios.get(`https://file-server.liara.run/api/get-user/${goalId}`, { headers: { auth_cookie: auth_cookie } })
-                .then((d) => {
-                    setFullData(d.data);
-                })
-                .catch(e => {
-                    setLoading(false);
-                })
-                .finally(() => {
-                    setLoading(false);
-                })
+            try {
+                await axios.get(`https://file-server.liara.run/api/get-user/${goalId}`, { headers: { auth_cookie: auth_cookie } })
+                    .then((d) => {
+                        setFullData(d.data);
+                    })
+                    .catch(e => {
+                        setLoading(false);
+                    })
+                    .finally(() => {
+                        setLoading(false);
+                    })
+            } catch (error) {
+                console.log(error);
+            }
         }
 
         fetchData();
@@ -152,116 +162,132 @@ const UserDetails: React.FC<UserDetailsPropsTypes> = ({ goalId }) => {
             activateCodeSendingNumber: activateCodeSendingNumberRef.current.value,
         }
 
-        const url = `https://file-server.liara.run/api/update-user/${goalId}`;
-        axios.post(url, formData, { headers: { auth_cookie: auth_cookie } })
-            .then((d) => {
-                toast.success("کاربر با موفقیت بروزرسانی شد.", {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+        try {
+            const url = `https://file-server.liara.run/api/update-user/${goalId}`;
+            axios.post(url, formData, { headers: { auth_cookie: auth_cookie } })
+                .then((d) => {
+                    toast.success("کاربر با موفقیت بروزرسانی شد.", {
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    })
                 })
-            })
-            .catch((e) => {
-                let message = "متاسفانه ناموفق بود";
-                if (e.response.data.msg) {
-                    message = e.response.data.msg;
-                }
-                toast.error(message, {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+                .catch((e) => {
+                    let message = "متاسفانه ناموفق بود";
+                    if (e.response.data.msg) {
+                        message = e.response.data.msg;
+                    }
+                    toast.error(message, {
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    })
                 })
-            })
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const remover = () => {
-        axios.post(`https://file-server.liara.run/api/delete-user/${goalId}`, { headers: { auth_cookie: auth_cookie } })
-            .then(d => {
-                toast.success("کاربر با موفقیت حذف شد.", {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+        try {
+            axios.post(`https://file-server.liara.run/api/delete-user/${goalId}`, { headers: { auth_cookie: auth_cookie } })
+                .then(d => {
+                    toast.success("کاربر با موفقیت حذف شد.", {
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    })
                 })
-            })
-            .catch((e) => {
-                let message = "متاسفانه ناموفق بود";
-                if (e.response.data.msg) {
-                    message = e.response.data.msg;
-                }
-                toast.error(message, {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+                .catch((e) => {
+                    let message = "متاسفانه ناموفق بود";
+                    if (e.response.data.msg) {
+                        message = e.response.data.msg;
+                    }
+                    toast.error(message, {
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    })
                 })
-            })
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const paymentUnchecker = async (goalId: string) => {
-        await axios.get(`https://file-server.liara.run/api/uncheck-payment/${goalId}`, { headers: { auth_cookie: auth_cookie } })
-            .then(d => {
-                toast.success("به بخش سفارش های افزوده شد", {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+        try {
+            await axios.get(`https://file-server.liara.run/api/uncheck-payment/${goalId}`, { headers: { auth_cookie: auth_cookie } })
+                .then(d => {
+                    toast.success("به بخش سفارش های افزوده شد", {
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    })
                 })
-            })
-            .catch((e) => {
-                let message = "متاسفانه ناموفق بود";
-                if (e.response.data.msg) {
-                    message = e.response.data.msg;
-                }
-                toast.error(message, {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+                .catch((e) => {
+                    let message = "متاسفانه ناموفق بود";
+                    if (e.response.data.msg) {
+                        message = e.response.data.msg;
+                    }
+                    toast.error(message, {
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    })
                 })
-            })
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const commentUnchecker = async (goalId: string) => {
-        await axios.get(`https://file-server.liara.run/api/uncheck-comment/${goalId}`, { headers: { auth_cookie: auth_cookie } })
-            .then(d => {
-                toast.success("به بخش سفارش های افزوده شد", {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+        try {
+            await axios.get(`https://file-server.liara.run/api/uncheck-comment/${goalId}`, { headers: { auth_cookie: auth_cookie } })
+                .then(d => {
+                    toast.success("به بخش سفارش های افزوده شد", {
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    })
                 })
-            })
-            .catch((e) => {
-                let message = "متاسفانه ناموفق بود";
-                if (e.response.data.msg) {
-                    message = e.response.data.msg;
-                }
-                toast.error(message, {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+                .catch((e) => {
+                    let message = "متاسفانه ناموفق بود";
+                    if (e.response.data.msg) {
+                        message = e.response.data.msg;
+                    }
+                    toast.error(message, {
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    })
                 })
-            })
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (

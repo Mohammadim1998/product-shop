@@ -88,9 +88,15 @@ const Header = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            await axios.get("https://file-server.liara.run/api/get-part-of-user-data/favorite", { headers: { auth_cookie: token } })
-                .then((d) => setFavorite(d.data))
-                .catch(() => { })
+            try {
+                await axios.get("https://file-server.liara.run/api/get-part-of-user-data/favorite", { headers: { auth_cookie: token } })
+                    .then((d) => setFavorite(d.data))
+                    .catch((error) => {
+                        console.log(error);
+                    })
+            } catch (error) {
+                console.log(error);
+            }
         }
 
         fetchData();

@@ -38,39 +38,43 @@ const FindUser = () => {
             email: emailRef.current.value,
         }
 
-        const url = "https://file-server.liara.run/api/search-user";
-        axios.post(url, formData, { headers: { auth_cookie: auth_cookie } })
-            .then((d) => {
-                if (d.data.userData == 0) {
-                    toast.success("چنین کاربری وجود ندارد.", {
-                        autoClose: 3000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                    })
-                    setUserData(1)
-                } else {
-                    toast.success("اطلاعات کاربر بارگذاری شد.", {
-                        autoClose: 3000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                    })
-                    setUserData(d.data.userData);
-                }
+        try {
+            const url = "https://file-server.liara.run/api/search-user";
+            axios.post(url, formData, { headers: { auth_cookie: auth_cookie } })
+                .then((d) => {
+                    if (d.data.userData == 0) {
+                        toast.success("چنین کاربری وجود ندارد.", {
+                            autoClose: 3000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                        })
+                        setUserData(1)
+                    } else {
+                        toast.success("اطلاعات کاربر بارگذاری شد.", {
+                            autoClose: 3000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                        })
+                        setUserData(d.data.userData);
+                    }
 
-            })
-            .catch((e) => {
-                let message = "متاسفانه ناموفق بود";
-                if (e.response.data.msg) {
-                    message = e.response.data.msg;
-                }
+                })
+                .catch((e) => {
+                    let message = "متاسفانه ناموفق بود";
+                    if (e.response.data.msg) {
+                        message = e.response.data.msg;
+                    }
 
-            })
+                })
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const formKeyNotSuber = (event: React.KeyboardEvent) => {

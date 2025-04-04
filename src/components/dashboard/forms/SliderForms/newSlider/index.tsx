@@ -43,20 +43,36 @@ const NewSlider = () => {
             minute: "2-digit",
          }),
       };
-      const url = `https://file-server.liara.run/api/new-slider`;
-      axios
-         .post(url, formData, { headers: { auth_cookie: auth_cookie } })
-         .then((d) => {
-            formData.situation == "true"
-               ? toast.success("اسلایدر با موفقیت منتشر شد.", {
-                  autoClose: 3000,
-                  hideProgressBar: false,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: true,
-                  progress: undefined,
-               })
-               : toast.success("اسلایدر به صورت پیشنویس ذخیره شد.", {
+
+      try {
+         const url = `https://file-server.liara.run/api/new-slider`;
+         axios
+            .post(url, formData, { headers: { auth_cookie: auth_cookie } })
+            .then((d) => {
+               formData.situation == "true"
+                  ? toast.success("اسلایدر با موفقیت منتشر شد.", {
+                     autoClose: 3000,
+                     hideProgressBar: false,
+                     closeOnClick: true,
+                     pauseOnHover: true,
+                     draggable: true,
+                     progress: undefined,
+                  })
+                  : toast.success("اسلایدر به صورت پیشنویس ذخیره شد.", {
+                     autoClose: 3000,
+                     hideProgressBar: false,
+                     closeOnClick: true,
+                     pauseOnHover: true,
+                     draggable: true,
+                     progress: undefined,
+                  });
+            })
+            .catch((e) => {
+               let message = "متاسفانه ناموفق بود.";
+               if (e.response.data.msg) {
+                  message = e.response.data.msg;
+               }
+               toast.error(message, {
                   autoClose: 3000,
                   hideProgressBar: false,
                   closeOnClick: true,
@@ -64,21 +80,10 @@ const NewSlider = () => {
                   draggable: true,
                   progress: undefined,
                });
-         })
-         .catch((e) => {
-            let message = "متاسفانه ناموفق بود.";
-            if (e.response.data.msg) {
-               message = e.response.data.msg;
-            }
-            toast.error(message, {
-               autoClose: 3000,
-               hideProgressBar: false,
-               closeOnClick: true,
-               pauseOnHover: true,
-               draggable: true,
-               progress: undefined,
             });
-         });
+      } catch (error) {
+         console.log(error);
+      }
    };
    // FORM SHOULD BE NOT SEND WITH ENTER KEY
    const formKeyNotSuber = (event: React.KeyboardEvent) => {

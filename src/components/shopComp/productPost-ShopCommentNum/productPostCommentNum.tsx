@@ -12,9 +12,15 @@ const ProductPostCommentNum: React.FC<ProductPostCommentNumPropsTypes> = ({ goal
     const [commentsNumber, setCommentsNumber] = useState(-1);
     useEffect(() => {
         const fetchData = async () => {
-            await axios.get(`https://file-server.liara.run/api/get-comments-number/${goalId}`)
-                .then(d => { setCommentsNumber(d.data.number) })
-                .catch(e => { })
+            try {
+                await axios.get(`https://file-server.liara.run/api/get-comments-number/${goalId}`)
+                    .then(d => { setCommentsNumber(d.data.number) })
+                    .catch(error => {
+                        console.log(error);
+                    })
+            } catch (error) {
+                console.log(error);
+            }
         }
 
         fetchData();

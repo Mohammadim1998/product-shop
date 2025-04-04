@@ -43,43 +43,47 @@ const CartPageCom: React.FC<CartPropsTypes> = ({ cookie }) => {
     const { cartNumber, setCartNumber } = useAppContext();
 
     useEffect(() => {
-        if (cookie && cookie.length > 0) {
-            const fetchData = async () => {
-                await axios.get("https://file-server.liara.run/api/get-part-of-user-data/cart", { headers: { auth_cookie: cookie } })
-                    .then(d => {
-                        setData(d.data);
-                        setNeedRefresh(1);
-                        if (d.data.length < 1) {
-                            setPriceSum(0);
-                        } else {
-                            let i = 0;
-                            for (let j = 0; j < d.data.length; j++) {
-                                i = i + Number(d.data[j].price);
+        const fetchData = async () => {
+            if (cookie && cookie.length > 0) {
+                try {
+                    await axios.get("https://file-server.liara.run/api/get-part-of-user-data/cart", { headers: { auth_cookie: cookie } })
+                        .then(d => {
+                            setData(d.data);
+                            setNeedRefresh(1);
+                            if (d.data.length < 1) {
+                                setPriceSum(0);
+                            } else {
+                                let i = 0;
+                                for (let j = 0; j < d.data.length; j++) {
+                                    i = i + Number(d.data[j].price);
+                                }
+                                setPriceSum(i);
                             }
-                            setPriceSum(i);
-                        }
-                        //JUST PRODUCTS IDS
-                        const ids = d.data?.map((product: DataPropsTypes) => product._id);
-                        setCartProductsIds(ids);
-                    })
-                    .catch(e => {
-                        toast.error("خطا در لود اطلاعات", {
-                            autoClose: 3000,
-                            hideProgressBar: false,
-                            closeOnClick: true,
-                            pauseOnHover: true,
-                            draggable: true,
-                            progress: undefined,
-                        });
-                        setLoading(false);
-                    })
-                    .finally(() => {
-                        setLoading(false);
-                    })
+                            //JUST PRODUCTS IDS
+                            const ids = d.data?.map((product: DataPropsTypes) => product._id);
+                            setCartProductsIds(ids);
+                        })
+                        .catch(e => {
+                            toast.error("خطا در لود اطلاعات", {
+                                autoClose: 3000,
+                                hideProgressBar: false,
+                                closeOnClick: true,
+                                pauseOnHover: true,
+                                draggable: true,
+                                progress: undefined,
+                            });
+                            setLoading(false);
+                        })
+                        .finally(() => {
+                            setLoading(false);
+                        })
+                } catch (error) {
+                    console.log(error);
+                }
             }
-
-            fetchData();
         }
+
+        fetchData();
     }, [cookie, needRefresh]);
 
     const productRemover = (input: string) => {
@@ -87,32 +91,35 @@ const CartPageCom: React.FC<CartPropsTypes> = ({ cookie }) => {
             method: "remove",
             goalCartProductId: input
         }
-
-        axios.post("https://file-server.liara.run/api/cart-managment/", formData,
-            { headers: { auth_cookie: cookie } })
-            .then((d) => {
-                const message = (d.data && d.data.msg) ? d.data.msg : "محصول از سبد خرید حذف شد"
-                toast.success(message, {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+        try {
+            axios.post("https://file-server.liara.run/api/cart-managment/", formData,
+                { headers: { auth_cookie: cookie } })
+                .then((d) => {
+                    const message = (d.data && d.data.msg) ? d.data.msg : "محصول از سبد خرید حذف شد"
+                    toast.success(message, {
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    })
+                    setNeedRefresh(1);
+                    setCartNumber(cartNumber - 1);
                 })
-                setNeedRefresh(1);
-                setCartNumber(cartNumber - 1);
-            })
-            .catch((err) => {
-                toast.error("خطا در حذف محصول", {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+                .catch((err) => {
+                    toast.error("خطا در حذف محصول", {
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    })
                 })
-            })
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const favAdder = (input: string) => {
@@ -121,31 +128,35 @@ const CartPageCom: React.FC<CartPropsTypes> = ({ cookie }) => {
             newFavProduct: input,
         };
         const backendUrl = `https://file-server.liara.run/api/favorite-product`;
-        axios.post(backendUrl, productData, { headers: { auth_cookie: cookie } })
-            .then((d) => {
-                Cookies.set('auth_cookie', d.data.auth, { expires: 60 });
-                const message = d.data.msg ? d.data.msg : "تغییر اطلاعات شما با موفقیت انجام شد."
-                toast.success(message, {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+        try {
+            axios.post(backendUrl, productData, { headers: { auth_cookie: cookie } })
+                .then((d) => {
+                    Cookies.set('auth_cookie', d.data.auth, { expires: 60 });
+                    const message = d.data.msg ? d.data.msg : "تغییر اطلاعات شما با موفقیت انجام شد."
+                    toast.success(message, {
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    })
+                    // setBulkEmailSituation(input)
                 })
-                // setBulkEmailSituation(input)
-            })
-            .catch((err) => {
-                const errorMsg = (err.response && err.response.data && err.response.data.msg) ? err.response.data.msg : "خطا"
-                toast.error(errorMsg, {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+                .catch((err) => {
+                    const errorMsg = (err.response && err.response.data && err.response.data.msg) ? err.response.data.msg : "خطا"
+                    toast.error(errorMsg, {
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    })
                 })
-            })
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const paymentManager = () => {
@@ -162,33 +173,36 @@ const CartPageCom: React.FC<CartPropsTypes> = ({ cookie }) => {
             amount: Number(priceSum) * 10,
             products: cartProductsIds
         }
-
-        axios.post("https://file-server.liara.run/api/new-payment/", formData,
-            { headers: { auth_cookie: cookie } })
-            .then((d) => {
-                const message = (d.data && d.data.msg) ? d.data.msg : "درحال انتقال به درگاه پرداخت"
-                toast.success(message, {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+        try {
+            axios.post("https://file-server.liara.run/api/new-payment/", formData,
+                { headers: { auth_cookie: cookie } })
+                .then((d) => {
+                    const message = (d.data && d.data.msg) ? d.data.msg : "درحال انتقال به درگاه پرداخت"
+                    toast.success(message, {
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    })
+                    //IT USES FOR EXTERNAL REDIRECT
+                    window.location.assign(d.data.link);
                 })
-                //IT USES FOR EXTERNAL REDIRECT
-                window.location.assign(d.data.link);
-            })
-            .catch((e) => {
-                const message = (e.response && e.response.data && e.response.data.msg) ? e.response.data.msg : "خطا در انتقال به درگاه پرداخت"
-                toast.error(message, {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+                .catch((e) => {
+                    const message = (e.response && e.response.data && e.response.data.msg) ? e.response.data.msg : "خطا در انتقال به درگاه پرداخت"
+                    toast.error(message, {
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    })
                 })
-            })
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (

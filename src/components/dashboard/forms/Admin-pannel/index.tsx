@@ -17,34 +17,38 @@ const AdminPannel = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const url = `https://file-server.liara.run/api/get-new-items`;
-            await axios.get(url, { headers: { auth_cookie: auth_cookie } })
-                .then((d) => {
-                    toast.success("اطلاعات لود شد...", {
-                        autoClose: 3000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                    });
-                    setNewItemsData(d.data);
-                    console.log("Data: ", d);
-                })
-                .catch((e) => {
-                    toast.error("خطای اینترنت", {
-                        autoClose: 3000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                    });
-                    setLoading(false);
-                })
-                .finally(() => {
-                    setLoading(false);
-                })
+            try {
+                const url = `https://file-server.liara.run/api/get-new-items`;
+                await axios.get(url, { headers: { auth_cookie: auth_cookie } })
+                    .then((d) => {
+                        toast.success("اطلاعات لود شد...", {
+                            autoClose: 3000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                        });
+                        setNewItemsData(d.data);
+                        console.log("Data: ", d);
+                    })
+                    .catch((e) => {
+                        toast.error("خطای اینترنت", {
+                            autoClose: 3000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                        });
+                        setLoading(false);
+                    })
+                    .finally(() => {
+                        setLoading(false);
+                    })
+            } catch (error) {
+                console.log(error);
+            }
         }
 
         fetchData();

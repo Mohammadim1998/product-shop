@@ -58,39 +58,42 @@ const LoginForm = () => {
       password: watch("password"),
     };
     const backendUrl = "https://file-server.liara.run/api/login-user";
-    axios
-      .post<ApiResponse>(backendUrl, formData)
-      .then((d) => {
-        if (d.data.auth) {
-          Cookies.set("auth_cookie", d.data.auth, { expires: 60 });
-        }
-        const message = d.data.msg
-          ? d.data.msg
-          : "با موفقیت وارد حساب کاربری شدید";
-        toast.success(message, {
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-        setRouterState(1);
-      })
-      .catch((err) => {
-        const errorMsg =
-          err.response && err.response.data && err.response.data.msg
-            ? err.response.data.msg
-            : "خطا";
-        toast.error(errorMsg, {
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      });
+    try {
+      axios.post<ApiResponse>(backendUrl, formData)
+        .then((d) => {
+          if (d.data.auth) {
+            Cookies.set("auth_cookie", d.data.auth, { expires: 60 });
+          }
+          const message = d.data.msg
+            ? d.data.msg
+            : "با موفقیت وارد حساب کاربری شدید";
+          toast.success(message, {
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+          setRouterState(1);
+        })
+        .catch((err) => {
+          const errorMsg =
+            err.response && err.response.data && err.response.data.msg
+              ? err.response.data.msg
+              : "خطا";
+          toast.error(errorMsg, {
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+        })
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

@@ -52,16 +52,20 @@ const PaymentDetails: React.FC<PaymentDetailsPropsTypes> = ({ goalId }) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            await axios.get(`https://file-server.liara.run/api/get-payment/${goalId}`, { headers: { auth_cookie: auth_cookie } })
-            .then((d) => {
-                setFullData(d.data);
-            })
-            .catch(e => {
-                setLoading(false);
-            })
-            .finally(() => {
-                setLoading(false);
-            })
+            try {
+                await axios.get(`https://file-server.liara.run/api/get-payment/${goalId}`, { headers: { auth_cookie: auth_cookie } })
+                    .then((d) => {
+                        setFullData(d.data);
+                    })
+                    .catch(e => {
+                        setLoading(false);
+                    })
+                    .finally(() => {
+                        setLoading(false);
+                    })
+            } catch (error) {
+                console.log(error);
+            }
         }
 
         fetchData();
@@ -97,61 +101,68 @@ const PaymentDetails: React.FC<PaymentDetailsPropsTypes> = ({ goalId }) => {
             resnumber: fullData?.resnumber,
             products: fullData?.products,
         }
-
-        const url = `https://file-server.liara.run/api/update-payment/${goalId}`;
-        axios.post(url, formData, { headers: { auth_cookie: auth_cookie } })
-            .then((d) => {
-                toast.success("سفارش با موفقیت بروزرسانی شد.", {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+        try {
+            const url = `https://file-server.liara.run/api/update-payment/${goalId}`;
+            axios.post(url, formData, { headers: { auth_cookie: auth_cookie } })
+                .then((d) => {
+                    toast.success("سفارش با موفقیت بروزرسانی شد.", {
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    })
                 })
-            })
-            .catch((e) => {
-                let message = "متاسفانه ناموفق بود";
-                if (e.response.data.msg) {
-                    message = e.response.data.msg;
-                }
-                toast.error(message, {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+                .catch((e) => {
+                    let message = "متاسفانه ناموفق بود";
+                    if (e.response.data.msg) {
+                        message = e.response.data.msg;
+                    }
+                    toast.error(message, {
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    })
                 })
-            })
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const remover = () => {
-        axios.post(`https://file-server.liara.run/api/delete-payment/${goalId}`, { headers: { auth_cookie: auth_cookie } })
-            .then(d => {
-                toast.success("سفارش با موفقیت حذف شد.", {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+        try {
+            axios.post(`https://file-server.liara.run/api/delete-payment/${goalId}`, { headers: { auth_cookie: auth_cookie } })
+                .then(d => {
+                    toast.success("سفارش با موفقیت حذف شد.", {
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    })
                 })
-            })
-            .catch((e) => {
-                let message = "متاسفانه ناموفق بود";
-                if (e.response.data.msg) {
-                    message = e.response.data.msg;
-                }
-                toast.error(message, {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+                .catch((e) => {
+                    let message = "متاسفانه ناموفق بود";
+                    if (e.response.data.msg) {
+                        message = e.response.data.msg;
+                    }
+                    toast.error(message, {
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    })
                 })
-            })
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (

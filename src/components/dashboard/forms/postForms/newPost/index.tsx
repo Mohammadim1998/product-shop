@@ -67,15 +67,23 @@ const NewPost = () => {
     const [loadingPosts, setLoadingPosts] = useState<boolean>(true);
 
     useEffect(() => {
-        const url = "https://file-server.liara.run/api/posts-rel";
-        axios.get(url, { headers: { auth_cookie: auth_cookie } })
-            .then(d => setPosts(d.data))
-            .catch(e => {
-                setLoadingPosts(false);
-            })
-            .finally(() => {
-                setLoadingPosts(false);
-            })
+        const fetchData = async () => {
+            try {
+                const url = "https://file-server.liara.run/api/posts-rel";
+                await axios.get(url, { headers: { auth_cookie: auth_cookie } })
+                    .then(d => setPosts(d.data))
+                    .catch(e => {
+                        setLoadingPosts(false);
+                    })
+                    .finally(() => {
+                        setLoadingPosts(false);
+                    })
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+        fetchData();
     }, []);
 
     const [relPosts, setRelPosts] = useState<string[]>([]);
@@ -127,12 +135,34 @@ const NewPost = () => {
             published: publishedRef.current.value,
             comments: [],
         }
-
-        const url = "https://file-server.liara.run/api/new-post";
-        axios.post(url, formData, { headers: { auth_cookie: auth_cookie } })
-            .then((d) => {
-                formData.published == "true"
-                    ? toast.success("مقاله با موفقیت دخیره شد.", {
+        try {
+            const url = "https://file-server.liara.run/api/new-post";
+            axios.post(url, formData, { headers: { auth_cookie: auth_cookie } })
+                .then((d) => {
+                    formData.published == "true"
+                        ? toast.success("مقاله با موفقیت دخیره شد.", {
+                            autoClose: 3000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                        })
+                        : toast.success("مقاله به صورت پیشنویس ذخیره شد.", {
+                            autoClose: 3000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                        });
+                })
+                .catch((e) => {
+                    let message = "متاسفانه ناموفق بود";
+                    if (e.response.data.msg) {
+                        message = e.response.data.msg;
+                    }
+                    toast.error(message, {
                         autoClose: 3000,
                         hideProgressBar: false,
                         closeOnClick: true,
@@ -140,29 +170,10 @@ const NewPost = () => {
                         draggable: true,
                         progress: undefined,
                     })
-                    : toast.success("مقاله به صورت پیشنویس ذخیره شد.", {
-                        autoClose: 3000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                    });
-            })
-            .catch((e) => {
-                let message = "متاسفانه ناموفق بود";
-                if (e.response.data.msg) {
-                    message = e.response.data.msg;
-                }
-                toast.error(message, {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
                 })
-            })
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (

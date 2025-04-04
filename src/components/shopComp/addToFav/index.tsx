@@ -20,30 +20,34 @@ const AddToFav: React.FC<AddToFavPropsTypes> = ({ data }) => {
             newFavProduct: data,
         };
         const backendUrl = `https://file-server.liara.run/api/favorite-product`;
-        axios.post(backendUrl, productData, { headers: { auth_cookie: auth_cookie } })
-            .then((d) => {
-                Cookies.set('auth_cookie', d.data.auth, { expires: 60 });
-                const message = d.data.msg ? d.data.msg : "با موفقیت به محصولات مورد علاقه افزوده شد"
-                toast.success(message, {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+        try {
+            axios.post(backendUrl, productData, { headers: { auth_cookie: auth_cookie } })
+                .then((d) => {
+                    Cookies.set('auth_cookie', d.data.auth, { expires: 60 });
+                    const message = d.data.msg ? d.data.msg : "با موفقیت به محصولات مورد علاقه افزوده شد"
+                    toast.success(message, {
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    })
                 })
-            })
-            .catch((err) => {
-                const errorMsg = (err.response && err.response.data && err.response.data.msg) ? err.response.data.msg : "خطا"
-                toast.error(errorMsg, {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+                .catch((err) => {
+                    const errorMsg = (err.response && err.response.data && err.response.data.msg) ? err.response.data.msg : "خطا"
+                    toast.error(errorMsg, {
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    })
                 })
-            })
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     return (

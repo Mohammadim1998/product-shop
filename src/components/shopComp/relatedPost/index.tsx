@@ -29,20 +29,23 @@ const RelatedPosts: React.FC<RelatedPostsPropsTypes> = ({ typeOfModel, title, re
     const sendingDataForRel = { goalIds: relPostsData }
 
     useEffect(() => {
-        const url =
-            typeOfModel == "post"
+        try {
+            const url = typeOfModel == "post"
                 ? "https://file-server.liara.run/api/get-related-posts"
                 : "https://file-server.liara.run/api/get-related-products"
-        axios.post(url, sendingDataForRel)
-            .then(d => {
-                setrelModelDataState(d.data);
-            })
-            .catch(e => {
-                setRelLoading(false);
-            })
-            .finally(() => {
-                setRelLoading(false);
-            })
+            axios.post(url, sendingDataForRel)
+                .then(d => {
+                    setrelModelDataState(d.data);
+                })
+                .catch(e => {
+                    setRelLoading(false);
+                })
+                .finally(() => {
+                    setRelLoading(false);
+                })
+        } catch (error) {
+            console.log(error);
+        }
     }, [relPostsData])
 
     return (

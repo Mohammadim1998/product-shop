@@ -9,25 +9,29 @@ const CommentList = ({ commentProps }) => {
     const [modelAllComments, setModelAllComments] = useState([-1]);
 
     useEffect(() => {
-        const backendUrl = "https://file-server.liara.run/api/get-model-comments";
-        const formData = {
-            _id: commentProps.src_id
-        }
-        axios.post(backendUrl, formData)
-            .then((d) => {
-                setModelAllComments(d.data);
-            })
-            .catch((err) => {
-                const errorMsg = (err.response && err.response.data && err.response.data.msg) ? err.response.data.msg : "خطا در لود دیدگاه"
-                toast.error(errorMsg, {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+        try {
+            const backendUrl = "https://file-server.liara.run/api/get-model-comments";
+            const formData = {
+                _id: commentProps.src_id
+            }
+            axios.post(backendUrl, formData)
+                .then((d) => {
+                    setModelAllComments(d.data);
                 })
-            })
+                .catch((err) => {
+                    const errorMsg = (err.response && err.response.data && err.response.data.msg) ? err.response.data.msg : "خطا در لود دیدگاه"
+                    toast.error(errorMsg, {
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    })
+                })
+        } catch (error) {
+            console.log(error);
+        }
     }, [commentProps.src_id]);
 
     return (

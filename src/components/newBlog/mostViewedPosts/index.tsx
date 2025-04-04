@@ -15,16 +15,20 @@ const MostViewedposts = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            await axios.get("https://file-server.liara.run/api/get-most-viewed-posts")
-                .then(d => {
-                    setPosts(d.data);
-                })
-                .catch(e => {
-                    setLoading(false);
-                })
-                .finally(() => {
-                    setLoading(false);
-                })
+            try {
+                await axios.get("https://file-server.liara.run/api/get-most-viewed-posts")
+                    .then(d => {
+                        setPosts(d.data);
+                    })
+                    .catch(e => {
+                        setLoading(false);
+                    })
+                    .finally(() => {
+                        setLoading(false);
+                    })
+            } catch (error) {
+                console.log(error);
+            }
         }
 
         fetchData();

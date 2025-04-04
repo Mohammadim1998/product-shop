@@ -37,18 +37,22 @@ const allMidBanners: React.FC<BannersPropsTypes> = ({ setMidBanDetCtrl, setRando
 
     useEffect(() => {
         const fetchData = async () => {
-            await axios.get(`https://file-server.liara.run/api/middle-banners?pn=${pageNumber}&&pgn=${paginate}`, { headers: { auth_cookie: auth_cookie } })
-                .then(d => {
-                    setBanners(d.data.GoalMidBans);
-                    setNumbersOfBtns(Array.from(Array(Math.ceil(d.data.AllMidBansNum / paginate)).keys()));
-                    setAllMidBanNumber(d.data.AllMidBansNum);
-                })
-                .catch(e => {
-                    setLoading(false);
-                })
-                .finally(() => {
-                    setLoading(false);
-                })
+            try {
+                await axios.get(`https://file-server.liara.run/api/middle-banners?pn=${pageNumber}&&pgn=${paginate}`, { headers: { auth_cookie: auth_cookie } })
+                    .then(d => {
+                        setBanners(d.data.GoalMidBans);
+                        setNumbersOfBtns(Array.from(Array(Math.ceil(d.data.AllMidBansNum / paginate)).keys()));
+                        setAllMidBanNumber(d.data.AllMidBansNum);
+                    })
+                    .catch(e => {
+                        setLoading(false);
+                    })
+                    .finally(() => {
+                        setLoading(false);
+                    })
+            } catch (error) {
+                console.log(error);
+            }
         }
 
         fetchData();

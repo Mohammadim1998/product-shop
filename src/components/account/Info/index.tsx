@@ -34,26 +34,30 @@ const Info: React.FC<CookiesPropsTypes> = ({ cookie }) => {
     useEffect(() => {
         if (cookie && cookie.length > 0) {
             const fetchData = async () => {
-                await axios.get("https://file-server.liara.run/api/get-part-of-user-data/info", { headers: { auth_cookie: cookie } })
-                    .then(d => {
-                        setData(d.data);
-                        setBulkEmailSituation(d.data.emaiSend);
-                    })
-                    .catch(e => {
-                        toast.error("خطا در لود اطلاعات", {
-                            autoClose: 3000,
-                            hideProgressBar: false,
-                            closeOnClick: true,
-                            pauseOnHover: true,
-                            draggable: true,
-                            progress: undefined,
-                        });
-                        setLoading(false);
-                    })
-                    .finally(() => {
-                        setLoading(false);
-                    })
-                setNeedRefresh(0);
+                try {
+                    await axios.get("https://file-server.liara.run/api/get-part-of-user-data/info", { headers: { auth_cookie: cookie } })
+                        .then(d => {
+                            setData(d.data);
+                            setBulkEmailSituation(d.data.emaiSend);
+                        })
+                        .catch(e => {
+                            toast.error("خطا در لود اطلاعات", {
+                                autoClose: 3000,
+                                hideProgressBar: false,
+                                closeOnClick: true,
+                                pauseOnHover: true,
+                                draggable: true,
+                                progress: undefined,
+                            });
+                            setLoading(false);
+                        })
+                        .finally(() => {
+                            setLoading(false);
+                        })
+                    setNeedRefresh(0);
+                } catch (error) {
+                    console.log(error);
+                }
             }
             fetchData();
         }
@@ -73,32 +77,36 @@ const Info: React.FC<CookiesPropsTypes> = ({ cookie }) => {
             rePassword: watch("rePassword"),
         }
         const backendUrl = `https://file-server.liara.run/api/update-mini-user/${data?._id}`;
-        axios.post(backendUrl, formData, { headers: { auth_cookie: cookie } })
-            .then((d) => {
-                Cookies.set('auth_cookie', d.data.auth, { expires: 60 });
-                const message = d.data.msg ? d.data.msg : "تغییر اطلاعات شما با موفقیت انجام شد."
-                toast.success(message, {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+        try {
+            axios.post(backendUrl, formData, { headers: { auth_cookie: cookie } })
+                .then((d) => {
+                    Cookies.set('auth_cookie', d.data.auth, { expires: 60 });
+                    const message = d.data.msg ? d.data.msg : "تغییر اطلاعات شما با موفقیت انجام شد."
+                    toast.success(message, {
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    })
+                    router.push("/account/info");
+                    setNeedRefresh(1);
                 })
-                router.push("/account/info");
-                setNeedRefresh(1);
-            })
-            .catch((err) => {
-                const errorMsg = (err.response && err.response.data && err.response.data.msg) ? err.response.data.msg : "خطا"
-                toast.error(errorMsg, {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+                .catch((err) => {
+                    const errorMsg = (err.response && err.response.data && err.response.data.msg) ? err.response.data.msg : "خطا"
+                    toast.error(errorMsg, {
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    })
                 })
-            })
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     const activateCodeRef = useRef<HTMLInputElement>(null);
@@ -108,63 +116,71 @@ const Info: React.FC<CookiesPropsTypes> = ({ cookie }) => {
             activateCode: activateCodeRef?.current?.value
         }
         const backendUrl = `https://file-server.liara.run/api/confirm-user-email`;
-        axios.post(backendUrl, formData, { headers: { auth_cookie: cookie } })
-            .then((d) => {
-                Cookies.set('auth_cookie', d.data.auth, { expires: 60 });
-                const message = d.data.msg ? d.data.msg : "تغییر اطلاعات شما با موفقیت انجام شد."
-                toast.success(message, {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+        try {
+            axios.post(backendUrl, formData, { headers: { auth_cookie: cookie } })
+                .then((d) => {
+                    Cookies.set('auth_cookie', d.data.auth, { expires: 60 });
+                    const message = d.data.msg ? d.data.msg : "تغییر اطلاعات شما با موفقیت انجام شد."
+                    toast.success(message, {
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    })
+                    router.push("/account/info");
+                    setNeedRefresh(1);
                 })
-                router.push("/account/info");
-                setNeedRefresh(1);
-            })
-            .catch((err) => {
-                const errorMsg = (err.response && err.response.data && err.response.data.msg) ? err.response.data.msg : "خطا"
-                toast.error(errorMsg, {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+                .catch((err) => {
+                    const errorMsg = (err.response && err.response.data && err.response.data.msg) ? err.response.data.msg : "خطا"
+                    toast.error(errorMsg, {
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    })
                 })
-            })
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     //SEND EMAIL ACTIVATION CODE AGAIN
     const emailAcitvationCodeAgain = () => {
-        const backendUrl = `https://file-server.liara.run/api/user-activation-code-again`;
-        axios.post(backendUrl, { item: 1 }, {
-            headers: { auth_cookie: cookie },
-        })
-            .then((d) => {
-                const message = d.data.msg ? d.data.msg : "ایمیل دوباره ارسال شد"
-                toast.success(message, {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                })
-                setNeedRefresh(1);
+        try {
+            const backendUrl = `https://file-server.liara.run/api/user-activation-code-again`;
+            axios.post(backendUrl, { item: 1 }, {
+                headers: { auth_cookie: cookie },
             })
-            .catch((err) => {
-                const errorMsg = (err.response && err.response.data && err.response.data.msg) ? err.response.data.msg : "خطا"
-                toast.error(errorMsg, {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+                .then((d) => {
+                    const message = d.data.msg ? d.data.msg : "ایمیل دوباره ارسال شد"
+                    toast.success(message, {
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    })
+                    setNeedRefresh(1);
                 })
-            })
+                .catch((err) => {
+                    const errorMsg = (err.response && err.response.data && err.response.data.msg) ? err.response.data.msg : "خطا"
+                    toast.error(errorMsg, {
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    })
+                })
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     const [bulkEmailSituation, setBulkEmailSituation] = useState(true);
@@ -173,31 +189,35 @@ const Info: React.FC<CookiesPropsTypes> = ({ cookie }) => {
             emailSend: input,
         }
         const backendUrl = `https://file-server.liara.run/api/update-email-user`;
-        axios.post(backendUrl, formData, { headers: { auth_cookie: cookie } })
-            .then((d) => {
-                Cookies.set('auth_cookie', d.data.auth, { expires: 60 });
-                const message = d.data.msg ? d.data.msg : "تغییر اطلاعات شما با موفقیت انجام شد."
-                toast.success(message, {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+        try {
+            axios.post(backendUrl, formData, { headers: { auth_cookie: cookie } })
+                .then((d) => {
+                    Cookies.set('auth_cookie', d.data.auth, { expires: 60 });
+                    const message = d.data.msg ? d.data.msg : "تغییر اطلاعات شما با موفقیت انجام شد."
+                    toast.success(message, {
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    })
+                    setBulkEmailSituation(input)
                 })
-                setBulkEmailSituation(input)
-            })
-            .catch((err) => {
-                const errorMsg = (err.response && err.response.data && err.response.data.msg) ? err.response.data.msg : "خطا"
-                toast.error(errorMsg, {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
+                .catch((err) => {
+                    const errorMsg = (err.response && err.response.data && err.response.data.msg) ? err.response.data.msg : "خطا"
+                    toast.error(errorMsg, {
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    })
                 })
-            })
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     const router = useRouter();
