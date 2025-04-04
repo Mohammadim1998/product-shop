@@ -274,7 +274,7 @@ const NewPost = () => {
                     </select>
                 </div>
 
-                <button type="submit" className="bg-indigo-600 text-white p-2 w-full rounded-md transition-all duration-500 hover:bg-orange-500">ارسال</button>
+                <button type="submit" className="bg-indigo-600 text-white py-2 cursor-pointer w-full rounded-md transition-all duration-500 hover:bg-orange-500">ارسال</button>
             </form>
             <ToastContainer
                 bodyClassName={() => "font-[shabnam] text-sm"}

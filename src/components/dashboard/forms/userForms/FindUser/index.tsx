@@ -107,7 +107,7 @@ const FindUser = () => {
                     <input required={true} ref={emailRef} type="email" className="p-2 rounded-md w-full outline-none border-2 border-zinc-300 focus:border-orange-400" />
                 </div>
 
-                <button type="submit" className="bg-indigo-600 text-white p-2 w-full rounded-md transition-all duration-500 hover:bg-orange-500">جستجوی کاربر</button>
+                <button type="submit" className="bg-indigo-600 cursor-pointer text-white py-2 w-full rounded-md transition-all duration-500 hover:bg-orange-500">جستجوی کاربر</button>
 
             </form>
             <ToastContainer

@@ -21,10 +21,10 @@ const MiddleBannerMain = () => {
                 <h1 className="text-blue-500 text-lg">بنر های تبلیغاتی</h1>
                 <div className="flex justify-end items-center gap-2">
                     <button onClick={() => setDet(<AllMidBanners setMidBanDetCtrl={setMidBanDetCtrl} setRandomNumForBannerClick={setRandomNumForBannerClick} />)}
-                        className="flex justify-center items-center w-32 h-10 rounded-md bg-indigo-600 text-white transition-all duration-500 hover:bg-orange-500">همه</button>
+                        className="flex justify-center items-center cursor-pointer w-32 h-10 rounded-md bg-indigo-600 text-white transition-all duration-500 hover:bg-orange-500">همه</button>
 
                     <button onClick={() => setDet(<NewMidBanners />)}
-                        className="flex justify-center items-center w-32 h-10 rounded-md bg-indigo-600 text-white transition-all duration-500 hover:bg-orange-500">بنر جدید</button>
+                        className="flex justify-center items-center cursor-pointer w-32 h-10 rounded-md bg-indigo-600 text-white transition-all duration-500 hover:bg-orange-500">بنر جدید</button>
                 </div>
             </section>
 

@@ -379,7 +379,7 @@ const ShopComp: React.FC<ShopCompProps> = ({ url }) => {
                         </div>
                         <div className="flex justify-center">
                             <button type="submit"
-                                className="w-60 md:w-full text-center bg-orange-400 p-2 rounded h-10 flex justify-center items-center text-white transition-all duration-500"
+                                className="w-60 md:w-full cursor-pointer text-center bg-orange-400 p-2 rounded h-10 flex justify-center items-center text-white transition-all duration-500"
                             >
                                 اعمال فیلتر قیمت
                             </button>

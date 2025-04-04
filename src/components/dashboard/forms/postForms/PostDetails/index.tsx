@@ -226,9 +226,9 @@ const PostDetails: React.FC<PostDetailsPropsTypes> = ({ goalId }) => {
                     <div className="flex flex-col gap-8">
                         <div className="flex justify-between items-center">
                             <h2 className="text-orange-500">جزئیات پست</h2>
-                            <div className="flex justify-end items-center gap-4">
-                                <Link target="_blank" href={`/blog/${fullData?.slug}`} className="bg-blue-600 text-white px-4 py-1 rounded-md text-sm transition-all duration-500">لینک پست</Link>
-                                <button onClick={() => remover()} className="bg-rose-600 text-white px-4 py-1 rounded-sm text-xs">حذف</button>
+                            <div className="flex justify-end items-center gap-4 text-white">
+                                <Link target="_blank" href={`/blog/${fullData?.slug}`} className="bg-blue-600 px-4 py-1 rounded-md text-sm transition-all duration-500">لینک پست</Link>
+                                <button onClick={() => remover()} className="bg-rose-600 cursor-pointer text-white px-4 py-1 rounded-sm text-xs">حذف</button>
                             </div>
                         </div>
 
@@ -384,7 +384,7 @@ const PostDetails: React.FC<PostDetailsPropsTypes> = ({ goalId }) => {
                                 </select>
                             </div>
 
-                            <button type="submit" className="bg-indigo-600 text-white w-full p-2 rounded-md transition-all duration-500 hover:bg-orange-500">ارسال</button>
+                            <button type="submit" className="bg-indigo-600 text-white w-full py-2 cursor-pointer rounded-md transition-all duration-500 hover:bg-orange-500">ارسال</button>
 
                         </form>
                         <ToastContainer

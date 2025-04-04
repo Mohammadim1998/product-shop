@@ -504,7 +504,7 @@ const NewProduct = () => {
 
             <button
                type="submit"
-               className=" p-2 bg-indigo-600 text-white w-full rounded-md transition-all duration-500 hover:bg-orange-500"
+               className="py-2 cursor-pointer bg-indigo-600 text-white w-full rounded-md transition-all duration-500 hover:bg-orange-500"
             >
                ارسال
             </button>

@@ -203,8 +203,8 @@ const CommentDetails: React.FC<CommentsDetailPropsTypes> = ({ goalId }) => {
             <div className="flex justify-between items-center">
                 <h2 className="text-orange-500">جزئیات دیدگاه</h2>
                 <div className="flex justify-end items-center gap-4">
-                    <button onClick={() => publisher()} className="bg-sky-600 text-white px-4 py-1 rounded-sm text-xs transition-all duration-500 hover:bg-sky-700">انتشار + ایمیل در صورت پاسخ بودن</button>
-                    <button onClick={() => remover()} className="bg-rose-600 text-white px-4 py-1 rounded-sm text-xs transition-all duration-500 hover:bg-rose-700">حذف</button>
+                    <button onClick={() => publisher()} className="bg-sky-600 cursor-pointer text-white px-4 py-1 rounded-sm text-xs transition-all duration-500 hover:bg-sky-700">انتشار + ایمیل در صورت پاسخ بودن</button>
+                    <button onClick={() => remover()} className="bg-rose-600 cursor-pointer text-white px-4 py-1 rounded-sm text-xs transition-all duration-500 hover:bg-rose-700">حذف</button>
                 </div>
             </div>
 
@@ -296,7 +296,7 @@ const CommentDetails: React.FC<CommentsDetailPropsTypes> = ({ goalId }) => {
                     />
                 </div>
 
-                <button type="submit" className="bg-indigo-600 text-white w-full p-2 rounded-md transition-all duration-500 hover:bg-orange-500">ارسال</button>
+                <button type="submit" className="bg-indigo-600 cursor-pointer text-white w-full py-2 rounded-md transition-all duration-500 hover:bg-orange-500">ارسال</button>
             </form >
             <ToastContainer
                 bodyClassName={() => "font-[shabnam] text-sm flex items-center"}

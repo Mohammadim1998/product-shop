@@ -92,7 +92,7 @@ const newMidBanners = () => {
                     </select>
                 </div>
 
-                <button type="submit" className="bg-indigo-600 text-white w-full rounded-md transition-all duration-500 hover:bg-orange-500">ارسال</button>
+                <button type="submit" className="bg-indigo-600 cursor-pointer py-2 text-white w-full rounded-md transition-all duration-500 hover:bg-orange-500">ارسال</button>
             </form>
             <ToastContainer
                 bodyClassName={() => "font-[shabnam] text-sm flex items-center"}

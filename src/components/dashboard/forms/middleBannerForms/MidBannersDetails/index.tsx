@@ -139,7 +139,7 @@ const MidBannersDetails: React.FC<BannerDetailsPropsTypes> = ({ midBanId }) => {
                 : (<div className="flex flex-col gap-8">
                     <div className="flex justify-between items-center">
                         <h2 className="text-orange-500">جزئیات بنر</h2>
-                        <button onClick={() => remover()} className="bg-rose-600 text-white px-4 py-1 rounded-sm text-xs">حذف</button>
+                        <button onClick={() => remover()} className="bg-rose-600 cursor-pointer text-white px-4 py-1 rounded-sm text-xs">حذف</button>
                     </div >
 
                     <div className="flex justify-between items-center">
@@ -178,7 +178,7 @@ const MidBannersDetails: React.FC<BannerDetailsPropsTypes> = ({ midBanId }) => {
                             </select>
                         </div>
 
-                        <button type="submit" className="bg-indigo-600 py-1 text-white w-full rounded-md transition-all duration-500 hover:bg-orange-500">به روز رسانی</button>
+                        <button type="submit" className="bg-indigo-600 cursor-pointer py-2 text-white w-full rounded-md transition-all duration-500 hover:bg-orange-500">به روز رسانی</button>
                     </form>
                     <ToastContainer
                         bodyClassName={() => "font-[shabnam] text-sm flex items-center"}

@@ -275,7 +275,7 @@ const UserDetails: React.FC<UserDetailsPropsTypes> = ({ goalId }) => {
                         <div className="flex justify-between items-center">
                             <h2 className="text-orange-500">جزئیات کاربر</h2>
                             <div className="flex justify-end items-center gap-4">
-                                <button onClick={() => remover()} className="bg-rose-600 text-white px-4 py-1 rounded-sm text-xs">حذف</button>
+                                <button onClick={() => remover()} className="bg-rose-600 cursor-pointer text-white px-4 py-1 rounded-sm text-xs">حذف</button>
                             </div>
                         </div>
 
@@ -525,7 +525,7 @@ const UserDetails: React.FC<UserDetailsPropsTypes> = ({ goalId }) => {
                                 </select>
                             </div>
 
-                            <button type="submit" className="bg-indigo-600 text-white w-full p-2 rounded-md transition-all duration-500 hover:bg-orange-500">ارسال</button>
+                            <button type="submit" className="bg-indigo-600 text-white w-full py-2 cursor-pointer rounded-md transition-all duration-500 hover:bg-orange-500">ارسال</button>
                         </form>
                         <ToastContainer
                             bodyClassName={() => "font-[shabnam] text-sm flex items-center"}

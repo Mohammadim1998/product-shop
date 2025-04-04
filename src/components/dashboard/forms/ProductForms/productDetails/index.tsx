@@ -374,17 +374,17 @@ const ProductsDetails: React.FC<ProductDetailsPropsTypes> = ({ goalId }) => {
             <div className=" flex flex-col gap-8">
                <div className=" flex justify-between items-center">
                   <h2 className=" text-orange-500">جزئیات محصول</h2>
-                  <div className=" flex justify-end items-center gap-4">
+                  <div className=" flex justify-end items-center gap-4 text-white">
                      <Link
                         target="_blank"
                         href={`/shop/${fullData?.slug}`}
-                        className=" bg-blue-600 text-white px-4 py-1 rounded-md text-sm transition-all duration-500 hover:bg-blue-700"
+                        className=" bg-blue-600 px-4 py-1 rounded-md text-sm transition-all duration-500 hover:bg-blue-700"
                      >
                         لینک پست
                      </Link>
                      <button
                         onClick={() => remover()}
-                        className=" bg-rose-600 text-white px-4 py-1 rounded-md text-xs transition-all duration-500 hover:bg-rose-700"
+                        className="bg-rose-600 cursor-pointer text-white px-4 py-1 rounded-md text-xs transition-all duration-500 hover:bg-rose-700"
                      >
                         حذف
                      </button>
@@ -732,7 +732,7 @@ const ProductsDetails: React.FC<ProductDetailsPropsTypes> = ({ goalId }) => {
                   </div>
                   <button
                      type="submit"
-                     className=" p-2 bg-indigo-600 text-white w-full rounded-md transition-all duration-500 hover:bg-orange-500"
+                     className="py-2 bg-indigo-600 cursor-pointer text-white w-full rounded-md transition-all duration-500 hover:bg-orange-500"
                   >
                      به روز رسانی
                   </button>

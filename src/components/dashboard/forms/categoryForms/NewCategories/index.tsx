@@ -167,7 +167,7 @@ const NewCategory = () => {
 
             <button
                type="submit"
-               className=" p-2 bg-indigo-600 text-white w-full rounded-md transition-all duration-500 hover:bg-orange-500"
+               className="py-2 bg-indigo-600 cursor-pointer text-white w-full rounded-md transition-all duration-500 hover:bg-orange-500"
             >
                ارسال
             </button>

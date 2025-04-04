@@ -188,7 +188,7 @@ const CategoryDetails: React.FC<DetailsCategoryPropsTypes> = ({ midBanId }) => {
                   <h2 className=" text-orange-500">جزئیات بنر</h2>
                   <button
                      onClick={() => remover()}
-                     className=" bg-rose-600 text-white px-4 py-1 rounded-md text-xs transition-all duration-500 hover:bg-rose-700"
+                     className=" bg-rose-600 text-white cursor-pointer px-4 py-1 rounded-md text-xs transition-all duration-500 hover:bg-rose-700"
                   >
                      حذف
                   </button>
@@ -305,7 +305,7 @@ const CategoryDetails: React.FC<DetailsCategoryPropsTypes> = ({ midBanId }) => {
                   </div>
                   <button
                      type="submit"
-                     className=" p-2 bg-indigo-600 text-white w-full rounded-md transition-all duration-500 hover:bg-orange-500"
+                     className="py-2 bg-indigo-600 cursor-pointer text-white w-full rounded-md transition-all duration-500 hover:bg-orange-500"
                   >
                      به روز رسانی
                   </button>

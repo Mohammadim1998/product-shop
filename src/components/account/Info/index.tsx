@@ -361,7 +361,7 @@ const Info: React.FC<CookiesPropsTypes> = ({ cookie }) => {
                                             }} className="bg-green-600 text-white flex justify-center items-center w-20 h-6 rounded">روشن</button>
                                             : <button onClick={() => {
                                                 bulkEmailChanger(false);
-                                            }} className="bg-rose-600 text-white flex justify-center items-center w-20 h-6 rounded">خاموش</button>
+                                            }} className="bg-rose-600 text-white cursor-pointer flex justify-center items-center w-20 h-6 rounded">خاموش</button>
                                     }
                                 </div>
 

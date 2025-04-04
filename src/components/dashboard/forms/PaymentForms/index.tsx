@@ -22,11 +22,11 @@ const PaymentsMain = () => {
                 <h1 className="text-blue-500 text-lg">سفارش ها</h1>
                 <div className="flex justify-end items-center gap-2">
                     <button onClick={() => setDet(<AllPayments setMidBanDetCtrl={setMidBanDetCtrl} setRandomNumForBannerClick={setRandomNumForBannerClick} />)}
-                        className="flex justify-center items-center w-32 h-10 rounded-md bg-indigo-600 text-white transition-all duration-500 hover:bg-orange-500">
+                        className="flex justify-center items-center cursor-pointer w-32 h-10 rounded-md bg-indigo-600 text-white transition-all duration-500 hover:bg-orange-500">
                         همه
                     </button>
                     <button onClick={() => setDet(<AllNewPayments setMidBanDetCtrl={setMidBanDetCtrl} setRandomNumForBannerClick={setRandomNumForBannerClick} />)}
-                        className="flex justify-center items-center w-32 h-10 rounded-md bg-indigo-600 text-white transition-all duration-500 hover:bg-orange-500">
+                        className="flex justify-center items-center cursor-pointer w-32 h-10 rounded-md bg-indigo-600 text-white transition-all duration-500 hover:bg-orange-500">
                         جدید
                     </button>
                 </div>

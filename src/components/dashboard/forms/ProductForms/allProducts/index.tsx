@@ -108,8 +108,8 @@ const AllProducts: React.FC<AllProductsPropsTypes> = ({ setmidBanDetCtrl, setran
                }}
                   className={
                      categoryUrl == "products"
-                        ? "bg-orange-400 p-2 rounded border-2 border-black"
-                        : "bg-yellow-400 p-2 rounded border-2 border-black"}>همه دسته ها</button>
+                        ? "bg-orange-400 p-2 cursor-pointer rounded border-2 border-black"
+                        : "bg-yellow-400 p-2 cursor-pointer rounded border-2 border-black"}>همه دسته ها</button>
 
                <button onClick={() => {
                   categoryUrl == "get-products-of-type/book"
@@ -120,8 +120,8 @@ const AllProducts: React.FC<AllProductsPropsTypes> = ({ setmidBanDetCtrl, setran
                }}
                   className={
                      categoryUrl == "get-products-of-type/book"
-                        ? "bg-orange-400 p-2 rounded border-2 cborder-black"
-                        : "bg-yellow-400 p-2 rounded border-2 border-black"}>کتاب ها</button>
+                        ? "bg-orange-400 p-2 cursor-pointer rounded border-2 cborder-black"
+                        : "bg-yellow-400 p-2 cursor-pointer rounded border-2 border-black"}>کتاب ها</button>
 
                <button onClick={() => {
                   categoryUrl == "get-products-of-type/app"
@@ -132,8 +132,8 @@ const AllProducts: React.FC<AllProductsPropsTypes> = ({ setmidBanDetCtrl, setran
                }}
                   className={
                      categoryUrl == "get-products-of-type/app"
-                        ? "bg-orange-400 p-2 rounded border-2 border-black"
-                        : "bg-yellow-400 p-2 rounded border-2 border-black"}>اپ ها</button>
+                        ? "bg-orange-400 p-2 cursor-pointer rounded border-2 border-black"
+                        : "bg-yellow-400 p-2 cursor-pointer rounded border-2 border-black"}>اپ ها</button>
 
                <button onClick={() => {
                   categoryUrl == "get-products-of-type/gr"
@@ -144,8 +144,8 @@ const AllProducts: React.FC<AllProductsPropsTypes> = ({ setmidBanDetCtrl, setran
                }}
                   className={
                      categoryUrl == "get-products-of-type/gr"
-                        ? "bg-orange-400 p-2 rounded border-2 border-black"
-                        : "bg-yellow-400 p-2 rounded border-2 border-black"}>فایل های گرافیکی</button>
+                        ? "bg-orange-400 p-2 cursor-pointer rounded border-2 border-black"
+                        : "bg-yellow-400 p-2 cursor-pointer rounded border-2 border-black"}>فایل های گرافیکی</button>
             </div>
 
             <div className=" w-32 h-10 rounded bg-indigo-500 flex justify-center items-center text-white">
