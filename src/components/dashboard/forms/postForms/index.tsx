@@ -4,8 +4,6 @@ import AllPosts from "./AllPosts";
 import NewPost from "./newPost";
 import PostDetails from "./PostDetails";
 
-
-
 const PostsMain = () => {
     const [midBanDetCtrl, setMidBanDetCtrl] = useState<string>("");
     const [RandomNumForBannerClick, setRandomNumForBannerClick] = useState<number | null>(null);

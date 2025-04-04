@@ -26,12 +26,6 @@ const SliderDetails: React.FC<SliderPropsTypes> = ({ data }) => {
     const [isBeginning, setIsBeginning] = useState(true);
     const [isEnd, setIsEnd] = useState(false);
 
-    // if (!data || data.length === 0) {
-    //     return <div className="h-64 bg-gray-100 flex items-center justify-center">
-    //         <p>No slides available</p>
-    //     </div>;
-    // }
-
     const handlePrev = () => {
         if (swiperRef.current && !isBeginning) {
             swiperRef.current.swiper.slidePrev();

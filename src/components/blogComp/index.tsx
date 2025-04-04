@@ -54,19 +54,22 @@ const BlogComp = ({ url }: { url: UrlParams }) => {
     }, [url.keyword]);
 
     useEffect(() => {
-        axios.get(`https://file-server.liara.run/api/search-posts?${pgn}${pn}${keyword}`)
-            .then(d => {
-                setPosts(d.data.allPosts);
-                setBtns(d.data.btns);
-                setSearchedPostsNumbers(d.data.postsNumber);
-            })
-            .catch(e => {
-                console.log("error");
-                setLoading(false);
-            })
-            .finally(() => {
-                setLoading(false);
-            })
+        const fetchData = async () => {
+            await axios.get(`https://file-server.liara.run/api/search-posts?${pgn}${pn}${keyword}`)
+                .then(d => {
+                    setPosts(d.data.allPosts);
+                    setBtns(d.data.btns);
+                    setSearchedPostsNumbers(d.data.postsNumber);
+                })
+                .catch(e => {
+                    setLoading(false);
+                })
+                .finally(() => {
+                    setLoading(false);
+                })
+        }
+
+        fetchData();
     }, [pn, keyword]);
 
     return (

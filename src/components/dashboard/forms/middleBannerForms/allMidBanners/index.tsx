@@ -26,29 +26,32 @@ const allMidBanners: React.FC<BannersPropsTypes> = ({ setMidBanDetCtrl, setRando
         });
     };
 
-    const [auth_cookie, setAuth_cookie] = useState(Cookies.get("auth_cookie"));
+    const [auth_cookie, setAuth_cookie] = useState<string | undefined>(Cookies.get("auth_cookie"));
     const [banners, setBanners] = useState<ItemsBannerPropsTypes[] | null>(null);
-    const [numbersOfBtns, setNumbersOfBtns] = useState([-1]);
-    const [filteredBtns, setfilteredBtns] = useState([-1]);
-    const [pageNumber, setPageNumber] = useState(1);
-    const [allMidBanNumber, setAllMidBanNumber] = useState(0);
+    const [numbersOfBtns, setNumbersOfBtns] = useState<number[]>([-1]);
+    const [filteredBtns, setfilteredBtns] = useState<number[]>([-1]);
+    const [pageNumber, setPageNumber] = useState<number>(1);
+    const [allMidBanNumber, setAllMidBanNumber] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(true);
     const paginate = 2;
 
     useEffect(() => {
-        axios.get(`https://file-server.liara.run/api/middle-banners?pn=${pageNumber}&&pgn=${paginate}`, { headers: { auth_cookie: auth_cookie } })
-            .then(d => {
-                setBanners(d.data.GoalMidBans);
-                setNumbersOfBtns(Array.from(Array(Math.ceil(d.data.AllMidBansNum / paginate)).keys()));
-                setAllMidBanNumber(d.data.AllMidBansNum);
-            })
-            .catch(e => {
-                console.log("error");
-                setLoading(false);
-            })
-            .finally(() => {
-                setLoading(false);
-            })
+        const fetchData = async () => {
+            await axios.get(`https://file-server.liara.run/api/middle-banners?pn=${pageNumber}&&pgn=${paginate}`, { headers: { auth_cookie: auth_cookie } })
+                .then(d => {
+                    setBanners(d.data.GoalMidBans);
+                    setNumbersOfBtns(Array.from(Array(Math.ceil(d.data.AllMidBansNum / paginate)).keys()));
+                    setAllMidBanNumber(d.data.AllMidBansNum);
+                })
+                .catch(e => {
+                    setLoading(false);
+                })
+                .finally(() => {
+                    setLoading(false);
+                })
+        }
+
+        fetchData();
     }, [pageNumber]);
 
     useEffect(() => {

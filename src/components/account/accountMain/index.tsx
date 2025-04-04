@@ -41,13 +41,17 @@ const AccountMain = ({ items }: ItemsPropsTypes) => {
         } else if (!auth_cookie || auth_cookie2 == "") {
             router.push("/login");
         } else {
-            axios.get("https://file-server.liara.run/api/get-user-data", { headers: { auth_cookie: auth_cookie } })
-                .then(d => {
-                    if (!d.data._id) {
-                        router.push("/login")
-                    }
-                })
-                .catch(e => { router.push("/login") })
+            const fetchData = async () => {
+                await axios.get("https://file-server.liara.run/api/get-user-data", { headers: { auth_cookie: auth_cookie } })
+                    .then(d => {
+                        if (!d.data._id) {
+                            router.push("/login")
+                        }
+                    })
+                    .catch(e => { router.push("/login") })
+            }
+
+            fetchData();
         }
     }, [Cookies.get("auth_cookie")]);
 
@@ -84,10 +88,14 @@ const AccountMain = ({ items }: ItemsPropsTypes) => {
     //IF USER COME IN ACCOUNT PAGE, HIS CARTNUMBER SHOULD BE RESET
     const { setCartNumber } = useAppContext();
     useEffect(() => {
-        const url = "https://file-server.liara.run/api/cart-number";
-        axios.get(url, { headers: { auth_cookie: auth_cookie } })
-            .then(d => setCartNumber(d.data.number))
-            .catch(d => setCartNumber(0))
+        const fetchData = async () => {
+            const url = "https://file-server.liara.run/api/cart-number";
+            await axios.get(url, { headers: { auth_cookie: auth_cookie } })
+                .then(d => setCartNumber(d.data.number))
+                .catch(d => setCartNumber(0))
+        }
+
+        fetchData();
     }, []);
 
     return (

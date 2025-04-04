@@ -36,19 +36,22 @@ const AllPayments: React.FC<AllPaymentsPropsTypes> = ({ setMidBanDetCtrl, setRan
     const paginate = 2;
 
     useEffect(() => {
-        axios.get(`https://file-server.liara.run/api/payments?pn=${pageNumber}&&pgn=${paginate}`, { headers: { auth_cookie: auth_cookie } })
+        const fetechData = async () => {
+            await axios.get(`https://file-server.liara.run/api/payments?pn=${pageNumber}&&pgn=${paginate}`, { headers: { auth_cookie: auth_cookie } })
             .then(d => {
-                setPayments(d.data.GoalUsers);
+                setPayments(d.data.GoalPayments);
                 setNumbersOfBtns(Array.from(Array(Math.ceil(d.data.AllUsersNum / paginate)).keys()));
                 setAllPaymentsNumber(d.data.AllUsersNum);
             })
             .catch(e => {
-                console.log(e);
                 setLoading(false);
             })
             .finally(() => {
                 setLoading(false);
             })
+        }
+
+        fetechData();
     }, [pageNumber]);
 
     useEffect(() => {

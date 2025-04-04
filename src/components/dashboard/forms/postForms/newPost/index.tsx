@@ -71,7 +71,6 @@ const NewPost = () => {
         axios.get(url, { headers: { auth_cookie: auth_cookie } })
             .then(d => setPosts(d.data))
             .catch(e => {
-                console.log(e);
                 setLoadingPosts(false);
             })
             .finally(() => {

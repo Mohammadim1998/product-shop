@@ -61,7 +61,6 @@ const LoginForm = () => {
     axios
       .post<ApiResponse>(backendUrl, formData)
       .then((d) => {
-        console.log(d.data);
         if (d.data.auth) {
           Cookies.set("auth_cookie", d.data.auth, { expires: 60 });
         }

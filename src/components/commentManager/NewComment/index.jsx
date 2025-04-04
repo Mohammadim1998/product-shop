@@ -42,7 +42,6 @@ const NewComment = ({ commentProps, text, itemParentId }) => {
                 headers: { auth_cookie: auth_cookie }
             })
                 .then((d) => {
-                    console.log(d.data);
                     const message = d.data.msg ? d.data.msg : "دیدگاه شما پس از بررسی منتشر خواهد شد"
                     toast.success(message, {
                         autoClose: 3000,

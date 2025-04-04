@@ -8,12 +8,16 @@ type ProductPostCommentNumPropsTypes = {
     goalId: string;
 }
 
-const ProductPostCommentNum:React.FC<ProductPostCommentNumPropsTypes> = ({ goalId }) => {
+const ProductPostCommentNum: React.FC<ProductPostCommentNumPropsTypes> = ({ goalId }) => {
     const [commentsNumber, setCommentsNumber] = useState(-1);
     useEffect(() => {
-        axios.get(`https://file-server.liara.run/api/get-comments-number/${goalId}`)
-            .then(d => { setCommentsNumber(d.data.number) })
-            .catch(e => { console.log(e) })
+        const fetchData = async () => {
+            await axios.get(`https://file-server.liara.run/api/get-comments-number/${goalId}`)
+                .then(d => { setCommentsNumber(d.data.number) })
+                .catch(e => { })
+        }
+
+        fetchData();
     })
 
     return (

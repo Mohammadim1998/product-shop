@@ -110,19 +110,21 @@ const ProductsDetails: React.FC<ProductDetailsPropsTypes> = ({ goalId }) => {
    const [loadingProducts, setLoadingProducts] = useState(true);
 
    useEffect(() => {
-      const productUrl = "https://file-server.liara.run/api/products-rel";
-      axios
-         .get(productUrl, { headers: { auth_cookie: auth_cookie } })
-         .then((d) => {
-            setProducts(d.data);
-         })
-         .catch((e) => {
-            console.log(e);
-            setLoadingProducts(false);
-         })
-         .finally(() => {
-            setLoadingProducts(false);
-         })
+      const fetchData = async () => {
+         const productUrl = "https://file-server.liara.run/api/products-rel";
+         await axios.get(productUrl, { headers: { auth_cookie: auth_cookie } })
+            .then((d) => {
+               setProducts(d.data);
+            })
+            .catch((e) => {
+               setLoadingProducts(false);
+            })
+            .finally(() => {
+               setLoadingProducts(false);
+            })
+      }
+
+      fetchData();
    }, []);
 
 
@@ -150,20 +152,21 @@ const ProductsDetails: React.FC<ProductDetailsPropsTypes> = ({ goalId }) => {
    const [loadingCategory, setLoadingCategory] = useState<boolean>(true);
 
    useEffect(() => {
-      const postsUrl =
-         "https://file-server.liara.run/api/products-categories-rel";
-      axios
-         .get(postsUrl, { headers: { auth_cookie: auth_cookie } })
-         .then((d) => {
-            setCategories(d.data);
-         })
-         .catch((e) => {
-            console.log(e);
-            setLoadingCategory(false);
-         })
-         .finally(() => {
-            setLoadingCategory(false);
-         })
+      const fetchData = async () => {
+         const postsUrl = "https://file-server.liara.run/api/products-categories-rel";
+         await axios.get(postsUrl, { headers: { auth_cookie: auth_cookie } })
+            .then((d) => {
+               setCategories(d.data);
+            })
+            .catch((e) => {
+               setLoadingCategory(false);
+            })
+            .finally(() => {
+               setLoadingCategory(false);
+            })
+      }
+
+      fetchData();
    }, []);
 
    const [relCategories, setRelCategories] = useState<CategoryType[]>([]);
@@ -194,10 +197,6 @@ const ProductsDetails: React.FC<ProductDetailsPropsTypes> = ({ goalId }) => {
       }
       setRelCategories(related);
    };
-
-   console.log("relProducts: ", relProducts);
-   console.log("relCategories: ", relCategories);
-   console.log("thisProductCatsIds: ", thisProductCatsIds);
 
    // FORM SHOULD BE NOT SEND WITH ENTER KEY
    const formKeyNotSuber = (event: React.KeyboardEvent) => {

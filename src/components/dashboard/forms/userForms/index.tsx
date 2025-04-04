@@ -13,8 +13,6 @@ const PostsMain = () => {
         if (midBanDetCtrl != "") {
             setDet(<UserDetails goalId={midBanDetCtrl} />)
         }
-        console.log("midBanDetCtrl ==>>>", midBanDetCtrl);
-
     }, [RandomNumForBannerClick]);
 
     return (

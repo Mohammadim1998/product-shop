@@ -18,7 +18,7 @@ type CommentSourceType = {
 };
 
 type CommentType = {
-    _id: string;
+    src_id: string;
     typeOfModel: "post" | "product";
     src: CommentSourceType;
     message: string;
@@ -36,97 +36,33 @@ const Favorites: React.FC<CookiesPropsTypes> = ({ cookie }) => {
 
     useEffect(() => {
         if (cookie && cookie.length > 0) {
-            axios.get("https://file-server.liara.run/api/get-part-of-user-data/comments", { headers: { auth_cookie: cookie } })
-                .then(d => {
-                    setData(d.data);
-                    setNeedRefresh(1);
-                })
-                .catch(e => {
-                    toast.error("خطا در لود اطلاعات", {
-                        autoClose: 3000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                    });
-                    setLoading(false);
-                    setNeedRefresh(0);
-                })
-                .finally(() => {
-                    setLoading(false);
-                    setNeedRefresh(0);
-                })
+            const fetchData = async () => {
+                await axios.get("https://file-server.liara.run/api/get-part-of-user-data/comments", { headers: { auth_cookie: cookie } })
+                    .then(d => {
+                        setData(d.data);
+                        setNeedRefresh(1);
+                    })
+                    .catch(e => {
+                        toast.error("خطا در لود اطلاعات", {
+                            autoClose: 3000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                        });
+                        setLoading(false);
+                        setNeedRefresh(0);
+                    })
+                    .finally(() => {
+                        setLoading(false);
+                        setNeedRefresh(0);
+                    })
+            }
+
+            fetchData();
         }
     }, [cookie, needRefresh]);
-
-    const productRemover = (input: string) => {
-        const formData = {
-            method: "remove",
-            goalFavProductId: input
-        }
-
-        axios.post("https://file-server.liara.run/api/favorite-product/", formData,
-            { headers: { auth_cookie: cookie } })
-            .then((d) => {
-                toast.success(d.data.msg, {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                })
-                setNeedRefresh(1)
-            })
-            .catch((err) => {
-                const errorMsg = (err.response && err.response.data && err.response.data.msg) ? err.response.data.msg : "خطا"
-                toast.error(errorMsg, {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                })
-            })
-    };
-
-    //User cart Products
-    const cartAdder = (input: string) => {
-        const productData = {
-            method: "push",
-            newCartProduct: input,
-        };
-        const backendUrl = `https://file-server.liara.run/api/cart-managment`;
-        axios.post(backendUrl, productData, { headers: { auth_cookie: cookie } })
-            .then((d) => {
-                console.log(d.data);
-                Cookies.set('auth_cookie', d.data.auth, { expires: 60 });
-                const message = d.data.msg ? d.data.msg : "با موفقیت به سبد خرید افزوده شد"
-                toast.success(message, {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                })
-                // setBulkEmailSituation(input)
-                setCartNumber(cartNumber + 1);
-            })
-            .catch((err) => {
-                const errorMsg = (err.response && err.response.data && err.response.data.msg) ? err.response.data.msg : "خطا"
-                toast.error(errorMsg, {
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                })
-            })
-    }
 
     return (
         <div className="relative flex flex-col gap-8 py-20 px-4 md:p-20">
@@ -162,26 +98,26 @@ const Favorites: React.FC<CookiesPropsTypes> = ({ cookie }) => {
                                 {data !== null && data?.length < 1
                                     ? <div className="w-full flex justify-center items-center p-8">دیدگاهی موجود نیست...</div>
                                     : (<div className="w-full flex flex-col gap-8">
-                                        {data && data.map((da, i) => (
-                                            <div key={i} className="w-full flex flex-col gap-4 bg-zinc-200 text-sm rounded-md relative">
+                                        {data && data?.map((da, i) => (
+                                            <div key={da.src_id} className="w-full flex flex-col gap-4 bg-zinc-200 text-sm rounded-md relative">
                                                 <div className="flex justify-between items-start gap-4">
                                                     <div className="relative w-full flex flex-col gap-8">
                                                         <div className="flex flex-col md:flex-row justify-between items-center p-1 gap-y-1 md:gap-x-4">
                                                             <Link
-                                                                href={da.typeOfModel == "post" ? `/blog/${da.src.slug}` : `/shop/${da.src.slug}`}
+                                                                href={da?.typeOfModel == "post" ? `/blog/${da?.src?.slug}` : `/shop/${da?.src?.slug}`}
                                                                 target={"_blank"}
                                                                 className="w-full rounded-sm px-3 flex justify-start items-center text-sm h-6 bg-green-600 text-white transition-all duration-300 hover:bg-green-600"
                                                             >
-                                                                {da.typeOfModel == "post" ? "مقاله" : "محصول"} : {da.src.title}
+                                                                {da?.typeOfModel == "post" ? "مقاله" : "محصول"} : {da?.src?.title}
                                                             </Link>
 
                                                             <div className="flex justify-end items-center gap-4">
                                                                 <div className="cursor-pointer bg-orange-500 text-white rounded-sm text-xs flex justify-center items-center w-28 h-6">
-                                                                    {da.createdAt}
+                                                                    {da?.createdAt}
                                                                 </div>
 
                                                                 <div className="">
-                                                                    {da.published == true
+                                                                    {da?.published == true
                                                                         ? <div className="bg-green-600 text-white w-28 h-6 px-3 py-1 flex justify-center items-center text-base sm:text-sm rounded">
                                                                             منتشر شده
                                                                         </div>
@@ -192,7 +128,7 @@ const Favorites: React.FC<CookiesPropsTypes> = ({ cookie }) => {
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <p className="text-base leading-9 text-black px-4">{da.message}</p>
+                                                        <p className="text-base leading-9 text-black px-4">{da?.message}</p>
                                                     </div>
                                                 </div>
                                             </div>

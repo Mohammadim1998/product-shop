@@ -37,19 +37,21 @@ const AllPosts: React.FC<PostsPropsTypes> = ({ setMidBanDetCtrl, setRandomNumFor
     const paginate = 2;
 
     useEffect(() => {
-        axios.get(`https://file-server.liara.run/api/posts?pn=${pageNumber}&&pgn=${paginate}`, { headers: { auth_cookie: auth_cookie } })
-            .then(d => {
-                setPosts(d.data.GoalPosts);
-                setNumbersOfBtns(Array.from(Array(Math.ceil(d.data.AllPostsNum / paginate)).keys()));
-                setAllPostsNumber(d.data.AllPostsNum);
-            })
-            .catch(e => {
-                console.log("error");
-                setLoaing(false);
-            })
-            .finally(() => {
-                setLoaing(false);
-            })
+        const fetchData = async () => {
+            await axios.get(`https://file-server.liara.run/api/posts?pn=${pageNumber}&&pgn=${paginate}`, { headers: { auth_cookie: auth_cookie } })
+                .then(d => {
+                    setPosts(d.data.GoalPosts);
+                    setNumbersOfBtns(Array.from(Array(Math.ceil(d.data.AllPostsNum / paginate)).keys()));
+                    setAllPostsNumber(d.data.AllPostsNum);
+                })
+                .catch(e => {
+                    setLoaing(false);
+                })
+                .finally(() => {
+                    setLoaing(false);
+                })
+        }
+        fetchData();
     }, [pageNumber]);
 
     useEffect(() => {

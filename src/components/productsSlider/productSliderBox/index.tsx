@@ -30,7 +30,6 @@ const ProductSliderBox = ({ itemData }: ItemData) => {
         const backendUrl = `https://file-server.liara.run/api/favorite-product`;
         axios.post(backendUrl, productData, { headers: { auth_cookie: auth_cookie } })
             .then((d) => {
-                console.log(d.data);
                 Cookies.set('auth_cookie', d.data.auth, { expires: 60 });
                 const message = d.data.msg ? d.data.msg : "تغییر اطلاعات شما با موفقیت انجام شد."
                 toast.success(message, {
@@ -41,7 +40,6 @@ const ProductSliderBox = ({ itemData }: ItemData) => {
                     draggable: true,
                     progress: undefined,
                 })
-                // setBulkEmailSituation(input)
             })
             .catch((err) => {
                 const errorMsg = (err.response && err.response.data && err.response.data.msg) ? err.response.data.msg : "خطا"
@@ -65,7 +63,6 @@ const ProductSliderBox = ({ itemData }: ItemData) => {
         const backendUrl = `https://file-server.liara.run/api/cart-managment`;
         axios.post(backendUrl, productData, { headers: { auth_cookie: auth_cookie } })
             .then((d) => {
-                console.log(d.data);
                 Cookies.set('auth_cookie', d.data.auth, { expires: 60 });
                 const message = d.data.msg ? d.data.msg : "با موفقیت به سبد خرید افزوده شد"
                 toast.success(message, {
@@ -76,7 +73,6 @@ const ProductSliderBox = ({ itemData }: ItemData) => {
                     draggable: true,
                     progress: undefined,
                 })
-                // setBulkEmailSituation(input)
                 setCartNumber(cartNumber + 1);
             })
             .catch((err) => {

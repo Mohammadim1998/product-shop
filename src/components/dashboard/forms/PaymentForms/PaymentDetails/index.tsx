@@ -51,17 +51,20 @@ const PaymentDetails: React.FC<PaymentDetailsPropsTypes> = ({ goalId }) => {
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        axios.get(`https://file-server.liara.run/api/get-payment/${goalId}`, { headers: { auth_cookie: auth_cookie } })
+        const fetchData = async () => {
+            await axios.get(`https://file-server.liara.run/api/get-payment/${goalId}`, { headers: { auth_cookie: auth_cookie } })
             .then((d) => {
                 setFullData(d.data);
             })
             .catch(e => {
-                console.log(e);
                 setLoading(false);
             })
             .finally(() => {
                 setLoading(false);
             })
+        }
+
+        fetchData();
     }, [goalId]);
 
     const updater = (e: React.FormEvent) => {

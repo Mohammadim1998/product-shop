@@ -13,7 +13,7 @@ const ProductShopCommentNum: React.FC<ProductShopCommentNumPropsTypes> = ({ goal
     useEffect(() => {
         axios.get(`https://file-server.liara.run/api/get-comments-number/${goalId}`)
             .then(d => { setCommentsNumber(d.data.number) })
-            .catch(e => { console.log(e) })
+            .catch(e => { })
     })
 
     return (

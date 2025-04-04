@@ -36,7 +36,6 @@ const GraphicSliderBox: React.FC<GraphicSliderPropsTypes> = ({ itemData }) => {
         const backendUrl = `https://file-server.liara.run/api/favorite-product`;
         axios.post(backendUrl, productData, { headers: { auth_cookie: auth_cookie } })
             .then((d) => {
-                console.log(d.data);
                 Cookies.set('auth_cookie', d.data.auth, { expires: 60 });
                 const message = d.data.msg ? d.data.msg : "تغییر اطلاعات شما با موفقیت انجام شد."
                 toast.success(message, {
@@ -71,7 +70,6 @@ const GraphicSliderBox: React.FC<GraphicSliderPropsTypes> = ({ itemData }) => {
         const backendUrl = `https://file-server.liara.run/api/cart-managment`;
         axios.post(backendUrl, productData, { headers: { auth_cookie: auth_cookie } })
             .then((d) => {
-                console.log(d.data);
                 Cookies.set('auth_cookie', d.data.auth, { expires: 60 });
                 const message = d.data.msg ? d.data.msg : "با موفقیت به سبد خرید افزوده شد"
                 toast.success(message, {
@@ -82,7 +80,6 @@ const GraphicSliderBox: React.FC<GraphicSliderPropsTypes> = ({ itemData }) => {
                     draggable: true,
                     progress: undefined,
                 })
-                // setBulkEmailSituation(input)
                 setCartNumber(cartNumber + 1);
             })
             .catch((err) => {

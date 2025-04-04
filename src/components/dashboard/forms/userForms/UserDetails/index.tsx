@@ -64,8 +64,6 @@ type FullDataPropsTypes = {
 }
 
 const UserDetails: React.FC<UserDetailsPropsTypes> = ({ goalId }) => {
-    console.log("goalIdgoalId: ",goalId);
-    
     const [auth_cookie, setAuth_cookie] = useState<string | undefined>(Cookies.get("auth_cookie"));
     const viewedRef = useRef<HTMLSelectElement>(null);
     const emailRef = useRef<HTMLInputElement>(null);
@@ -82,21 +80,19 @@ const UserDetails: React.FC<UserDetailsPropsTypes> = ({ goalId }) => {
         }
     };
 
-    //PRICE BEAUTIFUL
-    function priceChanger(x: string) {
-        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    }
-
     // RELATED
     const [posts, setPosts] = useState([-1]);
     useEffect(() => {
-        const postsUrl = "https://file-server.liara.run/api/posts-rel";
-        axios
-            .get(postsUrl, { headers: { auth_cookie: auth_cookie } })
-            .then((d) => {
-                setPosts(d.data);
-            })
-            .catch((e) => console.log("error in loading posts"));
+        const fetchData = async () => {
+            const postsUrl = "https://file-server.liara.run/api/posts-rel";
+            await axios.get(postsUrl, { headers: { auth_cookie: auth_cookie } })
+                .then((d) => {
+                    setPosts(d.data);
+                })
+                .catch((e) => {});
+        }
+
+        fetchData();
     }, []);
 
     //Loading default values
@@ -104,17 +100,20 @@ const UserDetails: React.FC<UserDetailsPropsTypes> = ({ goalId }) => {
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        axios.get(`https://file-server.liara.run/api/get-user/${goalId}`, { headers: { auth_cookie: auth_cookie } })
-            .then((d) => {
-                setFullData(d.data);
-            })
-            .catch(e => {
-                console.log(e);
-                setLoading(false);
-            })
-            .finally(() => {
-                setLoading(false);
-            })
+        const fetchData = async () => {
+            await axios.get(`https://file-server.liara.run/api/get-user/${goalId}`, { headers: { auth_cookie: auth_cookie } })
+                .then((d) => {
+                    setFullData(d.data);
+                })
+                .catch(e => {
+                    setLoading(false);
+                })
+                .finally(() => {
+                    setLoading(false);
+                })
+        }
+
+        fetchData();
     }, [goalId]);
 
     const updater = (e: React.FormEvent) => {
@@ -209,8 +208,8 @@ const UserDetails: React.FC<UserDetailsPropsTypes> = ({ goalId }) => {
             })
     };
 
-    const paymentUnchecker = (goalId: string) => {
-        axios.get(`https://file-server.liara.run/api/uncheck-payment/${goalId}`, { headers: { auth_cookie: auth_cookie } })
+    const paymentUnchecker = async (goalId: string) => {
+        await axios.get(`https://file-server.liara.run/api/uncheck-payment/${goalId}`, { headers: { auth_cookie: auth_cookie } })
             .then(d => {
                 toast.success("به بخش سفارش های افزوده شد", {
                     autoClose: 3000,
@@ -237,8 +236,8 @@ const UserDetails: React.FC<UserDetailsPropsTypes> = ({ goalId }) => {
             })
     };
 
-    const commentUnchecker = (goalId: string) => {
-        axios.get(`https://file-server.liara.run/api/uncheck-comment/${goalId}`, { headers: { auth_cookie: auth_cookie } })
+    const commentUnchecker = async (goalId: string) => {
+        await axios.get(`https://file-server.liara.run/api/uncheck-comment/${goalId}`, { headers: { auth_cookie: auth_cookie } })
             .then(d => {
                 toast.success("به بخش سفارش های افزوده شد", {
                     autoClose: 3000,

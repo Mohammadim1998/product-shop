@@ -44,37 +44,41 @@ const CartPageCom: React.FC<CartPropsTypes> = ({ cookie }) => {
 
     useEffect(() => {
         if (cookie && cookie.length > 0) {
-            axios.get("https://file-server.liara.run/api/get-part-of-user-data/cart", { headers: { auth_cookie: cookie } })
-                .then(d => {
-                    setData(d.data);
-                    setNeedRefresh(1);
-                    if (d.data.length < 1) {
-                        setPriceSum(0);
-                    } else {
-                        let i = 0;
-                        for (let j = 0; j < d.data.length; j++) {
-                            i = i + Number(d.data[j].price);
+            const fetchData = async () => {
+                await axios.get("https://file-server.liara.run/api/get-part-of-user-data/cart", { headers: { auth_cookie: cookie } })
+                    .then(d => {
+                        setData(d.data);
+                        setNeedRefresh(1);
+                        if (d.data.length < 1) {
+                            setPriceSum(0);
+                        } else {
+                            let i = 0;
+                            for (let j = 0; j < d.data.length; j++) {
+                                i = i + Number(d.data[j].price);
+                            }
+                            setPriceSum(i);
                         }
-                        setPriceSum(i);
-                    }
-                    //JUST PRODUCTS IDS
-                    const ids = d.data?.map((product: DataPropsTypes) => product._id);
-                    setCartProductsIds(ids);
-                })
-                .catch(e => {
-                    toast.error("خطا در لود اطلاعات", {
-                        autoClose: 3000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                    });
-                    setLoading(false);
-                })
-                .finally(() => {
-                    setLoading(false);
-                })
+                        //JUST PRODUCTS IDS
+                        const ids = d.data?.map((product: DataPropsTypes) => product._id);
+                        setCartProductsIds(ids);
+                    })
+                    .catch(e => {
+                        toast.error("خطا در لود اطلاعات", {
+                            autoClose: 3000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                        });
+                        setLoading(false);
+                    })
+                    .finally(() => {
+                        setLoading(false);
+                    })
+            }
+
+            fetchData();
         }
     }, [cookie, needRefresh]);
 
@@ -119,7 +123,6 @@ const CartPageCom: React.FC<CartPropsTypes> = ({ cookie }) => {
         const backendUrl = `https://file-server.liara.run/api/favorite-product`;
         axios.post(backendUrl, productData, { headers: { auth_cookie: cookie } })
             .then((d) => {
-                console.log(d.data);
                 Cookies.set('auth_cookie', d.data.auth, { expires: 60 });
                 const message = d.data.msg ? d.data.msg : "تغییر اطلاعات شما با موفقیت انجام شد."
                 toast.success(message, {

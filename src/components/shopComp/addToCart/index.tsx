@@ -26,7 +26,6 @@ const AddToCart: React.FC<AddToCartPropsTypes> = ({ data }) => {
         const backendUrl = `https://file-server.liara.run/api/cart-managment`;
         axios.post(backendUrl, productData, { headers: { auth_cookie: auth_cookie } })
             .then((d) => {
-                console.log(d.data);
                 Cookies.set('auth_cookie', d.data.auth, { expires: 60 });
                 const message = d.data.msg ? d.data.msg : "با موفقیت به سبد خرید افزوده شد"
                 toast.success(message, {

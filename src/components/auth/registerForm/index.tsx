@@ -66,7 +66,6 @@ const RegisterForm = () => {
 
             const backendUrl = "https://file-server.liara.run/api/new-user";
             const response = await axios.post<ApiResponse>(backendUrl, formData);
-            console.log("response: ", response);
 
             if (response.data.auth) {
                 Cookies.set("auth_cookie", response.data.auth, { expires: 60 });

@@ -119,7 +119,6 @@ const NewProduct = () => {
             setCategories(d.data);
          })
          .catch((e) => {
-            console.log(e);
             setLoadingCategory(false);
          })
          .finally(() => {

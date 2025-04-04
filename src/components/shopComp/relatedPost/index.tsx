@@ -38,7 +38,6 @@ const RelatedPosts: React.FC<RelatedPostsPropsTypes> = ({ typeOfModel, title, re
                 setrelModelDataState(d.data);
             })
             .catch(e => {
-                console.log(e);
                 setRelLoading(false);
             })
             .finally(() => {

@@ -41,32 +41,35 @@ const Allsliders: React.FC<SlidersPropsTypes> = ({ setmidBanDetCtrl, setrandNumF
    const paginate = 3;
 
    useEffect(() => {
-      axios
-         .get(`https://file-server.liara.run/api/sliders?pn=${pageNumber}&&pgn=${paginate}`, { headers: { auth_cookie: auth_cookie } })
-         .then((d) => {
-            setsliders(d.data.GoalSliders);
-            setnumbersOfBtns(
-               Array.from(
-                  Array(Math.ceil(d.data.AllSlidersNum / paginate)).keys()
-               )
-            );
-            setallSliderNumber(d.data.AllSlidersNum);
-         })
-         .catch((e) => {
-            toast.error("خطا در لود اطلاعات", {
-               autoClose: 3000,
-               hideProgressBar: false,
-               closeOnClick: true,
-               pauseOnHover: true,
-               draggable: true,
-               progress: undefined,
-            });
-            console.log(e);
-            setLoading(false);
-         })
-         .finally(() => {
-            setLoading(false);
-         })
+      const fetData = async () => {
+         axios.get(`https://file-server.liara.run/api/sliders?pn=${pageNumber}&&pgn=${paginate}`, { headers: { auth_cookie: auth_cookie } })
+            .then((d) => {
+               setsliders(d.data.GoalSliders);
+               setnumbersOfBtns(
+                  Array.from(
+                     Array(Math.ceil(d.data.AllSlidersNum / paginate)).keys()
+                  )
+               );
+               setallSliderNumber(d.data.AllSlidersNum);
+            })
+            .catch((e) => {
+               toast.error("خطا در لود اطلاعات", {
+                  autoClose: 3000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+               });
+               console.log(e);
+               setLoading(false);
+            })
+            .finally(() => {
+               setLoading(false);
+            })
+      }
+
+      fetData();
    }, [pageNumber]);
 
    useEffect(() => {

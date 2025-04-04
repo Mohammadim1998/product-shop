@@ -41,7 +41,6 @@ const CategoryDetails: React.FC<DetailsCategoryPropsTypes> = ({ midBanId }) => {
    const situationRef = useRef<HTMLSelectElement>(null);
    const typeOfProductRef = useRef<HTMLSelectElement>(null);
 
-
    const updater = (e: React.FormEvent) => {
       e.preventDefault();
 
@@ -117,27 +116,29 @@ const CategoryDetails: React.FC<DetailsCategoryPropsTypes> = ({ midBanId }) => {
    const [loading, setLoading] = useState<boolean>(true);
 
    useEffect(() => {
-      axios
-         .get(
+      const fetchData = async () => {
+         await axios.get(
             `https://file-server.liara.run/api/get-category/${midBanId}`, { headers: { auth_cookie: auth_cookie } })
-         .then((d) => {
-            setfullData(d.data);
-            console.log("Catef: ", d.data);
-         })
-         .catch((e) => {
-            toast.error("خطا در لود اطلاعات", {
-               autoClose: 3000,
-               hideProgressBar: false,
-               closeOnClick: true,
-               pauseOnHover: true,
-               draggable: true,
-               progress: undefined,
-            });
-            setLoading(false);
-         })
-         .finally(() => {
-            setLoading(false);
-         })
+            .then((d) => {
+               setfullData(d.data);
+            })
+            .catch((e) => {
+               toast.error("خطا در لود اطلاعات", {
+                  autoClose: 3000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+               });
+               setLoading(false);
+            })
+            .finally(() => {
+               setLoading(false);
+            })
+      }
+
+      fetchData();
    }, [midBanId]);
 
    const remover = () => {

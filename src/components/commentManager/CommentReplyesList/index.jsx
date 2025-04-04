@@ -1,19 +1,22 @@
 "use client";
 import { useEffect, useState } from "react";
 
-const CommentReplyesList = ({commentProps, goalId }) => {
+const CommentReplyesList = ({ commentProps, goalId }) => {
     const [commentReplyes, setCommentReplyes] = useState(1);
 
     useEffect(() => {
-        const backendUrl = `https://file-server.liara.run/api/get-comment-children/${goalId}`;
-        axios.get(backendUrl)
-            .then((d) => {
-                setCommentReplyes(d.data);
-            })
-            .catch((err) => {
-                const errorMsg = (err.response && err.response.data && err.response.data.msg) ? err.response.data.msg : "خطا در لود دیدگاه"
-               console.log(err);
-            })
+        const fetchData = async () => {
+            const backendUrl = `https://file-server.liara.run/api/get-comment-children/${goalId}`;
+            await axios.get(backendUrl)
+                .then((d) => {
+                    setCommentReplyes(d.data);
+                })
+                .catch((err) => {
+                    const errorMsg = (err.response && err.response.data && err.response.data.msg) ? err.response.data.msg : "خطا در لود دیدگاه"
+                })
+        }
+
+        fetchData();
     }, [goalId]);
 
     return (

@@ -16,7 +16,9 @@ interface Comment {
     published: boolean;
     createdAt: string;
     typeOfProduct: "post" | "product";
+    src_id: string;
     src: {
+        _id: string;
         slug: string;
         title: string;
     };
@@ -51,17 +53,21 @@ const CommentDetails: React.FC<CommentsDetailPropsTypes> = ({ goalId }) => {
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        axios.get(`https://file-server.liara.run/api/get-comment/${goalId}`, { headers: { auth_cookie: auth_cookie } })
-            .then((d) => {
-                setFullData(d.data);
-            })
-            .catch(e => {
-                console.log(e);
-                setLoading(false);
-            })
-            .finally(() => {
-                setLoading(false);
-            })
+        const fetchData = async () => {
+            await axios.get(`https://file-server.liara.run/api/get-comment/${goalId}`, { headers: { auth_cookie: auth_cookie } })
+                .then((d) => {
+                    setFullData(d.data);
+                })
+                .catch(e => {
+                    console.log(e);
+                    setLoading(false);
+                })
+                .finally(() => {
+                    setLoading(false);
+                })
+        }
+
+        fetchData();
     }, [goalId, needToRefresh]);
 
     const updater = (e: React.FormEvent) => {

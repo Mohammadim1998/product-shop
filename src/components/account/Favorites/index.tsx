@@ -39,26 +39,30 @@ const Favorites: React.FC<CookiesPropsTypes> = ({ cookie }) => {
 
     useEffect(() => {
         if (cookie && cookie.length > 0) {
-            axios.get("https://file-server.liara.run/api/get-part-of-user-data/favorite", { headers: { auth_cookie: cookie } })
-                .then(d => {
-                    setData(d.data);
-                })
-                .catch(e => {
-                    toast.error("خطا در لود اطلاعات", {
-                        autoClose: 3000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                    });
-                    setLoading(false);
-                })
-                .finally(() => {
-                    setLoading(false);
-                })
-            setNeedRefresh(0);
+            const fetchData = async () => {
+                await axios.get("https://file-server.liara.run/api/get-part-of-user-data/favorite", { headers: { auth_cookie: cookie } })
+                    .then(d => {
+                        setData(d.data);
+                    })
+                    .catch(e => {
+                        toast.error("خطا در لود اطلاعات", {
+                            autoClose: 3000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                        });
+                        setLoading(false);
+                    })
+                    .finally(() => {
+                        setLoading(false);
+                    })
+                setNeedRefresh(0);
+            }
+            fetchData();
         }
+
     }, [cookie, needRefresh]);
 
     const productRemover = (input: string) => {
@@ -112,7 +116,6 @@ const Favorites: React.FC<CookiesPropsTypes> = ({ cookie }) => {
                     draggable: true,
                     progress: undefined,
                 })
-                // setBulkEmailSituation(input)
                 setCartNumber(cartNumber + 1);
             })
             .catch((err) => {
@@ -204,7 +207,6 @@ const Favorites: React.FC<CookiesPropsTypes> = ({ cookie }) => {
                                                                 <p className="my-4">{da?.shortDesc}</p>
                                                                 <div className="flex justify-start items-center gap-4">
                                                                     <div>{da?.buyNumber} فروش</div>
-                                                                    {/* <div>{priceChanger(da.price)} تومان</div> */}
                                                                     <div>{Number(da?.price).toLocaleString()} تومان</div>
                                                                 </div>
 

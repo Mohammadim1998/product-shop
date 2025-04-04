@@ -34,12 +34,13 @@ const AllComments: React.FC<AllCommentsPropsTypes> = ({ setMidBanDetCtrl, setRan
     const [pageNumber, setPageNumber] = useState<number>(1);
     const [allCommentsNumber, setAllCommentsNumber] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(true);
-    const paginate = 2;
+    const paginate = 10;
 
     useEffect(() => {
-        axios.get(`https://file-server.liara.run/api/comments?pn=${pageNumber}&&pgn=${paginate}`, { headers: { auth_cookie: auth_cookie } })
+        const fetchData = async () => {
+            await axios.get(`https://file-server.liara.run/api/comments?pn=${pageNumber}&&pgn=${paginate}`, { headers: { auth_cookie: auth_cookie } })
             .then(d => {
-                setComments(d.data.GoalCommentss);
+                setComments(d.data.GoalComments);
                 setNumbersOfBtns(Array.from(Array(Math.ceil(d.data.AllCommentsNum / paginate)).keys()));
                 setAllCommentsNumber(d.data.AllCommentsNum);
             })
@@ -50,6 +51,9 @@ const AllComments: React.FC<AllCommentsPropsTypes> = ({ setMidBanDetCtrl, setRan
             .finally(() => {
                 setLoading(false);
             })
+        }
+
+        fetchData();
     }, [pageNumber]);
 
     useEffect(() => {

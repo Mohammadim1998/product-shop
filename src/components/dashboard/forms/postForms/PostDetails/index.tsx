@@ -63,6 +63,7 @@ const PostDetails: React.FC<PostDetailsPropsTypes> = ({ goalId }) => {
             }
         }
     };
+
     const tagDeleter = (indexToRemove: number) => {
         setTag(tag.filter((_, index) => index !== indexToRemove));
     };
@@ -71,13 +72,16 @@ const PostDetails: React.FC<PostDetailsPropsTypes> = ({ goalId }) => {
     const [posts, setPosts] = useState<PostsTagsPropsTypes[]>([]);
 
     useEffect(() => {
-        const postsUrl = "https://file-server.liara.run/api/posts-rel";
-        axios
-            .get(postsUrl, { headers: { auth_cookie: auth_cookie } })
-            .then((d) => {
-                setPosts(d.data);
-            })
-            .catch((e) => console.log("error in loading posts"));
+        const fetchData = async () => {
+            const postsUrl = "https://file-server.liara.run/api/posts-rel";
+            await axios.get(postsUrl, { headers: { auth_cookie: auth_cookie } })
+                .then((d) => {
+                    setPosts(d.data);
+                })
+                .catch((e) => console.log("error in loading posts"));
+        }
+
+        fetchData();
     }, []);
 
     const [relPosts, setRelPosts] = useState<string[]>([]);
@@ -105,19 +109,22 @@ const PostDetails: React.FC<PostDetailsPropsTypes> = ({ goalId }) => {
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        axios.get(`https://file-server.liara.run/api/get-post-by-id/${goalId}`, { headers: { auth_cookie: auth_cookie } })
-            .then((d) => {
-                setFullData(d.data);
-                setTag(d.data.tags);
-                setRelPosts(d.data.relatedPosts);
-            })
-            .catch(e => {
-                console.log("error");
-                setLoading(false);
-            })
-            .finally(() => {
-                setLoading(false);
-            })
+        const fetchData = async () => {
+            await axios.get(`https://file-server.liara.run/api/get-post-by-id/${goalId}`, { headers: { auth_cookie: auth_cookie } })
+                .then((d) => {
+                    setFullData(d.data);
+                    setTag(d.data.tags);
+                    setRelPosts(d.data.relatedPosts);
+                })
+                .catch(e => {
+                    setLoading(false);
+                })
+                .finally(() => {
+                    setLoading(false);
+                })
+        }
+
+        fetchData();
     }, [goalId]);
 
     const updater = (e: React.FormEvent) => {
@@ -205,7 +212,7 @@ const PostDetails: React.FC<PostDetailsPropsTypes> = ({ goalId }) => {
                     progress: undefined,
                 })
             })
-            .catch(e => console.log("error"))
+            .catch(e => {})
     };
 
     return (

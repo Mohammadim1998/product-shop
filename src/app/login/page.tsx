@@ -8,18 +8,17 @@ type AuthDataPropsTypes = {
 
 const getAuthData = async (cookieValue: string | undefined): Promise<AuthDataPropsTypes> => {
     if (!cookieValue) {
-        redirect('/login')
+        return { _id: "" };
     }
-
-    const goalData = await fetch("https://file-server.liara.run/api/get-user-data", { cache: "no-store", headers: { auth_cookie: cookieValue } });
+    const goalData = await fetch("https://file-server.liara.run/api/get-user-data",
+        { cache: "no-store", headers: { auth_cookie: cookieValue } });
     const data = await goalData.json();
-    if (data._id) {
+    if (data?._id) {
         redirect("/account")
     } else {
         return data;
     }
 }
-
 
 const page = async () => {
     const cookieStore = await cookies();

@@ -9,7 +9,6 @@ type BoxPropsTypes = {
 }
 
 const Box: React.FC<BoxPropsTypes> = ({ data, setMidBanDetCtrl, setRandomNumForBannerClick }) => {
-    console.log("data: ", data);
 
     return (
         <div onClick={() => {

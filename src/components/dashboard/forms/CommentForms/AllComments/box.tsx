@@ -1,5 +1,4 @@
 "use client";
-
 import { CommentsPropsTypes } from ".";
 
 type BoxCommentsPropsTypes = {
@@ -7,8 +6,6 @@ type BoxCommentsPropsTypes = {
     setRandomNumForBannerClick: (value: number) => void;
     data: CommentsPropsTypes;
 }
-
-
 
 const Box:React.FC<BoxCommentsPropsTypes> = ({ data, setMidBanDetCtrl, setRandomNumForBannerClick }) => {
 

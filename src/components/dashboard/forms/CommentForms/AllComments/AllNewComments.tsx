@@ -32,8 +32,7 @@ const AllNewComments: React.FC<AllNewCommentsPropsTypes> = ({ setMidBanDetCtrl, 
     useEffect(() => {
         axios.get(`https://file-server.liara.run/api/comments?pn=${pageNumber}&&pgn=${paginate}`, { headers: { auth_cookie: auth_cookie } })
             .then(d => {
-                console.log("CCCCCCCCCC: ", d.data.GoalCommentss);
-                setComments(d.data.GoalCommentss);
+                setComments(d.data.GoalComments);
                 setNumbersOfBtns(Array.from(Array(Math.ceil(d.data.AllCommentsNum / paginate)).keys()));
                 setAllCommentsNumber(d.data.AllCommentsNum);
             })

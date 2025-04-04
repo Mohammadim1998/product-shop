@@ -2,7 +2,6 @@ import CommentList from "./CommentList";
 import NewComment from "./NewComment";
 
 const CommentManager = ({ commentProps }) => {
-    console.log("commentProps ==>>>", commentProps);
 
     return (
         <section className="flex flex-col gap-6">

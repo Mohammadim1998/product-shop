@@ -33,26 +33,29 @@ const Info: React.FC<CookiesPropsTypes> = ({ cookie }) => {
 
     useEffect(() => {
         if (cookie && cookie.length > 0) {
-            axios.get("https://file-server.liara.run/api/get-part-of-user-data/info", { headers: { auth_cookie: cookie } })
-                .then(d => {
-                    setData(d.data);
-                    setBulkEmailSituation(d.data.emaiSend);
-                })
-                .catch(e => {
-                    toast.error("خطا در لود اطلاعات", {
-                        autoClose: 3000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                    });
-                    setLoading(false);
-                })
-                .finally(() => {
-                    setLoading(false);
-                })
-            setNeedRefresh(0);
+            const fetchData = async () => {
+                await axios.get("https://file-server.liara.run/api/get-part-of-user-data/info", { headers: { auth_cookie: cookie } })
+                    .then(d => {
+                        setData(d.data);
+                        setBulkEmailSituation(d.data.emaiSend);
+                    })
+                    .catch(e => {
+                        toast.error("خطا در لود اطلاعات", {
+                            autoClose: 3000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                        });
+                        setLoading(false);
+                    })
+                    .finally(() => {
+                        setLoading(false);
+                    })
+                setNeedRefresh(0);
+            }
+            fetchData();
         }
     }, [cookie, needRefresh]);
 
@@ -107,7 +110,6 @@ const Info: React.FC<CookiesPropsTypes> = ({ cookie }) => {
         const backendUrl = `https://file-server.liara.run/api/confirm-user-email`;
         axios.post(backendUrl, formData, { headers: { auth_cookie: cookie } })
             .then((d) => {
-                console.log(d.data);
                 Cookies.set('auth_cookie', d.data.auth, { expires: 60 });
                 const message = d.data.msg ? d.data.msg : "تغییر اطلاعات شما با موفقیت انجام شد."
                 toast.success(message, {
@@ -141,7 +143,6 @@ const Info: React.FC<CookiesPropsTypes> = ({ cookie }) => {
             headers: { auth_cookie: cookie },
         })
             .then((d) => {
-                console.log(d.data);
                 const message = d.data.msg ? d.data.msg : "ایمیل دوباره ارسال شد"
                 toast.success(message, {
                     autoClose: 3000,
@@ -174,7 +175,6 @@ const Info: React.FC<CookiesPropsTypes> = ({ cookie }) => {
         const backendUrl = `https://file-server.liara.run/api/update-email-user`;
         axios.post(backendUrl, formData, { headers: { auth_cookie: cookie } })
             .then((d) => {
-                console.log(d.data);
                 Cookies.set('auth_cookie', d.data.auth, { expires: 60 });
                 const message = d.data.msg ? d.data.msg : "تغییر اطلاعات شما با موفقیت انجام شد."
                 toast.success(message, {

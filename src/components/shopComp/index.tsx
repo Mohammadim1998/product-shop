@@ -89,26 +89,29 @@ const ShopComp: React.FC<ShopCompProps> = ({ url }) => {
     const [resultLoading, setResultLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        setMenutIsOpen(-1);
-        setResult(null);
-        setBtns([-1]);
-        setPgn('&pgn=12');
-        goTopCtrl();
+        const fetchData = async () => {
+            setMenutIsOpen(-1);
+            setResult(null);
+            setBtns([-1]);
+            setPgn('&pgn=12');
+            goTopCtrl();
 
-        router.push(mainFrontUrl)
-        axios.get<ApiResponse>(mainBackendUrl)
-            .then((d) => {
-                setResult(d.data.allProducts);
-                setBtns(d.data.btns);
-                setSearchedProductsNumber(d.data.productsNumber);
-            })
-            .catch((e) => {
-                console.log(e);
-                setResultLoading(false);
-            })
-            .finally(() => {
-                setResultLoading(false);
-            })
+            router.push(mainFrontUrl)
+            await axios.get<ApiResponse>(mainBackendUrl)
+                .then((d) => {
+                    setResult(d.data.allProducts);
+                    setBtns(d.data.btns);
+                    setSearchedProductsNumber(d.data.productsNumber);
+                })
+                .catch((e) => {
+                    setResultLoading(false);
+                })
+                .finally(() => {
+                    setResultLoading(false);
+                })
+        }
+
+        fetchData();
     }, [keyword, orderBy, categories, maxPrice, minPrice, typeOfPro, pgn, pn]);
 
     //KEYWORD
@@ -170,16 +173,19 @@ const ShopComp: React.FC<ShopCompProps> = ({ url }) => {
     const [allCategories, setAllCategories] = useState<Category[] | null>(null);
     const [categoryLoading, setCategoryLoading] = useState<boolean>(true);
     useEffect(() => {
-        const url = "https://file-server.liara.run/api/products-categories-rel";
-        axios.get<Category[]>(url)
-            .then((d) => setAllCategories(d.data))
-            .catch((e) => {
-                console.log(e);
-                setCategoryLoading(false);
-            })
-            .finally(() => {
-                setCategoryLoading(false);
-            })
+        const fetchData = async () => {
+            const url = "https://file-server.liara.run/api/products-categories-rel";
+            await axios.get<Category[]>(url)
+                .then((d) => setAllCategories(d.data))
+                .catch((e) => {
+                    setCategoryLoading(false);
+                })
+                .finally(() => {
+                    setCategoryLoading(false);
+                })
+        }
+
+        fetchData();
     }, []);
 
     const categoriesManager = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -224,7 +230,6 @@ const ShopComp: React.FC<ShopCompProps> = ({ url }) => {
             }
         });
     }
-
 
     //FOR RESPONSIVE
     const [menuIsOpen, setMenutIsOpen] = useState(-1);

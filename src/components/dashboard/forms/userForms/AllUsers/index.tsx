@@ -38,19 +38,22 @@ const AllUsers: React.FC<AllUsersPropsTypes> = ({ setMidBanDetCtrl, setRandomNum
     const paginate = 2;
 
     useEffect(() => {
-        axios.get(`https://file-server.liara.run/api/users?pn=${pageNumber}&&pgn=${paginate}`, { headers: { auth_cookie: auth_cookie } })
-            .then(d => {
-                setusers(d.data.GoalUsers);
-                setNumbersOfBtns(Array.from(Array(Math.ceil(d.data.AllUsersNum / paginate)).keys()));
-                setAllusersNumber(d.data.AllUsersNum);
-            })
-            .catch(e => {
-                console.log(e);
-                setLoading(false);
-            })
-            .finally(() => {
-                setLoading(false);
-            })
+        const fetchData = async () => {
+            await axios.get(`https://file-server.liara.run/api/users?pn=${pageNumber}&&pgn=${paginate}`, { headers: { auth_cookie: auth_cookie } })
+                .then(d => {
+                    setusers(d.data.GoalUsers);
+                    setNumbersOfBtns(Array.from(Array(Math.ceil(d.data.AllUsersNum / paginate)).keys()));
+                    setAllusersNumber(d.data.AllUsersNum);
+                })
+                .catch(e => {
+                    setLoading(false);
+                })
+                .finally(() => {
+                    setLoading(false);
+                })
+        }
+
+        fetchData();
     }, [pageNumber]);
 
     useEffect(() => {
