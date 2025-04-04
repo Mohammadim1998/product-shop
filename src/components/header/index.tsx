@@ -15,8 +15,26 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
 import { useAppContext } from "../../../context/appContext";
+import Cookies from "js-cookie";
+import { TbLogin } from "react-icons/tb";
+import { IoPersonCircle } from "react-icons/io5";
+import { MdOutlineFavorite } from "react-icons/md";
+import axios from "axios";
+
+type FavoriteProductType = {
+    _id: string;
+    image: string;
+    slug: string;
+    title: string;
+    shortDesc: string;
+    typeOfProduct: "gr" | "app" | "book";
+    buyNumber: number;
+    price: number;
+    features: string[];
+};
 
 const Header = () => {
+    const [token, setToken] = useState(Cookies.get('auth_cookie'));
     const [logoHover, setLogoHover] = useState(0);
     // const [cartNumber, setcartNumber] = useState(-1);
     const searchRef = useRef<HTMLInputElement>(null);
@@ -65,6 +83,18 @@ const Header = () => {
             document.body.style.overflow = 'hidden';
         }
     }, [menuIsOpen]);
+
+    const [favorite, setFavorite] = useState<FavoriteProductType[]>();
+
+    useEffect(() => {
+        const fetchData = async () => {
+            await axios.get("https://file-server.liara.run/api/get-part-of-user-data/favorite", { headers: { auth_cookie: token } })
+                .then((d) => setFavorite(d.data))
+                .catch(() => { })
+        }
+
+        fetchData();
+    })
 
     return (
         <header className="z-50 w-full container mx-auto py-2 relative ">
@@ -175,8 +205,18 @@ const Header = () => {
 
                             <div className="flex flex-col md:flex-row gap-4 items-center w-full md:w-[26rem] justify-end">
                                 <div className="flex justify-between items-center gap-2">
-                                    <Link onClick={() => setMenutIsOpen(-1)} href={"/account/favorite"}><MdFavoriteBorder className="bg-zinc-400 text-white rounded p-2 w-12 h-12 " /></Link>
-                                    <Link onClick={() => setMenutIsOpen(-1)} href={"/account/info"}><GoPerson className="bg-zinc-400 text-white rounded p-2 w-12 h-12 " /></Link>
+                                    <Link onClick={() => setMenutIsOpen(-1)} href={"/account/favorite"}>
+                                        {!favorite?.length
+                                            ? (<MdFavoriteBorder className="bg-zinc-400 text-white rounded p-2 w-12 h-12 " />)
+                                            : (<MdOutlineFavorite className="bg-zinc-400 text-red-600 rounded p-2 w-12 h-12 " />)}
+
+                                    </Link>
+
+                                    <Link onClick={() => setMenutIsOpen(-1)} href={"/account/info"}>
+                                        {!token
+                                            ? (<TbLogin className="bg-zinc-400 text-white rounded p-2 w-12 h-12 " />)
+                                            : (<IoPersonCircle className="bg-zinc-400 text-white rounded p-2 w-12 h-12 " />)}
+                                    </Link>
                                 </div>
 
                                 <Link onClick={() => setMenutIsOpen(-1)} href={"/cart"} className="flex gap-2 justify-center items-center transition-all duration-500 hover:bg-orange-500 bg-orange-400 p-2 rounded-md">
