@@ -27,6 +27,7 @@ const MiddleBanners = async () => {
                         title={banner?.imageAlt}
                         width={600}
                         height={200}
+                        sizes="auto"
                         src={banner?.image} />
                 </Link>
             ))}

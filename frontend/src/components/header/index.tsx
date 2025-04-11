@@ -73,6 +73,25 @@ const Header = () => {
         }
     }
 
+    const [favorite, setFavorite] = useState<FavoriteProductType[]>();
+
+    useEffect(() => {
+        if (!token) return;
+        const fetchData = async () => {
+            try {
+                await axios.get("https://file-server.liara.run/api/get-part-of-user-data/favorite", { headers: { auth_cookie: token } })
+                    .then((d) => setFavorite(d.data))
+                    .catch((error) => {
+                        console.log(error);
+                    })
+            } catch (error) {
+                console.log(error);
+                setFavorite([]);
+            }
+        }
+
+        fetchData();
+    }, )
     //FOR RESPONSIVE
     const [menuIsOpen, setMenutIsOpen] = useState<number>(-1);
 
@@ -83,24 +102,6 @@ const Header = () => {
             document.body.style.overflow = 'hidden';
         }
     }, [menuIsOpen]);
-
-    const [favorite, setFavorite] = useState<FavoriteProductType[]>();
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                await axios.get("https://file-server.liara.run/api/get-part-of-user-data/favorite", { headers: { auth_cookie: token } })
-                    .then((d) => setFavorite(d.data))
-                    .catch((error) => {
-                        console.log(error);
-                    })
-            } catch (error) {
-                console.log(error);
-            }
-        }
-
-        fetchData();
-    })
 
     return (
         <header className="z-50 w-full container mx-auto py-2 relative ">

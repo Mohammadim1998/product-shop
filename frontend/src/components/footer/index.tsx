@@ -93,6 +93,7 @@ const Footer = () => {
                             className="rounded-lg"
                             width={120}
                             height={120}
+                            sizes="auto"
                             alt="mernfa logo"
                         />
                         <Image
@@ -100,6 +101,7 @@ const Footer = () => {
                             className="rounded-lg"
                             width={120}
                             height={120}
+                            sizes="auto"
                             alt="mernfa logo"
                         />
                     </div>
