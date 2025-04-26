@@ -76,7 +76,7 @@ const SliderDetails: React.FC<SliderPropsTypes> = ({ data }) => {
                                         alt={item.imageAlt}
                                         quality={100}
                                         priority
-                                        width={1351}
+                                        width={1951}
                                         height={250}
                                     />
                                     {/* </Link> */}
